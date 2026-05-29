@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 将此脚本挂载在关卡中的任何宝箱或能量球上（碰撞体需勾选 Is Trigger
+/// 将此脚本挂载在关卡中的任何宝箱、能量球或引导石碑上（碰撞体需勾选 Is Trigger）
 /// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class AbilityUnlockTrigger : MonoBehaviour
@@ -11,16 +11,16 @@ public class AbilityUnlockTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // 寻找父物体上的 PlayerController 确保物理安全
+        // 寻找父物体或自身上的 PlayerController，确保物理安全
         PlayerController player = other.GetComponentInParent<PlayerController>();
         if (player != null)
         {
-            // 1. 解锁能力
+            // 1. 调用解锁并自动存档
             player.UnlockAbility(abilityToUnlock);
 
-            // 2. 提示：在此处可以触发 UIManager 弹窗展示 “获得：二段跳能力！” 
+            // 2. 物理效果表现：可以在此处播放解锁特效、音效，以及广播弹窗 UI
 
-            // 3. 销毁自身，防止重复吃
+            // 3. 销毁触发器自身，防止重复吃
             Destroy(gameObject);
         }
     }

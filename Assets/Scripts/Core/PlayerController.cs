@@ -41,7 +41,7 @@ public class PlayerController : EntityBase
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
 
-    #region 输入相关
+    #region 输入相关与技能防呆锁
     public Vector2 MoveInput { get; private set; }
     private float jumpPressTime = -99f;
     private float attackPressTime = -99f;
@@ -49,9 +49,13 @@ public class PlayerController : EntityBase
 
     private const float InputBufferTime = 0.15f;
 
-    public bool JumpInputBuffered => (Time.time - jumpPressTime) < InputBufferTime;
-    public bool AttackInputBuffered => (Time.time - attackPressTime) < InputBufferTime;
-    public bool DashInputBuffered => (Time.time - dashPressTime) < InputBufferTime;
+    // ========================================================
+    // 核心重构：在输入缓存属性中直接植入【技能解锁判定】！
+    // 这样在相关能力未解锁时，输入信号会被物理静默拦截，完美锁死跳跃、冲刺、大地图攻击！
+    // ========================================================
+    public bool JumpInputBuffered => IsAbilityUnlocked(ExplorationAbility.Jump) && (Time.time - jumpPressTime) < InputBufferTime;
+    public bool AttackInputBuffered => IsAbilityUnlocked(ExplorationAbility.RangedAttack) && (Time.time - attackPressTime) < InputBufferTime;
+    public bool DashInputBuffered => IsAbilityUnlocked(ExplorationAbility.Dash) && (Time.time - dashPressTime) < InputBufferTime;
 
     public void UseJumpInput() => jumpPressTime = -99f;
     public void UseAttackInput() => attackPressTime = -99f;
@@ -71,8 +75,20 @@ public class PlayerController : EntityBase
     // 辅助物理参数：当前在空中已跳跃的次数（用于二段跳判定）
     public int CurrentJumpCount { get; set; }
 
-    // 核心接口：动态判断二段跳的最大次数
-    public int MaxJumps => IsAbilityUnlocked(ExplorationAbility.DoubleJump) ? 2 : 1;
+    // ========================================================
+    // 核心重构：动态判定跳跃上限。
+    // 1. 如果基础跳跃没解锁，上限为 0；
+    // 2. 解锁了基础跳跃但未解锁二段跳，上限为 1；
+    // 3. 基础跳跃和二段跳均解锁，上限为 2。
+    // ========================================================
+    public int MaxJumps
+    {
+        get
+        {
+            if (!IsAbilityUnlocked(ExplorationAbility.Jump)) return 0;
+            return IsAbilityUnlocked(ExplorationAbility.DoubleJump) ? 2 : 1;
+        }
+    }
 
     public StateMachine<PlayerController> GetStateMachine() => stateMachine;
 
@@ -128,7 +144,7 @@ public class PlayerController : EntityBase
     {
         stateMachine.Update();
 
-        AdjustFacingDirection(MoveInput.x);  
+        AdjustFacingDirection(MoveInput.x);
     }
 
     private void FixedUpdate() => stateMachine.FixedUpdate();
@@ -186,15 +202,41 @@ public class PlayerController : EntityBase
         }
     }
 
+    // ========================================================
+    // 研发特供：新增右键 Inspector 组件菜单进行一键调试，方便测试
+    // ========================================================
+#if UNITY_EDITOR
+    [ContextMenu("Debug: 锁定所有技能")]
+    public void ResetAllAbilities()
+    {
+        PlayerPrefs.DeleteAll();
+        unlockedAbilities.Clear();
+        SaveAbilities();
+        Debug.Log("<color=red>[Debug] 所有技能已被重置锁定！玩家现在只能进行大地图左右移动。</color>");
+    }
+
+    [ContextMenu("Debug: 解锁所有技能")]
+    public void UnlockAllAbilities()
+    {
+        unlockedAbilities.Clear();
+        foreach (ExplorationAbility ability in System.Enum.GetValues(typeof(ExplorationAbility)))
+        {
+            unlockedAbilities.Add(ability);
+        }
+        SaveAbilities();
+        Debug.Log("<color=green>[Debug] 已一键解锁所有大地图探索技能！</color>");
+    }
+#endif
+
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(groundCheckPoint.position, groundCheckRadius);
+        if (groundCheckPoint != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(groundCheckPoint.position, groundCheckRadius);
+        }
 
-        // ========================================================
-        // 2. 核心新增：绘制大地图攻击判定圆形线框（青色）
-        // 它会根据你当前面朝的方向（FacingDirection），全自动向左或向右偏移探出！
-        // ========================================================
+        // 绘制大地图攻击判定圆形线框（青色）
         Gizmos.color = Color.cyan;
         Vector2 attackCheckPos = (Vector2)transform.position + new Vector2(FacingDirection * overworldAttackRange, -0.2f);
         Gizmos.DrawWireSphere(attackCheckPos, overworldAttackRadius);

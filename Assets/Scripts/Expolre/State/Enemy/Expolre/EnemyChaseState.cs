@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class EnemyChaseState : OverworldEnemyState
 {
@@ -14,10 +15,7 @@ public class EnemyChaseState : OverworldEnemyState
     {
         base.Update();
 
-        // ========================================================
-        // 1. 核心新增：如果追到了玩家（进入了大地图扑击距离）
-        // 立刻强行切入【大世界扑人攻击】状态！给玩家来一下狠的！ [6]
-        // ========================================================
+        // 1. 如果追到了玩家（进入了大地图扑击距离）
         if (owner.IsPlayerInAttackRange())
         {
             stateMachine.ChangeState<EnemyAttackState>();
@@ -32,7 +30,17 @@ public class EnemyChaseState : OverworldEnemyState
         }
 
         float directionToPlayer = owner.PlayerTransform.position.x - owner.transform.position.x;
-        owner.AdjustFacingDirection(directionToPlayer);
+
+        // ========================================================
+        // 核心修改：引入转向“死区”阈值（例如 0.25f）
+        // 只有当玩家与怪物的水平距离大于 0.25f 时，怪物才会去改变朝向。
+        // 如果玩家在怪物头顶（水平距离极小），怪物会保持当前朝向，不作无意义的频繁翻转。
+        // ========================================================
+        float turnThreshold = 0.25f;
+        if (Mathf.Abs(directionToPlayer) > turnThreshold)
+        {
+            owner.AdjustFacingDirection(directionToPlayer);
+        }
     }
 
     public override void FixedUpdate()
