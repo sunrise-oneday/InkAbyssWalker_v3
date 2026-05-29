@@ -5,8 +5,8 @@ public class EnemyAttackSequence
 {
     public string attackName = "三连暴风斩";
 
-    [Tooltip("每一击落下的精确时间（从进入格挡状态开始计时，单位：秒）")]
-    public float[] hitTimings = { 0.8f, 1.4f, 2.0f };
+    //[Tooltip("每一击落下的精确时间（从进入格挡状态开始计时，单位：秒）")]
+    //public float[] hitTimings = { 0.8f, 1.4f, 2.0f };
 
     [Tooltip("每一击对应的原始伤害")]
     public int[] hitDamages = { 15, 15, 30 };

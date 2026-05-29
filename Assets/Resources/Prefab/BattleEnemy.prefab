@@ -262,7 +262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7132075, g: 0.7132075, b: 0.7132075, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -542,7 +542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6603774, g: 0.6603774, b: 0.6603774, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -988,7 +988,6 @@ MonoBehaviour:
   currentBreakValue: 0
   isBroken: 0
   breakDamageMultiplier: 1.5
-  activeBuffs: []
 --- !u!114 &4540504191561540438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1001,15 +1000,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26717dea11e93a141869059c72c3aac0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsFacingRight: 1
+  CanFlip: 1
   attackSequence:
     attackName: "\u4E09\u8FDE\u66B4\u98CE\u65A9"
-    hitTimings:
-    - 2
-    - 4
-    - 6
     hitDamages: 0f0000000f0000001e000000
     hitBreakDamages: 05000000050000000c000000
     hitAnimations:
-    - Enemy_Attack_1
-    - Enemy_Attack_2
     - Enemy_Attack_3
+  destroyOnDeath: 0

@@ -24,10 +24,10 @@ public class PlayerCastSkillState : PlayerBattleState
         hasAppliedDamage = false;
 
         // 动态获取当前释放技能的动画真实总长度，实现全自动收招
-        if (owner.Anim != null)
+        if (owner.anim != null)
         {
-            owner.Anim.Update(0f); // 强制刷新
-            AnimatorStateInfo stateInfo = owner.Anim.GetCurrentAnimatorStateInfo(0);
+            owner.anim.Update(0f); // 强制刷新
+            AnimatorStateInfo stateInfo = owner.anim.GetCurrentAnimatorStateInfo(0);
             skillDuration = stateInfo.length;
         }
         else

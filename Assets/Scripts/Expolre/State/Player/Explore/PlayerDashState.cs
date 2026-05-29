@@ -85,15 +85,15 @@ public class PlayerDashState : PlayerState
         // 10. 恢复转向
         owner.CanFlip = true;
 
-        //if (!owner.IsDashAvailable)
-        //{
-        //    owner.LastDashTime = Time.time;
-        //}
-
-        // 只有 LastDashTime 没有被外部重置（不是 -99f）的时候才更新
-        if (owner.LastDashTime > 0)
+        if (!owner.IsDashAvailable)
         {
             owner.LastDashTime = Time.time;
         }
+
+        //// 只有 LastDashTime 没有被外部重置（不是 -99f）的时候才更新
+        //if (owner.LastDashTime > 0)
+        //{
+        //    owner.LastDashTime = Time.time;
+        //}
     }
 }

@@ -15,4 +15,10 @@ public class Skill
     [Header("大地图/战斗技能元素附着")]
     public ElementType applyElement = ElementType.None; // 释放该技能会附着什么元素
     public int buffDuration = 3;                       // 附着持续几回合
+
+    // ========================================================
+    // 核心新增：释放此技能时，能够为全队共享大招槽恢复多少能量 [3, 5]
+    // ========================================================
+    [Header("大招充能设置")]
+    public int ultChargeValue = 15; // 每次释放该技能，大招能量 +15
 }

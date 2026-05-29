@@ -29,6 +29,15 @@ public class StateMachine<T> where T : class
 
     public void ChangeState<TState>() where TState : BaseState<T>
     {
+        // ========================================================
+        // 核心修复：如果当前已经处于死亡状态，物理锁死，绝对不允许切换到任何其他状态！
+        // 这样可以彻底避免“已经死亡的玩家，在敌人后续连击或回合交替时被迫重新站起来”的严重 Bug！ [2]
+        // ========================================================
+        if (currentState is IDeathState)
+        {
+            return; // 拒绝切换，死者安息！ [2]
+        }
+
         Type type = typeof(TState);
         if (stateDic.TryGetValue(type, out BaseState<T> newState))
         {

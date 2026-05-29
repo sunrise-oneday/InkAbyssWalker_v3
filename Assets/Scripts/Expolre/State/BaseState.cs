@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
+/// 标记接口：代表这是一个“死亡状态”。一旦切入，该状态机将永久锁定，拒绝切换到任何其他状态。 [2]
+/// </summary>
+public interface IDeathState { }
+
+/// <summary>
 /// 状态抽象基类
 /// </summary>
 public abstract class BaseState<T> where T : class

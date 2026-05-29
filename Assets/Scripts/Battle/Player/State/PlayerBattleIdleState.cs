@@ -20,6 +20,31 @@ public class PlayerBattleIdleState : PlayerBattleState
         }
     }
 
+    public override void Update()
+    {
+        base.Update();
+
+        // 监听 Q 键瞄准
+        if (owner.AimInputBuffered)
+        {
+            owner.UseAimInput();
+
+            // ========================================================
+            // 核心修改：只有在 正常状态 (形态 0) 下，才允许进入瞄准点射！ [2]
+            // ========================================================
+            if (owner.currentFormIndex == 0)
+            {
+                stateMachine.ChangeState<PlayerBattleAimState>();
+            }
+            else
+            {
+                Debug.LogWarning($"<color=yellow>[战术限制] 当前处于非正常形态下，无法进入瞄准点射！</color>");
+            }
+            return;
+        }
+
+    }
+
     public override void Exit()
     {
         base.Exit();

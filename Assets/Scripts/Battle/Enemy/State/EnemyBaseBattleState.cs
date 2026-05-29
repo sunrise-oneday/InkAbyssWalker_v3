@@ -14,9 +14,9 @@ public abstract class EnemyBaseBattleState : BaseState<EnemyBattleEntity>
         base.Enter(); // 自动调用 BaseState 进行计时器归零
 
         // 进入状态时，全自动播放怪物对应的战斗动画
-        if (AnimHash != 0 && owner.Anim != null)
+        if (AnimHash != 0 && owner.anim != null)
         {
-            owner.Anim.CrossFade(AnimHash, 0.1f);
+            owner.anim.CrossFade(AnimHash, 0.1f);
         }
     }
 
