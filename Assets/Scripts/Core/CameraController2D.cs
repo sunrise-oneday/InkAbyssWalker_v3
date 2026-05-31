@@ -1,98 +1,164 @@
 using UnityEngine;
 
 /// <summary>
-/// 2DÀàÒøºÓ³Ç´óµØÍ¼ÉãÏñ»ú¸úËæ¿ØÖÆ½Å±¾
+/// 2D ç±»é“¶æ²³åŸå¤§åœ°å›¾æ‘„åƒæœºè·Ÿéšæ§åˆ¶å™¨ã€‚
+/// LateUpdate ä¸­é›¶å¤šä½™æ–¹æ³•è°ƒç”¨ï¼Œæ€§èƒ½æ•æ„Ÿè·¯å¾„å·²ä¼˜åŒ–ã€‚
 /// </summary>
 public class CameraController2D : MonoBehaviour
 {
-    [Header("×·×ÙÄ¿±ê")]
-    [SerializeField] private Transform target;                // ÉãÏñ»úĞèÒª×·×ÙµÄÖ÷½ÇÄ¿±ê
-    [SerializeField] private string playerTag = "Player";      // ÈôÎ´ÊÖ¶¯ÍÏ×§Ä¿±ê£¬ÔòÍ¨¹ı´Ë Tag ÔÚ³¡¾°ÖĞ×Ô¶¯¼ìË÷
+    [Header("è¿½è¸ªç›®æ ‡")]
+    [Tooltip("æ‘„åƒæœºè¿½è¸ªçš„ç›®æ ‡ã€‚è‹¥æœªæŒ‡å®šåˆ™è‡ªåŠ¨æŒ‰ Tag æŸ¥æ‰¾ Player")]
+    [SerializeField] private Transform target;
+    [Tooltip("è‡ªåŠ¨æœç´¢ç©å®¶æ—¶ä½¿ç”¨çš„åœºæ™¯ Tag")]
+    [SerializeField] private string playerTag = "Player";
 
-    [Header("Æ½»¬²ÎÊı")]
-    [SerializeField] private float smoothTime = 0.2f;         // Æ½»¬×èÄáÊ±¼ä£¬ÊıÖµÔ½Ğ¡¸úËæÔ½ÌùÉí£¬Ô½´óÔ½ÈáºÍ
-    [SerializeField] private Vector3 offset = new Vector3(0f, 1f, -10f); // Ïà¶ÔÖ÷½ÇµÄÆ«ÒÆÁ¿£¨Z ÖáÒ»°ã±£³ÖÔÚ -10f ±ÜÃâ´©Í¸ 2D Æ½Ãæ£©
+    [Header("å¹³æ»‘å‚æ•°")]
+    [SerializeField] private float smoothTime = 0.2f;
+    [SerializeField] private Vector3 offset = new Vector3(0f, 1f, -10f);
 
-    [Header("´óµØÍ¼±ß½çÏŞÖÆ")]
-    [SerializeField] private bool useBounds = false;          // ÊÇ·ñÆôÓÃÇøÓò±ß½çÏŞÖÆ£¬·ÀÖ¹Ïà»úÒÆ³ö¹Ø¿¨·¶Î§
-    [SerializeField] private Vector2 minBounds;               // Ïà»úÄÜ´ïµ½µÄ×îĞ¡ÊÀ½ç×ø±ê (Min X, Min Y)
-    [SerializeField] private Vector2 maxBounds;               // Ïà»úÄÜ´ïµ½µÄ×î´óÊÀ½ç×ø±ê (Max X, Max Y)
+    [Header("å¤§åœ°å›¾è¾¹ç•Œé™åˆ¶")]
+    [SerializeField] private bool useBounds = false;
+    [SerializeField] private Vector2 minBounds;
+    [SerializeField] private Vector2 maxBounds;
 
-    [Header("´óµØÍ¼Êó±êÖ¸ÕëÅäÖÃ")]
-    [SerializeField] private bool hideCursorAtStart = true;   // ½øÈë³¡¾°Ê±ÊÇ·ñ×Ô¶¯Òş²Ø²¢Ëø¶¨Êó±êÖ¸Õë
+    [Header("å¤§åœ°å›¾é¼ æ ‡æŒ‡é’ˆé…ç½®")]
+    [SerializeField] private bool hideCursorAtStart = true;
 
-    private Vector3 currentVelocity = Vector3.zero;           // SmoothDamp ÄÚ²¿ÎïÀí¼ÆËãËùĞèµÄËÙ¶È±äÁ¿»º´æ
+    // ---- è¿è¡Œæ—¶ç¼“å­˜ ----
+    private Vector3 currentVelocity = Vector3.zero;
+    // åœºæ™¯é‡è½½åä»…å°è¯•ä¸€æ¬¡è‡ªåŠ¨æ¢å¤ï¼Œé¿å…æ¯å¸§æ‰§è¡Œ FindXXX
+    private bool hasAttemptedRecovery = false;
+
+    // ============================================
+    // Unity ç”Ÿå‘½å‘¨æœŸ
+    // ============================================
 
     private void Start()
     {
-        // 1. ×Ô¶¯¶¨Î»Ö÷½Ç£ºÈç¹ûÎ´ÔÚ Inspector ÖĞÍÏ×§Ä¿±ê£¬ÏµÍ³½«×Ô¶¯Í¨¹ı Tag »ò½Å±¾ÀàĞÍ×¥È¡
-        if (target == null)
-        {
-            GameObject playerObj = GameObject.FindWithTag(playerTag);
-            if (playerObj != null)
-            {
-                target = playerObj.transform;
-            }
-            else
-            {
-                PlayerController controller = FindObjectOfType<PlayerController>();
-                if (controller != null)
-                {
-                    target = controller.transform;
-                }
-            }
-        }
-
-        // 2. Òş²Ø²¢Ëø¶¨Êó±ê£ºÀàÒøºÓ³ÇÓÎÏ·ÔÚ´óµØÍ¼Ì½Ë÷ÆÚ²»Ê¹ÓÃÊó±ê£¬¹ÊÖ´ĞĞÒş²Ø²¢ÖÃÖĞËø¶¨
-        if (hideCursorAtStart)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-
-        // 3. ³õÊ¼×ø±ê¶ÔÆë£º·ÀÖ¹ÓÎÏ·¿ª¾ÖË²¼äÉãÏñ»ú´Ó¼«ÎªÒ£Ô¶µÄµØ·½»ºÂı»¬ĞĞ¹ıÀ´
-        if (target != null)
-        {
-            Vector3 targetPosition = target.position + offset;
-            if (useBounds)
-            {
-                targetPosition.x = Mathf.Clamp(targetPosition.x, minBounds.x, maxBounds.x);
-                targetPosition.y = Mathf.Clamp(targetPosition.y, minBounds.y, maxBounds.y);
-            }
-            transform.position = targetPosition;
-        }
+        BindTarget();
+        ApplyCursorState();
+        SnapToTarget();
     }
 
     private void LateUpdate()
     {
-        // ÉãÏñ»ú×·×Ù±ØĞë·ÅÔÚ LateUpdate ÖĞÖ´ĞĞ£¬È·±£ÔÚÖ÷½ÇËùÓĞµÄ Update¡¢FixedUpdate ÎïÀíÎ»ÒÆ¼ÆËãÍêÈ«½áÊøÖ®ºóÔÙµ÷ÕûÏà»úÎ»ÖÃ£¬·ÀÖ¹³öÏÖ¶¶¶¯
-        if (target == null) return;
+        if (target == null)
+        {
+            // åœºæ™¯é‡è½½ç­‰å¯¼è‡´å¼•ç”¨ä¸¢å¤±æ—¶ï¼Œä»…åœ¨ç¬¬ä¸€å¸§å°è¯•ä¸€æ¬¡è‡ªåŠ¨æ¢å¤
+            if (!hasAttemptedRecovery)
+            {
+                hasAttemptedRecovery = true;
+                TryAutoRecover();
+            }
 
-        // ¼ÆËã°üº¬Æ«ÒÆÁ¿µÄÏà»úÄ¿±êµã
+            // æ¢å¤æˆåŠŸåˆ™ç»§ç»­è·Ÿéšï¼Œå¤±è´¥åˆ™è·³è¿‡æœ¬å¸§
+            if (target == null) return;
+        }
+
+        // è®¡ç®—ç›®æ ‡ä½ç½®ï¼ˆå«åç§»ï¼‰
         Vector3 targetPosition = target.position + offset;
 
-        // Èô¿ªÆôÁËµØÍ¼±ß½çÔ¼Êø£¬Ôò¶ÔÏà»úµÄÄ¿±ê X Óë Y ×ø±ê½øĞĞÇ¿ĞĞ½Ø¶Ï£¬·ÀÖ¹ÊÓÒ°´©°ï
         if (useBounds)
         {
             targetPosition.x = Mathf.Clamp(targetPosition.x, minBounds.x, maxBounds.x);
             targetPosition.y = Mathf.Clamp(targetPosition.y, minBounds.y, maxBounds.y);
         }
 
-        // Ê¹ÓÃ¸ß¾«¶ÈÎïÀí½¥½øÆ½»¬Ëã·¨½«Ïà»úÒÆÏòÄ¿±êµã£¬±£Ö¤Ïà»úÒÆ¶¯ÓµÓĞ½¥Èë½¥³öµÄ¹ßĞÔÊÖ¸Ğ
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, smoothTime);
+        transform.position = Vector3.SmoothDamp(
+            transform.position, targetPosition,
+            ref currentVelocity, smoothTime);
     }
 
+    // ============================================
+    // å…¬å¼€æ–¹æ³•
+    // ============================================
+
     /// <summary>
-    /// ÔÚ Unity ±à¼­Æ÷³¡¾°£¨Scene£©ÊÓÍ¼ÖĞ¿ÉÊÓ»¯»æÖÆÏà»ú±ß½ç£¬·½±ã²ß»®µ÷Õû
+    /// å¼ºåˆ¶åˆ·æ–°ç›®æ ‡å¼•ç”¨å¹¶ç«‹å³å¯¹é½ã€‚
+    /// æˆ˜æ–—ç»“æŸè¿”å›å¤§åœ°å›¾åç”± BattleManager è°ƒç”¨ã€‚
     /// </summary>
-    private void OnDrawGizmosSelected()
+    public void RefreshTarget()
     {
+        target = null;
+        hasAttemptedRecovery = false;  // å…è®¸è‡ªåŠ¨æ¢å¤å†æ¬¡è§¦å‘
+        TryAutoRecover();
+        // é‡ç½®é˜»å°¼é€Ÿåº¦é˜²æ­¢å¯¹é½æ—¶æŠ–åŠ¨
+        currentVelocity = Vector3.zero;
+        SnapToTarget();
+    }
+
+    // ============================================
+    // å†…éƒ¨æ–¹æ³•
+    // ============================================
+
+    /// <summary>åœ¨ Start ä¸­ç»‘å®šç›®æ ‡ï¼ˆä»…ä¸€æ¬¡ï¼‰</summary>
+    private void BindTarget()
+    {
+        if (target != null) return;
+
+        var playerObj = GameObject.FindWithTag(playerTag);
+        if (playerObj != null)
+        {
+            target = playerObj.transform;
+            return;
+        }
+
+        var controller = FindObjectOfType<PlayerController>();
+        if (controller != null)
+            target = controller.transform;
+    }
+
+    /// <summary>åœºæ™¯é‡è½½åè‡ªåŠ¨æ¢å¤ï¼ˆæœ€å¤šæ‰§è¡Œä¸€æ¬¡ï¼‰</summary>
+    private void TryAutoRecover()
+    {
+        var playerObj = GameObject.FindWithTag(playerTag);
+        if (playerObj != null)
+        {
+            target = playerObj.transform;
+            return;
+        }
+
+        var controller = FindObjectOfType<PlayerController>();
+        if (controller != null)
+            target = controller.transform;
+    }
+
+    private void ApplyCursorState()
+    {
+        if (hideCursorAtStart)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+    }
+
+    /// <summary>ç«‹å³å¯¹é½åˆ°ç›®æ ‡ä½ç½®ï¼ˆè·³è¿‡å¹³æ»‘ï¼‰</summary>
+    private void SnapToTarget()
+    {
+        if (target == null) return;
+
+        Vector3 targetPosition = target.position + offset;
         if (useBounds)
         {
-            Gizmos.color = Color.green;
-            Vector3 center = new Vector3((minBounds.x + maxBounds.x) * 0.5f, (minBounds.y + maxBounds.y) * 0.5f, transform.position.z);
-            Vector3 size = new Vector3(maxBounds.x - minBounds.x, maxBounds.y - minBounds.y, 1f);
-            Gizmos.DrawWireCube(center, size);
+            targetPosition.x = Mathf.Clamp(targetPosition.x, minBounds.x, maxBounds.x);
+            targetPosition.y = Mathf.Clamp(targetPosition.y, minBounds.y, maxBounds.y);
         }
+        transform.position = targetPosition;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!useBounds) return;
+
+        Gizmos.color = Color.green;
+        Vector3 center = new Vector3(
+            (minBounds.x + maxBounds.x) * 0.5f,
+            (minBounds.y + maxBounds.y) * 0.5f,
+            transform.position.z);
+        Vector3 size = new Vector3(
+            maxBounds.x - minBounds.x,
+            maxBounds.y - minBounds.y,
+            1f);
+        Gizmos.DrawWireCube(center, size);
     }
 }

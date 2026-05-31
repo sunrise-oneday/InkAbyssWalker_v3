@@ -21,6 +21,13 @@ MonoBehaviour:
   basePrice: 20
   canSell: 1
   maxStack: 1
-  statMods: []
+  statMods:
+  - stat: 0
+    flat: 10
+    percent: 0
+  - stat: 1
+    flat: 0
+    percent: 0.1
   skillMods: []
-  extraEffects: []
+  extraEffects:
+  - {fileID: 11400000, guid: f8e7d6c5b4a39281706f5e4d3c2b1a09, type: 2}

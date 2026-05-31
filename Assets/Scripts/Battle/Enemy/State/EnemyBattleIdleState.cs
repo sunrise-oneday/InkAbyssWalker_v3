@@ -1,16 +1,16 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ¹ÖÎïÕ½¶·´ı»ú×´Ì¬
+/// æ€ªç‰©æˆ˜æ–—å¾…æœºçŠ¶æ€
 /// </summary>
 public class EnemyBattleIdleState : EnemyBaseBattleState
 {
-    // ¶ÔÓ¦ Animator ÀïµÄ¹ÖÎïÕ½¶·´ı»ú×´Ì¬Ãû×Ö
+    // å¯¹åº” Animator é‡Œçš„æ€ªç‰©æˆ˜æ–—å¾…æœºçŠ¶æ€åå­—
     protected override int AnimHash => Animator.StringToHash("Enemy_BattleIdle");
 
     public override void Enter()
     {
         base.Enter();
-        owner.SetHorizontalVelocity(0f); // Õ½¶·ÖĞ¶¨Éí
+        owner.SetHorizontalVelocity(0f); // æˆ˜æ–—ä¸­å®šèº«
     }
 }

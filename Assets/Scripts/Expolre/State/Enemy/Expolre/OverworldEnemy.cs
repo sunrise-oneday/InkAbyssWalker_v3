@@ -1,45 +1,45 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ´óÊÀ½çÑ²Âß¹Ö£¨¼Ì³Ğ×Ô EntityBase£¬ÍêÃÀ¸´ÓÃÎïÀí¡¢³¯ÏòºÍ·­×ª´úÂë£©
+/// å¤§ä¸–ç•Œå·¡é€»æ€ªï¼ˆç»§æ‰¿è‡ª EntityBaseï¼Œå®Œç¾å¤ç”¨ç‰©ç†ã€æœå‘å’Œç¿»è½¬ä»£ç ï¼‰
 /// </summary>
 public class OverworldEnemy : EntityBase
 {
-    [Header("´óÊÀ½çÑ²Âß")]
+    [Header("å¤§ä¸–ç•Œå·¡é€»")]
     [SerializeField] private float patrolSpeed = 2f;
     [SerializeField] private Transform ledgeCheckPoint;
     [SerializeField] private float checkRadius = 0.1f;
     [SerializeField] private LayerMask groundLayer;
 
-    [Header("¾¯½äÓë×·»÷")]
+    [Header("è­¦æˆ’ä¸è¿½å‡»")]
     [SerializeField] private float chaseSpeed = 4.5f;
     [SerializeField] private float detectRange = 5.5f;
 
-    [Header("´óÊÀ½ç´ı»úÓë¹¥»÷ÉèÖÃ [6]")]
-    [SerializeField] private float idleDuration = 1.2f;    // ĞüÑÂ±ßÔµ´ı»úµÄÊ±¼ä (Ãë)
-    [SerializeField] private float attackRange = 1.3f;     // ´óµØÍ¼´¥·¢ÆË»÷µÄ¹¥»÷¾àÀë
+    [Header("å¤§ä¸–ç•Œå¾…æœºä¸æ”»å‡»è®¾ç½® [6]")]
+    [SerializeField] private float idleDuration = 1.2f;    // æ‚¬å´–è¾¹ç¼˜å¾…æœºçš„æ—¶é—´ (ç§’)
+    [SerializeField] private float attackRange = 1.3f;     // å¤§åœ°å›¾è§¦å‘æ‰‘å‡»çš„æ”»å‡»è·ç¦»
 
-    [Header("Õ½¶·¹Ø¿¨×éÅäÖÃ")]
+    [Header("æˆ˜æ–—å…³å¡ç»„é…ç½®")]
     [SerializeField] private int enemyGroupIndex = 0;
 
     private StateMachine<OverworldEnemy> stateMachine;
-    public Transform PlayerTransform { get; private set; } // »º´æÖ÷½Ç×ø±ê
+    public Transform PlayerTransform { get; private set; } // ç¼“å­˜ä¸»è§’åæ ‡
 
-    // ¾²Ì¬Ö»¶ÁµÄ¹ÖÎïÌ½Ë÷ÆÚ 4 ¸ö¶¯»­ Hash 
-    public static readonly int Anim_Idle = Animator.StringToHash("Enemy_Idle");      // ´ı»ú [6]
-    public static readonly int Anim_Patrol = Animator.StringToHash("Enemy_Walk");    // Ñ²Âß
-    public static readonly int Anim_Chase = Animator.StringToHash("Enemy_Chase");     // ×·»÷
-    public static readonly int Anim_Attack = Animator.StringToHash("Enemy_Attack");   // ´óµØÍ¼ÆË»÷ [6]
+    // é™æ€åªè¯»çš„æ€ªç‰©æ¢ç´¢æœŸ 4 ä¸ªåŠ¨ç”» Hash 
+    public static readonly int Anim_Idle = Animator.StringToHash("Enemy_Idle");      // å¾…æœº [6]
+    public static readonly int Anim_Patrol = Animator.StringToHash("Enemy_Walk");    // å·¡é€»
+    public static readonly int Anim_Chase = Animator.StringToHash("Enemy_Chase");     // è¿½å‡»
+    public static readonly int Anim_Attack = Animator.StringToHash("Enemy_Attack");   // å¤§åœ°å›¾æ‰‘å‡» [6]
 
-    // °²È«ÊôĞÔ±©Â¶
+    // å®‰å…¨å±æ€§æš´éœ²
     public float PatrolSpeed => patrolSpeed;
     public float ChaseSpeed => chaseSpeed;
-    public float IdleDuration => idleDuration; // ±©Â¶´ı»úÊ±¼ä [6]
+    public float IdleDuration => idleDuration; // æš´éœ²å¾…æœºæ—¶é—´ [6]
     public Transform LedgeCheckPoint => ledgeCheckPoint;
     public float CheckRadius => checkRadius;
     public LayerMask GroundLayer => groundLayer;
 
-    // ºËĞÄĞÂÔö£ºÏòÍâ±©Â¶µ±Ç°¹ÖÎïÅäÖÃµÄÕ½¶·×éË÷ÒıÊôĞÔ
+    // æ ¸å¿ƒæ–°å¢ï¼šå‘å¤–æš´éœ²å½“å‰æ€ªç‰©é…ç½®çš„æˆ˜æ–—ç»„ç´¢å¼•å±æ€§
     public int EnemyGroupIndex => enemyGroupIndex;
 
     protected override void Awake()
@@ -58,15 +58,15 @@ public class OverworldEnemy : EntityBase
         }
 
         // ========================================================
-        // ºËĞÄÖØ¹¹£ºÔÚ×´Ì¬»úÖĞÍêÕû×¢²á 4 ¸ö´óÊÀ½çÌ½Ë÷×´Ì¬£¡ [6]
+        // æ ¸å¿ƒé‡æ„ï¼šåœ¨çŠ¶æ€æœºä¸­å®Œæ•´æ³¨å†Œ 4 ä¸ªå¤§ä¸–ç•Œæ¢ç´¢çŠ¶æ€ï¼ [6]
         // ========================================================
         stateMachine = new StateMachine<OverworldEnemy>(this);
-        stateMachine.RegisterState(new EnemyIdleState());   // ´ı»ú [6]
-        stateMachine.RegisterState(new EnemyPatrolState()); // Ñ²Âß
-        stateMachine.RegisterState(new EnemyChaseState());  // ×·»÷
-        stateMachine.RegisterState(new EnemyAttackState()); // ´óµØÍ¼ÆËÈË [6]
+        stateMachine.RegisterState(new EnemyIdleState());   // å¾…æœº [6]
+        stateMachine.RegisterState(new EnemyPatrolState()); // å·¡é€»
+        stateMachine.RegisterState(new EnemyChaseState());  // è¿½å‡»
+        stateMachine.RegisterState(new EnemyAttackState()); // å¤§åœ°å›¾æ‰‘äºº [6]
 
-        stateMachine.ChangeState<EnemyIdleState>(); // Ä¬ÈÏÑ²Âß
+        stateMachine.ChangeState<EnemyIdleState>(); // é»˜è®¤å·¡é€»
     }
 
     private void Update() => stateMachine.Update();
@@ -79,7 +79,7 @@ public class OverworldEnemy : EntityBase
     }
 
     /// <summary>
-    /// ¼ì²âÍæ¼ÒÊÇ·ñ½øÈëÁË´óµØÍ¼ÆË»÷¾àÀë [6]
+    /// æ£€æµ‹ç©å®¶æ˜¯å¦è¿›å…¥äº†å¤§åœ°å›¾æ‰‘å‡»è·ç¦» [6]
     /// </summary>
     public bool IsPlayerInAttackRange()
     {
@@ -87,10 +87,10 @@ public class OverworldEnemy : EntityBase
         return Vector2.Distance(transform.position, PlayerTransform.position) < attackRange;
     }
 
-    // Åö×²Íæ¼Ò´¥·¢Õ½¶·²»±ä
+    // ç¢°æ’ç©å®¶è§¦å‘æˆ˜æ–—ä¸å˜
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //Íæ¼ÒÅöµ½Íæ¼Ò¾ÍÖ±½Ó½øÈëÕ½¶·£¬²»ÓÃ¹¥»÷
+        //ç©å®¶ç¢°åˆ°ç©å®¶å°±ç›´æ¥è¿›å…¥æˆ˜æ–—ï¼Œä¸ç”¨æ”»å‡»
         //PlayerController player = collision.gameObject.GetComponentInParent<PlayerController>();
         //if (player != null)
         //{
@@ -104,22 +104,22 @@ public class OverworldEnemy : EntityBase
         BattleManager.Instance.StartBattle(enemyGroupIndex, isPreemptive);
         if (isPreemptive)
         {
-            Debug.Log("<color=green>[ÏÈÖÆÍµÏ®£¡] Íæ¼Ò´óµØÍ¼Ô¶³ÌÍµÏ®¹Ö³É¹¦£¡</color>");
+            Debug.Log("<color=green>[å…ˆåˆ¶å·è¢­ï¼] ç©å®¶å¤§åœ°å›¾è¿œç¨‹å·è¢­æ€ªæˆåŠŸï¼</color>");
         }
         Destroy(gameObject);
     }
 
     // ========================================================
-    // ºËĞÄ²¹Æë£ºÎïÀí¼ì²â·½·¨£¨·ÀÖ¹×´Ì¬ÀàÖĞÖ±½Ó½øĞĞ¸´ÔÓµÄÎïÀíÅö×²µ÷ÓÃ£© [5]
+    // æ ¸å¿ƒè¡¥é½ï¼šç‰©ç†æ£€æµ‹æ–¹æ³•ï¼ˆé˜²æ­¢çŠ¶æ€ç±»ä¸­ç›´æ¥è¿›è¡Œå¤æ‚çš„ç‰©ç†ç¢°æ’è°ƒç”¨ï¼‰ [5]
     // ========================================================
     /// <summary>
-    /// ÎïÀí¼ì²â£º¼ì²â¹ÖÎïÇ°·½½ÅÏÂÊÇ·ñÓĞµØÃæ£¨·µ»Ø true ´ú±íÓĞÂ·£¬false ´ú±íĞüÑÂ²È¿Õ£© [5]
+    /// ç‰©ç†æ£€æµ‹ï¼šæ£€æµ‹æ€ªç‰©å‰æ–¹è„šä¸‹æ˜¯å¦æœ‰åœ°é¢ï¼ˆè¿”å› true ä»£è¡¨æœ‰è·¯ï¼Œfalse ä»£è¡¨æ‚¬å´–è¸©ç©ºï¼‰ [5]
     /// </summary>
     public bool CheckGroundAhead()
     {
         if (ledgeCheckPoint == null) return true;
 
-        // ÕâÒ»²½¾ÍÊÇÄúÖ®Ç°Ğ´µÄ OverlapCircle ¼ì²â´úÂë£¬ÎÒÃÇ½«Æä°²È«·â×°ÔÚÕâÀï£¡ [5]
+        // è¿™ä¸€æ­¥å°±æ˜¯æ‚¨ä¹‹å‰å†™çš„ OverlapCircle æ£€æµ‹ä»£ç ï¼Œæˆ‘ä»¬å°†å…¶å®‰å…¨å°è£…åœ¨è¿™é‡Œï¼ [5]
         return Physics2D.OverlapCircle(ledgeCheckPoint.position, checkRadius, groundLayer);
     }
     // ========================================================
@@ -132,13 +132,13 @@ public class OverworldEnemy : EntityBase
             Gizmos.DrawWireSphere(ledgeCheckPoint.position, checkRadius);
         }
 
-        // »æÖÆ´óÊÀ½ç¹¥»÷ÅĞ¶¨ºìÈ¦ [6]
+        // ç»˜åˆ¶å¤§ä¸–ç•Œæ”»å‡»åˆ¤å®šçº¢åœˆ [6]
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
 
         // ========================================================
-        // 3. ºËĞÄĞÂÔö£º»æÖÆ¾¯½ä/×·»÷Íæ¼ÒµÄÀ¶É«´óÔ²È¦
-        // ÕâÑùÄãÔÚ±à¼­Æ÷Àï¿ÉÒÔ·Ç³£Ö±¹ÛµØµ÷Õû²¢²é¿´¹ÖÎïµÄ¡°³ğºŞÊÓÒ°¡±·¶Î§£¡
+        // 3. æ ¸å¿ƒæ–°å¢ï¼šç»˜åˆ¶è­¦æˆ’/è¿½å‡»ç©å®¶çš„è“è‰²å¤§åœ†åœˆ
+        // è¿™æ ·ä½ åœ¨ç¼–è¾‘å™¨é‡Œå¯ä»¥éå¸¸ç›´è§‚åœ°è°ƒæ•´å¹¶æŸ¥çœ‹æ€ªç‰©çš„â€œä»‡æ¨è§†é‡â€èŒƒå›´ï¼
         // ========================================================
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, detectRange);

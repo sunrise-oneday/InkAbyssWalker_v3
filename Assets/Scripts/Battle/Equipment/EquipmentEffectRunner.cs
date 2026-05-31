@@ -1,4 +1,4 @@
-using StoreAndInventory;
+﻿using StoreAndInventory;
 using UnityEngine;
 
 /// <summary>
@@ -37,7 +37,7 @@ public class EquipmentEffectRunner : MonoBehaviour
         if (dealer == null || dealer.Stats != protagonistStats)
             return;
 
-        var turn = BattleManager.Instance != null ? BattleManager.Instance.currentTurn : 0;
+        var turn = BattleTurnManager.Instance != null ? BattleTurnManager.Instance.currentTurn : 0;
         var ctx = new EquipmentEffectContext(
             dealer,
             protagonistStats,

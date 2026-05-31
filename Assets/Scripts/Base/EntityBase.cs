@@ -1,45 +1,45 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ËùÓĞÒÆ¶¯ÊµÌåµÄ³éÏó»ùÀà (Player ºÍ Enemy ¶¼»á¼Ì³ĞËü)
+/// æ‰€æœ‰ç§»åŠ¨å®ä½“çš„æŠ½è±¡åŸºç±» (Player å’Œ Enemy éƒ½ä¼šç»§æ‰¿å®ƒ)
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
 public abstract class EntityBase : MonoBehaviour
 {
-    // ¶Ô×ÓÀà±©Â¶»ù´¡×é¼şÒıÓÃ
+    // å¯¹å­ç±»æš´éœ²åŸºç¡€ç»„ä»¶å¼•ç”¨
     public Rigidbody2D rb { get; protected set; }
     public Animator anim { get; protected set; }
     public SpriteRenderer sprite { get; protected set; }
 
-    [Header("³¯ÏòÉèÖÃ")]
-    public bool IsFacingRight = true; // µ±Ç°ÊÇ·ñ³¯ÓÒ
-    public bool CanFlip = true;       // ÊÇ·ñÔÊĞí·­×ª (·½±ãÍâ²¿×´Ì¬ÈçÊÍ·ÅÌØ¶¨¼¼ÄÜ¡¢ÊÜ»÷Ê±ÁÙÊ±ËøËÀ³¯Ïò)
-    // Èç¹û³¯ÓÒ£¬·µ»Ø 1£»Èç¹û³¯×ó£¬·µ»Ø -1¡£
-    // ÕâÑùÔÚÈÎºÎ´úÂë£¨Èç³å´Ì¡¢¿ªÇ¹¡¢ÊÜ»÷»÷ÍË£©ÖĞ£¬¶¼¿ÉÒÔÖ±½Ó³ËÒÔÕâ¸öÊıÖµÀ´»ñµÃ·½ÏòÏòÁ¿
+    [Header("æœå‘è®¾ç½®")]
+    public bool IsFacingRight = true; // å½“å‰æ˜¯å¦æœå³
+    public bool CanFlip = true;       // æ˜¯å¦å…è®¸ç¿»è½¬ (æ–¹ä¾¿å¤–éƒ¨çŠ¶æ€å¦‚é‡Šæ”¾ç‰¹å®šæŠ€èƒ½ã€å—å‡»æ—¶ä¸´æ—¶é”æ­»æœå‘)
+    // å¦‚æœæœå³ï¼Œè¿”å› 1ï¼›å¦‚æœæœå·¦ï¼Œè¿”å› -1ã€‚
+    // è¿™æ ·åœ¨ä»»ä½•ä»£ç ï¼ˆå¦‚å†²åˆºã€å¼€æªã€å—å‡»å‡»é€€ï¼‰ä¸­ï¼Œéƒ½å¯ä»¥ç›´æ¥ä¹˜ä»¥è¿™ä¸ªæ•°å€¼æ¥è·å¾—æ–¹å‘å‘é‡
     public int FacingDirection => IsFacingRight ? 1 : -1;
 
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        sprite = GetComponentInChildren<SpriteRenderer>(); // »ñÈ¡×ÔÉí»ò×ÓÎïÌåµÄäÖÈ¾Æ÷
+        sprite = GetComponentInChildren<SpriteRenderer>(); // è·å–è‡ªèº«æˆ–å­ç‰©ä½“çš„æ¸²æŸ“å™¨
     }
 
     /// <summary>
-    /// ¸ù¾İË®Æ½ÊäÈëµ÷Õû³¯Ïò (Ìá¹©¸øÍâ²¿»ò×ÓÀàµ÷ÓÃ)
+    /// æ ¹æ®æ°´å¹³è¾“å…¥è°ƒæ•´æœå‘ (æä¾›ç»™å¤–éƒ¨æˆ–å­ç±»è°ƒç”¨)
     /// </summary>
-    /// <param name="horizontalInput">µ±Ç°µÄË®Æ½ÊäÈë»òÒÆ¶¯·½ÏòËÙ¶È (xÖá)</param>
+    /// <param name="horizontalInput">å½“å‰çš„æ°´å¹³è¾“å…¥æˆ–ç§»åŠ¨æ–¹å‘é€Ÿåº¦ (xè½´)</param>
     public virtual void AdjustFacingDirection(float horizontalInput)
     {
         if (!CanFlip) return;
 
-        // Ö»ÓĞµ±ÓĞÃ÷È·µÄÏòÓÒÊäÈë£¬ÇÒµ±Ç°³¯×óÊ±£¬²Å·­×ª
+        // åªæœ‰å½“æœ‰æ˜ç¡®çš„å‘å³è¾“å…¥ï¼Œä¸”å½“å‰æœå·¦æ—¶ï¼Œæ‰ç¿»è½¬
         if (horizontalInput > 0.01f && !IsFacingRight)
         {
             Flip();
         }
-        // Ö»ÓĞµ±ÓĞÃ÷È·µÄÏò×óÊäÈë£¬ÇÒµ±Ç°³¯ÓÒÊ±£¬²Å·­×ª
+        // åªæœ‰å½“æœ‰æ˜ç¡®çš„å‘å·¦è¾“å…¥ï¼Œä¸”å½“å‰æœå³æ—¶ï¼Œæ‰ç¿»è½¬
         else if (horizontalInput < -0.01f && IsFacingRight)
         {
             Flip();
@@ -47,19 +47,19 @@ public abstract class EntityBase : MonoBehaviour
     }
 
     /// <summary>
-    /// Ö´ĞĞ·­×ªÂß¼­ (Í¨¹ıĞŞ¸Ä localScale)
+    /// æ‰§è¡Œç¿»è½¬é€»è¾‘ (é€šè¿‡ä¿®æ”¹ localScale)
     /// </summary>
     public virtual void Flip()
     {
         IsFacingRight = !IsFacingRight;
 
         Vector3 localScale = transform.localScale;
-        localScale.x *= -1f; // ·´×ª X ÖáËõ·Å
+        localScale.x *= -1f; // åè½¬ X è½´ç¼©æ”¾
         transform.localScale = localScale;
     }
 
     /// <summary>
-    /// Í¨ÓÃµÄÉèÖÃË®Æ½ËÙ¶È·½·¨
+    /// é€šç”¨çš„è®¾ç½®æ°´å¹³é€Ÿåº¦æ–¹æ³•
     /// </summary>
     public void SetHorizontalVelocity(float xVelocity)
     {

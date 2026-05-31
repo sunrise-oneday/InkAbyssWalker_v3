@@ -1,30 +1,30 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Íæ¼ÒÌøÔ¾×´Ì¬£¨ÉÏÉı¶Î£©
+/// ç©å®¶è·³è·ƒçŠ¶æ€ï¼ˆä¸Šå‡æ®µï¼‰
 /// </summary>
-public class PlayerJumpState : PlayerAirborneState // ¼Ì³Ğ×Ô¿ÕÖĞ»ùÀà
+public class PlayerJumpState : PlayerAirborneState // ç»§æ‰¿è‡ªç©ºä¸­åŸºç±»
 {
     protected override int AnimHash => PlayerController.Anim_Jump;
 
     public override void Enter()
     {
-        base.Enter(); // Ö´ĞĞ»ùÀàµÄ Enter ÖØÖÃ
+        base.Enter(); // æ‰§è¡ŒåŸºç±»çš„ Enter é‡ç½®
 
-        // °²È«·ÀÏß£ºÈ·±£½øÈëÌøÔ¾×´Ì¬Ê±Çå¿Õ¿ÉÄÜ²ĞÁôµÄÌøÔ¾ÊäÈë
+        // å®‰å…¨é˜²çº¿ï¼šç¡®ä¿è¿›å…¥è·³è·ƒçŠ¶æ€æ—¶æ¸…ç©ºå¯èƒ½æ®‹ç•™çš„è·³è·ƒè¾“å…¥
         owner.UseJumpInput();
 
-        // Ö±½ÓÇ¿ÖÆ½« Y ÖáËÙ¶ÈÉèÎªÌøÔ¾ËÙ¶È£¬Ä¨Æ½ÏÂÂäÎïÀíÊÆÄÜ£¬±£Ö¤ÌøÔ¾¸ß¶È¾ø¶Ôºã¶¨
+        // ç›´æ¥å¼ºåˆ¶å°† Y è½´é€Ÿåº¦è®¾ä¸ºè·³è·ƒé€Ÿåº¦ï¼ŒæŠ¹å¹³ä¸‹è½ç‰©ç†åŠ¿èƒ½ï¼Œä¿è¯è·³è·ƒé«˜åº¦ç»å¯¹æ’å®š
         owner.rb.velocity = new Vector2(owner.rb.velocity.x, owner.jumpForce);
     }
 
     public override void Update()
     {
-        base.Update(); // Ö´ĞĞ»ùÀàµÄ¿ÕÖĞ³å´ÌºÍÊäÈë¶ªÆú¼ì²â
+        base.Update(); // æ‰§è¡ŒåŸºç±»çš„ç©ºä¸­å†²åˆºå’Œè¾“å…¥ä¸¢å¼ƒæ£€æµ‹
 
-        // ºËĞÄÌø×ª£ºÅ×ÎïÏß¶¥µã¼ì²â¡£Ö»Òª Y ÖáËÙ¶È±ä¸º£¬×ªÎªÏÂÂä×´Ì¬
+        // æ ¸å¿ƒè·³è½¬ï¼šæŠ›ç‰©çº¿é¡¶ç‚¹æ£€æµ‹ã€‚åªè¦ Y è½´é€Ÿåº¦å˜è´Ÿï¼Œè½¬ä¸ºä¸‹è½çŠ¶æ€
         if (owner.rb.velocity.y < -0.1f)
         {
             stateMachine.ChangeState<PlayerFallState>();

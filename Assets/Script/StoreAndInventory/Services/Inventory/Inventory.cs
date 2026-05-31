@@ -184,7 +184,7 @@ namespace StoreAndInventory
 
             var maxStack = item.MaxStack;
             var remaining = count;
-            var mergedAny = false;
+            //var mergedAny = false;
 
             if (maxStack > 1)
             {
@@ -199,7 +199,7 @@ namespace StoreAndInventory
                     var move = Mathf.Min(space, remaining);
                     s.count += move;
                     remaining -= move;
-                    mergedAny = true;
+                    //mergedAny = true;
                 }
             }
 

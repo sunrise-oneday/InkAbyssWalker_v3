@@ -1,21 +1,21 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
-/// �����ս�����ͷż��ܵ�״̬����������ȫ�Զ��˻ش��������׽���������⣩ [3]
+/// 玩家在战斗中释放技能的状态（动作播完全自动退回待机，彻底解决卡死问题） [3]
 /// </summary>
 public class PlayerCastSkillState : PlayerBattleState
 {
-    // ��̬��ȡ�������ʩ�ŵļ��ܶ��� Hash
+    // 动态获取玩家正在施放的技能动画 Hash
     protected override int AnimHash => Animator.StringToHash(owner.PendingSkill.animationState);
 
     private Skill currentSkill;
     private BattleEntity target;
-    private float skillDuration;     // ���ܶ�����ʱ��
-    private bool hasAppliedDamage;   // �Ƿ��Ѿ�������˺�
+    private float skillDuration;     // 技能动画总时长
+    private bool hasAppliedDamage;   // 是否已经结算过伤害
 
     public override void Enter()
     {
-        base.Enter(); // �Զ������ʱ�����㣬����ʼ���ż��ܶ���
+        base.Enter(); // 自动进入计时器归零，并开始播放技能动画
 
         currentSkill = owner.PendingSkill;
         target = owner.PendingTarget;
@@ -23,36 +23,36 @@ public class PlayerCastSkillState : PlayerBattleState
         stateTimer = 0f;
         hasAppliedDamage = false;
 
-        // ��̬��ȡ��ǰ�ͷż��ܵĶ�����ʵ�ܳ��ȣ�ʵ��ȫ�Զ�����
+        // 动态获取当前释放技能的动画真实总长度，实现全自动收招
         if (owner.anim != null)
         {
-            owner.anim.Update(0f); // ǿ��ˢ��
+            owner.anim.Update(0f); // 强制刷新
             AnimatorStateInfo stateInfo = owner.anim.GetCurrentAnimatorStateInfo(0);
             skillDuration = stateInfo.length;
         }
         else
         {
-            skillDuration = 1.0f; // Ĭ�Ϸ���ʱ��
+            skillDuration = 1.0f; // 默认防错时间
         }
 
-        Debug.Log($"[״̬��] ��ҿ�ʼʩ�ż���: {currentSkill.skillName} | ������ʱ��: {skillDuration:F2}s");
+        Debug.Log($"[状态机] 玩家开始施放技能: {currentSkill.skillName} | 动画总时长: {skillDuration:F2}s");
     }
 
     public override void Update()
     {
-        // 1. �ֶ��ۼӼ�ʱ������Ϊ����û��д Update �ۼӣ�
+        // 1. 手动累加计时器（因为父类没有写 Update 累加）
         stateTimer += Time.deltaTime;
 
-        // 2. �˺���㣺�ڼ��ܽ��е�һ�루50% ���ȣ��˺��ж��㣩ʱ���н��� [3]
+        // 2. 伤害落点：在技能进行到一半（50% 进度，伤害判定点）时进行结算 [3]
         if (stateTimer >= skillDuration * 0.5f && !hasAppliedDamage)
         {
             hasAppliedDamage = true;
 
-            // �۳���������������ѡ�еĹ���ʩ���˺����Ʒ��� [3, 5]
+            // 扣除共享蓝量，并向选中的怪物施加伤害和破防！ [3, 5]
             owner.ExecutePendingSkillDamage();
         }
 
-        // 3. ���ģ�ʩ�����������к�ҡ������ȫ�Զ��л��ء�ս������״̬�������ױ��⿨���� [3]
+        // 3. 核心：施法动作和收招后摇结束，全自动切换回【战斗待机状态】，彻底避免卡死！ [3]
         if (stateTimer >= skillDuration)
         {
             stateMachine.ChangeState<PlayerBattleIdleState>();

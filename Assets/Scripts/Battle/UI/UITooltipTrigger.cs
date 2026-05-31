@@ -1,23 +1,23 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// ÍòÄÜ UGUI ÌáÊ¾´¥·¢Æ÷£¨Ö§³Ö£ºMP/AP ×ÊÔ´ÏûºÄ´«µİÅĞ¶¨£© [1]
+/// ä¸‡èƒ½ UGUI æç¤ºè§¦å‘å™¨ï¼ˆæ”¯æŒï¼šMP/AP èµ„æºæ¶ˆè€—ä¼ é€’åˆ¤å®šï¼‰ [1]
 /// </summary>
 public class UITooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("ÃèÊöÃæ°åÅäÖÃ")]
+    [Header("æè¿°é¢æ¿é…ç½®")]
     [SerializeField] private string title;
     [SerializeField] private string cost;
     [TextArea(3, 5)]
     [SerializeField] private string description;
 
-    // Ôİ´æ¸Ã¼¼ÄÜ/ĞÎÌ¬Êµ¼ÊĞèÒªµÄ×ÊÔ´£¬ÓÃÓÚ´óÃæ°å¶¯Ì¬¼ì²âºì×Ö [2, 3]
+    // æš‚å­˜è¯¥æŠ€èƒ½/å½¢æ€å®é™…éœ€è¦çš„èµ„æºï¼Œç”¨äºå¤§é¢æ¿åŠ¨æ€æ£€æµ‹çº¢å­— [2, 3]
     private int requiredMP;
     private int requiredAP;
 
     /// <summary>
-    /// Ìá¹©¸ø UI ¶¯Ì¬Éú³ÉÆ÷£ºÔÚÔËĞĞÊ±Ò»¼ü×¢Èë¸Ã¿¨ÅÆµÄÊı¾İ£¬²¢´øÈëÏûºÄÊıÖµ [1, 2]
+    /// æä¾›ç»™ UI åŠ¨æ€ç”Ÿæˆå™¨ï¼šåœ¨è¿è¡Œæ—¶ä¸€é”®æ³¨å…¥è¯¥å¡ç‰Œçš„æ•°æ®ï¼Œå¹¶å¸¦å…¥æ¶ˆè€—æ•°å€¼ [1, 2]
     /// </summary>
     public void SetTooltipData(string newTitle, string newCost, string newDesc, int reqMp = 0, int reqAp = 0)
     {
@@ -32,7 +32,7 @@ public class UITooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExi
     {
         if (BattleUIController.Instance != null && !string.IsNullOrEmpty(title))
         {
-            // ºËĞÄĞŞ¸Ä£º½«Ãû×Ö¡¢ÏûºÄ¡¢ÃèÊöÒÔ¼°¡¾Êµ¼ÊÊıÖµÏûºÄ¡¿Ò»²¢Î¹¸øÖ÷¿ØÖÆ°å£¡ [1, 3]
+            // æ ¸å¿ƒä¿®æ”¹ï¼šå°†åå­—ã€æ¶ˆè€—ã€æè¿°ä»¥åŠã€å®é™…æ•°å€¼æ¶ˆè€—ã€‘ä¸€å¹¶å–‚ç»™ä¸»æ§åˆ¶æ¿ï¼ [1, 3]
             BattleUIController.Instance.ShowFixedTooltip(title, cost, description, requiredMP, requiredAP);
         }
     }

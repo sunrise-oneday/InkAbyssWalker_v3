@@ -1,7 +1,7 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Íæ¼ÒÕ½¶·´ı»ú×´Ì¬
+/// ç©å®¶æˆ˜æ–—å¾…æœºçŠ¶æ€
 /// </summary>
 public class PlayerBattleIdleState : PlayerBattleState
 {
@@ -11,12 +11,12 @@ public class PlayerBattleIdleState : PlayerBattleState
     {
         base.Enter();
 
-        // ´ËÊ± owner Ö±½Ó¾ÍÊÇ PlayerBattleEntity£¬²»ĞèÒª GetComponent ÁË£¬¼«¶È¸É¾»£¡
+        // æ­¤æ—¶ owner ç›´æ¥å°±æ˜¯ PlayerBattleEntityï¼Œä¸éœ€è¦ GetComponent äº†ï¼Œæåº¦å¹²å‡€ï¼
         owner.SetHorizontalVelocity(0f);
 
-        if (BattleInputReader.Instance != null)
+        if (InputManager.Instance?.Battle != null)
         {
-            BattleInputReader.Instance.OnQuickFormPressed += HandleQuickForm;
+            InputManager.Instance.Battle.OnQuickFormPressed += HandleQuickForm;
         }
     }
 
@@ -24,21 +24,22 @@ public class PlayerBattleIdleState : PlayerBattleState
     {
         base.Update();
 
-        // ¼àÌı Q ¼üÃé×¼
+        // éç©å®¶å›åˆæ—¶ç¦æ­¢ä»»ä½•æ“ä½œ
+        if (BattleTurnManager.Instance.currentPhase != BattlePhase.PlayerTurn)
+            return;
+
+        // ç›‘å¬ Q é”®ç„å‡†
         if (owner.AimInputBuffered)
         {
             owner.UseAimInput();
 
-            // ========================================================
-            // ºËĞÄĞŞ¸Ä£ºÖ»ÓĞÔÚ Õı³£×´Ì¬ (ĞÎÌ¬ 0) ÏÂ£¬²ÅÔÊĞí½øÈëÃé×¼µãÉä£¡ [2]
-            // ========================================================
             if (owner.currentFormIndex == 0)
             {
                 stateMachine.ChangeState<PlayerBattleAimState>();
             }
             else
             {
-                Debug.LogWarning($"<color=yellow>[Õ½ÊõÏŞÖÆ] µ±Ç°´¦ÓÚ·ÇÕı³£ĞÎÌ¬ÏÂ£¬ÎŞ·¨½øÈëÃé×¼µãÉä£¡</color>");
+                Debug.LogWarning($"<color=yellow>[æˆ˜æœ¯é™åˆ¶] å½“å‰å¤„äºéæ­£å¸¸å½¢æ€ä¸‹ï¼Œæ— æ³•è¿›å…¥ç„å‡†ç‚¹å°„ï¼</color>");
             }
             return;
         }
@@ -48,14 +49,18 @@ public class PlayerBattleIdleState : PlayerBattleState
     public override void Exit()
     {
         base.Exit();
-        if (BattleInputReader.Instance != null)
+        if (InputManager.Instance?.Battle != null)
         {
-            BattleInputReader.Instance.OnQuickFormPressed -= HandleQuickForm;
+            InputManager.Instance.Battle.OnQuickFormPressed -= HandleQuickForm;
         }
     }
 
     private void HandleQuickForm(int formIndex)
     {
-        owner.SwitchForm(formIndex); // Ö±½ÓÍ¨¹ı owner µ÷ÓÃ±äÉí·½·¨£¡
+        // éç©å®¶å›åˆæ—¶ç¦æ­¢æ¢å½¢
+        if (BattleTurnManager.Instance.currentPhase != BattlePhase.PlayerTurn)
+            return;
+
+        owner.SwitchForm(formIndex);
     }
 }

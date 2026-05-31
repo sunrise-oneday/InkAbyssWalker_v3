@@ -1,12 +1,18 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[DefaultExecutionOrder(-100)]
 public class InputManager : MonoBehaviour
 {
     public static InputManager Instance { get; private set; }
 
-    // Ê¹ÓÃÄú×Ô¶¯Éú³ÉµÄ C# Àà: InputAssets
+    // InputAssets å®ä¾‹
     public InputAssets Controls { get; private set; }
+
+    // InputReader å®ä¾‹
+    public GameplayInputReader Gameplay { get; private set; }
+    public BattleInputReader Battle { get; private set; }
+    public UIInputReader UI { get; private set; }
 
     private const string SaveKey = "InputBindingsOverrides";
 
@@ -17,10 +23,23 @@ public class InputManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // ÊµÀı»¯×Ô¶¯Éú³ÉÀà
+            // åˆ›å»º InputAssets
             Controls = new InputAssets();
 
-            // ÔÚ¼¤»îÇ°¼ÓÔØ±¾µØ±£´æµÄ¸Ä¼üÊı¾İ
+            // åˆ›å»º InputReader å¹¶æ³¨å†Œå›è°ƒ
+            Gameplay = new GameplayInputReader();
+            Battle = new BattleInputReader();
+            UI = new UIInputReader();
+
+            Controls.GamePlayer.SetCallbacks(Gameplay);
+            Controls.Battle.SetCallbacks(Battle);
+            Controls.UI.SetCallbacks(UI);
+
+            // å¯ç”¨æ¢ç´¢å’Œ UI Action Map
+            Controls.GamePlayer.Enable();
+            Controls.UI.Enable();
+
+            // åŠ è½½æŒ‰é”®ç»‘å®šè¦†ç›–
             LoadBindingOverrides();
         }
         else

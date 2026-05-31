@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class EnemyChaseState : OverworldEnemyState
@@ -8,21 +8,21 @@ public class EnemyChaseState : OverworldEnemyState
     public override void Enter()
     {
         base.Enter();
-        Debug.Log($"<color=red>[¾¯±¨] {owner.gameObject.name} ·¢ÏÖÁËÍæ¼Ò£¡ÇĞ»»Îª×·»÷×´Ì¬£¡</color>");
+        Debug.Log($"<color=red>[è­¦æŠ¥] {owner.gameObject.name} å‘ç°äº†ç©å®¶ï¼åˆ‡æ¢ä¸ºè¿½å‡»çŠ¶æ€ï¼</color>");
     }
 
     public override void Update()
     {
         base.Update();
 
-        // 1. Èç¹û×·µ½ÁËÍæ¼Ò£¨½øÈëÁË´óµØÍ¼ÆË»÷¾àÀë£©
+        // 1. å¦‚æœè¿½åˆ°äº†ç©å®¶ï¼ˆè¿›å…¥äº†å¤§åœ°å›¾æ‰‘å‡»è·ç¦»ï¼‰
         if (owner.IsPlayerInAttackRange())
         {
             stateMachine.ChangeState<EnemyAttackState>();
             return;
         }
 
-        // Íæ¼ÒÅÜÔ¶ÁË£¬·ÅÆú×·»÷
+        // ç©å®¶è·‘è¿œäº†ï¼Œæ”¾å¼ƒè¿½å‡»
         if (!owner.IsPlayerInRange())
         {
             stateMachine.ChangeState<EnemyPatrolState>();
@@ -32,9 +32,9 @@ public class EnemyChaseState : OverworldEnemyState
         float directionToPlayer = owner.PlayerTransform.position.x - owner.transform.position.x;
 
         // ========================================================
-        // ºËĞÄĞŞ¸Ä£ºÒıÈë×ªÏò¡°ËÀÇø¡±ãĞÖµ£¨ÀıÈç 0.25f£©
-        // Ö»ÓĞµ±Íæ¼ÒÓë¹ÖÎïµÄË®Æ½¾àÀë´óÓÚ 0.25f Ê±£¬¹ÖÎï²Å»áÈ¥¸Ä±ä³¯Ïò¡£
-        // Èç¹ûÍæ¼ÒÔÚ¹ÖÎïÍ·¶¥£¨Ë®Æ½¾àÀë¼«Ğ¡£©£¬¹ÖÎï»á±£³Öµ±Ç°³¯Ïò£¬²»×÷ÎŞÒâÒåµÄÆµ·±·­×ª¡£
+        // æ ¸å¿ƒä¿®æ”¹ï¼šå¼•å…¥è½¬å‘â€œæ­»åŒºâ€é˜ˆå€¼ï¼ˆä¾‹å¦‚ 0.25fï¼‰
+        // åªæœ‰å½“ç©å®¶ä¸æ€ªç‰©çš„æ°´å¹³è·ç¦»å¤§äº 0.25f æ—¶ï¼Œæ€ªç‰©æ‰ä¼šå»æ”¹å˜æœå‘ã€‚
+        // å¦‚æœç©å®¶åœ¨æ€ªç‰©å¤´é¡¶ï¼ˆæ°´å¹³è·ç¦»æå°ï¼‰ï¼Œæ€ªç‰©ä¼šä¿æŒå½“å‰æœå‘ï¼Œä¸ä½œæ— æ„ä¹‰çš„é¢‘ç¹ç¿»è½¬ã€‚
         // ========================================================
         float turnThreshold = 0.25f;
         if (Mathf.Abs(directionToPlayer) > turnThreshold)

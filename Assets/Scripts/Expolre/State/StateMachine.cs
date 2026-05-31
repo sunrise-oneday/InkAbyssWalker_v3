@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ public class StateMachine<T> where T : class
 {
     public BaseState<T> currentState { get; private set; }
 
-    // ĞÂÔö£º¼ÇÂ¼ÉÏÒ»¸ö×´Ì¬£¬·½±ãÔÚÊÜ»÷¡¢ÔİÍ£¡¢´ò¶Ïºó¿ìËÙ»Ö¸´
+    // æ–°å¢ï¼šè®°å½•ä¸Šä¸€ä¸ªçŠ¶æ€ï¼Œæ–¹ä¾¿åœ¨å—å‡»ã€æš‚åœã€æ‰“æ–­åå¿«é€Ÿæ¢å¤
     public BaseState<T> previousState { get; private set; }
 
     private readonly T owner;
@@ -30,12 +30,12 @@ public class StateMachine<T> where T : class
     public void ChangeState<TState>() where TState : BaseState<T>
     {
         // ========================================================
-        // ºËĞÄĞŞ¸´£ºÈç¹ûµ±Ç°ÒÑ¾­´¦ÓÚËÀÍö×´Ì¬£¬ÎïÀíËøËÀ£¬¾ø¶Ô²»ÔÊĞíÇĞ»»µ½ÈÎºÎÆäËû×´Ì¬£¡
-        // ÕâÑù¿ÉÒÔ³¹µ×±ÜÃâ¡°ÒÑ¾­ËÀÍöµÄÍæ¼Ò£¬ÔÚµĞÈËºóĞøÁ¬»÷»ò»ØºÏ½»ÌæÊ±±»ÆÈÖØĞÂÕ¾ÆğÀ´¡±µÄÑÏÖØ Bug£¡ [2]
+        // æ ¸å¿ƒä¿®å¤ï¼šå¦‚æœå½“å‰å·²ç»å¤„äºæ­»äº¡çŠ¶æ€ï¼Œç‰©ç†é”æ­»ï¼Œç»å¯¹ä¸å…è®¸åˆ‡æ¢åˆ°ä»»ä½•å…¶ä»–çŠ¶æ€ï¼
+        // è¿™æ ·å¯ä»¥å½»åº•é¿å…â€œå·²ç»æ­»äº¡çš„ç©å®¶ï¼Œåœ¨æ•Œäººåç»­è¿å‡»æˆ–å›åˆäº¤æ›¿æ—¶è¢«è¿«é‡æ–°ç«™èµ·æ¥â€çš„ä¸¥é‡ Bugï¼ [2]
         // ========================================================
         if (currentState is IDeathState)
         {
-            return; // ¾Ü¾øÇĞ»»£¬ËÀÕß°²Ï¢£¡ [2]
+            return; // æ‹’ç»åˆ‡æ¢ï¼Œæ­»è€…å®‰æ¯ï¼ [2]
         }
 
         Type type = typeof(TState);
@@ -43,7 +43,7 @@ public class StateMachine<T> where T : class
         {
             currentState?.Exit();
 
-            // ÇĞ»»Ç°£¬½«µ±Ç°×´Ì¬¼ÇÂ¼ÎªÉÏÒ»¸ö×´Ì¬
+            // åˆ‡æ¢å‰ï¼Œå°†å½“å‰çŠ¶æ€è®°å½•ä¸ºä¸Šä¸€ä¸ªçŠ¶æ€
             previousState = currentState;
 
             currentState = newState;
@@ -51,11 +51,11 @@ public class StateMachine<T> where T : class
         }
         else
         {
-            Debug.LogWarning($"Î´ÄÜÔÚ×´Ì¬»úÖĞÕÒµ½×´Ì¬: {type.Name}¡£ÇëÈ·±£¸Ã×´Ì¬ÒÑ×¢²á¡£");
+            Debug.LogWarning($"æœªèƒ½åœ¨çŠ¶æ€æœºä¸­æ‰¾åˆ°çŠ¶æ€: {type.Name}ã€‚è¯·ç¡®ä¿è¯¥çŠ¶æ€å·²æ³¨å†Œã€‚");
         }
     }
 
-    // ĞÂÔö£º¿ìËÙ·µ»ØÉÏÒ»¸ö×´Ì¬µÄ±ãÀû·½·¨
+    // æ–°å¢ï¼šå¿«é€Ÿè¿”å›ä¸Šä¸€ä¸ªçŠ¶æ€çš„ä¾¿åˆ©æ–¹æ³•
     public void RevertToPreviousState()
     {
         if (previousState != null)
@@ -71,7 +71,7 @@ public class StateMachine<T> where T : class
     }
 
     /// <summary>
-    /// ºËĞÄĞÂÔö£º´Ó×´Ì¬»úÖĞ»ñÈ¡ÒÑ×¢²áµÄÌØ¶¨×´Ì¬ÊµÀı£¨¸ß¿É¸´ÓÃĞÔ£©
+    /// æ ¸å¿ƒæ–°å¢ï¼šä»çŠ¶æ€æœºä¸­è·å–å·²æ³¨å†Œçš„ç‰¹å®šçŠ¶æ€å®ä¾‹ï¼ˆé«˜å¯å¤ç”¨æ€§ï¼‰
     /// </summary>
     public TState GetState<TState>() where TState : BaseState<T>
     {

@@ -1,26 +1,26 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 [System.Serializable]
 public class UltimateSkill
 {
-    public string ultimateName;         // ´óÕĞÃû³Æ
-    public string animationState;       // ´óÕĞ¶ÔÓ¦µÄ¶¯»­ State Ãû×Ö£¨ÀıÈç Player_Ultimate_Laser£©
+    public string ultimateName;         // å¤§æ‹›åç§°
+    public string animationState;       // å¤§æ‹›å¯¹åº”çš„åŠ¨ç”» State åå­—ï¼ˆä¾‹å¦‚ Player_Ultimate_Laserï¼‰
     public string description;
-    public float duration = 1.6f;       // ¸Ã´óÕĞµÄÍêÕû¶¯»­Ê±³¤£¨Ãë£©
-    public float hitProgress = 0.5f;     // ÉËº¦Âäµã½ø¶È£¨0~1£¬ÀıÈç 0.5 ´ú±í¶¯»­²¥·Åµ½ 50% ½ø¶ÈÊ±·¢ÉúÂäµØÉËº¦ÅĞ¶¨£©
+    public float duration = 1.6f;       // è¯¥å¤§æ‹›çš„å®Œæ•´åŠ¨ç”»æ—¶é•¿ï¼ˆç§’ï¼‰
+    public float hitProgress = 0.5f;     // ä¼¤å®³è½ç‚¹è¿›åº¦ï¼ˆ0~1ï¼Œä¾‹å¦‚ 0.5 ä»£è¡¨åŠ¨ç”»æ’­æ”¾åˆ° 50% è¿›åº¦æ—¶å‘ç”Ÿè½åœ°ä¼¤å®³åˆ¤å®šï¼‰
 
     public enum UltimateType
     {
-        SingleTarget, // µ¥Ìå±¬·¢£¨Õë¶Ôµ±Ç°Ëø¶¨µÄÄ¿±êÔì³É¾Ş¶îÉËº¦£©
-        AoE,          // ÈºÌåºäÕ¨£¨¶ÔÕ½³¡ÉÏËùÓĞ´æ»îµÄ¹ÖÎïÔì³É·¶Î§ÉËº¦£©
-        Control       // Ç¿Á¦¿ØÖÆ£¨¸ß¶îÆÆ·À£¬²¢¶ÔÄ¿±êÊ©¼Ó¡°Ñ£ÔÎ¡±×´Ì¬£¬Ê¹ÆäÏÂ»ØºÏÖ±½Ó·£Õ¾Ìø¹ı»ØºÏ£©
+        SingleTarget, // å•ä½“çˆ†å‘ï¼ˆé’ˆå¯¹å½“å‰é”å®šçš„ç›®æ ‡é€ æˆå·¨é¢ä¼¤å®³ï¼‰
+        AoE,          // ç¾¤ä½“è½°ç‚¸ï¼ˆå¯¹æˆ˜åœºä¸Šæ‰€æœ‰å­˜æ´»çš„æ€ªç‰©é€ æˆèŒƒå›´ä¼¤å®³ï¼‰
+        Control       // å¼ºåŠ›æ§åˆ¶ï¼ˆé«˜é¢ç ´é˜²ï¼Œå¹¶å¯¹ç›®æ ‡æ–½åŠ â€œçœ©æ™•â€çŠ¶æ€ï¼Œä½¿å…¶ä¸‹å›åˆç›´æ¥ç½šç«™è·³è¿‡å›åˆï¼‰
     }
 
     public UltimateType ultimateType;
 
-    [Header("ÊıÖµÅäÖÃ")]
+    [Header("æ•°å€¼é…ç½®")]
     public int baseDamage = 120;
     public int breakDamage = 60;
-    public int stunTurns = 1; // ½ö¶Ô¿ØÖÆĞÍ´óÕĞÓĞĞ§£¬Ñ£ÔÎ¼¸»ØºÏ
+    public int stunTurns = 1; // ä»…å¯¹æ§åˆ¶å‹å¤§æ‹›æœ‰æ•ˆï¼Œçœ©æ™•å‡ å›åˆ
 }
