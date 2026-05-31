@@ -1,12 +1,12 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class PlayerForm
 {
-    public string formName;            // ĞÎÌ¬Ãû³Æ£¨ÀıÈç£º¿ñÕ½Ê¿¡¢±ùÄ§·¨Ê¦£©
-    public int apCostToSwitch = 1;     // ÇĞ»»µ½¸ÃĞÎÌ¬ĞèÒªÏûºÄµÄĞĞ¶¯µã (AP)
-    public static readonly int Anim_FormChange = Animator.StringToHash("Player_FormChange"); // ±äÉí¶¯»­
+    public string formName;            // å½¢æ€åç§°ï¼ˆä¾‹å¦‚ï¼šç‹‚æˆ˜å£«ã€å†°é­”æ³•å¸ˆï¼‰
+    public int apCostToSwitch = 1;     // åˆ‡æ¢åˆ°è¯¥å½¢æ€éœ€è¦æ¶ˆè€—çš„è¡ŒåŠ¨ç‚¹ (AP)
+    public static readonly int Anim_FormChange = Animator.StringToHash("Player_FormChange"); // å˜èº«åŠ¨ç”»
 
-    public List<Skill> availableSkills; // ¸ÃĞÎÌ¬ÏÂ¿ÉÓÃµÄ¼¼ÄÜÁĞ±í
+    public List<Skill> availableSkills; // è¯¥å½¢æ€ä¸‹å¯ç”¨çš„æŠ€èƒ½åˆ—è¡¨
 }

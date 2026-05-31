@@ -1,7 +1,8 @@
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// È«¾Ö´æµµ¹ÜÀíÆ÷£¨´¿ C# µ¥ÀıÀà£¬ÎŞ MonoBehaviour ¶îÍâ¿ªÏú£¬²»¹ÒÔØÎïÌå£© [3]
+/// å…¨å±€å­˜æ¡£ç®¡ç†å™¨ï¼ˆçº¯ C# å•ä¾‹ç±»ï¼Œæ—  MonoBehaviour é¢å¤–å¼€é”€ï¼Œä¸æŒ‚è½½ç‰©ä½“ï¼‰
 /// </summary>
 public class SaveManager
 {
@@ -21,6 +22,8 @@ public class SaveManager
     private const string CheckpointYKey = "CheckpointY";
     private const string CheckpointZKey = "CheckpointZ";
     private const string HasSavedKey = "HasSavedCheckpoint";
+    private const string AbilityEnabledPrefix = "AbilityEnabled_";
+    private const string EquippedUltimateKey = "EquippedUltimate";
 
     private SaveManager()
     {
@@ -28,19 +31,13 @@ public class SaveManager
     }
 
     /// <summary>
-    /// ¼¤»îóô»ğ/´æµµµãÊ±µ÷ÓÃ£¬×Ô¶¯Ğ´Èë±¾µØÓ²ÅÌ [3]
+    /// æ¿€æ´»ç¯ç«/å­˜æ¡£ç‚¹æ—¶è°ƒç”¨ï¼Œè‡ªåŠ¨å†™å…¥æœ¬åœ°ç¡¬ç›˜
     /// </summary>
     public void SaveCheckpoint(Vector3 position)
     {
-        // ========================================================
-        // ºËĞÄ°²È«·À»ğÇ½£¨·À´ô/·ÀÎïÀí´©Í¸±£»¤£©£º
-        // ÎÒÃÇµÄÕ½¶·ÀŞÌ¨ÔÚ X=2000, Y=2000 µÄÎïÀí¸ôÀë¿ÕÓò¡£
-        // Èç¹û´«ÈëÒª±£´æµÄ´æµµµã X ºÍ Y ×ø±ê´óÓÚ 1500£¬ËµÃ÷¾ø¶ÔÊÇÕ½¶·ÖĞÒâÍâ´¥·¢»òÊı¾İ¸²¸Ç²úÉúµÄ¡°Ôà×ø±ê¡±£¬
-        // ±ØĞëÓÉÏµÍ³Ö±½ÓÀ¹½Ø£¬¾ø¶Ô½ûÖ¹Ğ´ÈëÓ²ÅÌ£¬´Ó¶ø±£»¤Íæ¼ÒµÄ´æµµ²»±»ÎÛÈ¾£¡ [3]
-        // ========================================================
         if (position.x > 1500f && position.y > 1500f)
         {
-            Debug.LogWarning($"[´æµµÏµÍ³] ¾¯¸æ£ºÀ¹½Øµ½´íÎóµÄÕ½¶·³¡¾°×ø±ê {position} Ğ´ÈëÇëÇó£¡ÒÑ°²È«·ÅÆú´Ë´Î´æÅÌ£¡");
+            Debug.LogWarning($"[å­˜æ¡£ç³»ç»Ÿ] è­¦å‘Š:æ‹¦æˆªåˆ°é”™è¯¯çš„æˆ˜æ–—åœºæ™¯åæ ‡ {position} å†™å…¥è¯·æ±‚!å·²å®‰å…¨æ”¾å¼ƒæ­¤æ¬¡å­˜ç›˜!");
             return;
         }
 
@@ -50,7 +47,7 @@ public class SaveManager
         PlayerPrefs.SetFloat(CheckpointZKey, position.z);
         PlayerPrefs.SetInt(HasSavedKey, 1);
         PlayerPrefs.Save();
-        Debug.Log($"[´æµµÏµÍ³] Ó²ÅÌ´æµµÍê±Ï£¡µ±Ç°×îĞÂ¼¤»î¸´»îµã: {position}");
+        Debug.Log($"[å­˜æ¡£ç³»ç»Ÿ] ç¡¬ç›˜å­˜æ¡£å®Œæ¯•!å½“å‰æœ€æ–°æ¿€æ´»å¤æ´»ç‚¹: {position}");
     }
 
     public void LoadCheckpoint()
@@ -64,13 +61,51 @@ public class SaveManager
         }
         else
         {
-            // Ä¬ÈÏ³õÊ¼Æğµã×ø±ê£¨µÚÒ»¹Ø³öÉúµã£©
             LastCheckpointPosition = new Vector3(0f, 0f, 0f);
         }
 
-        // ========================================================
-        // ºËĞÄĞÂÔö£ºÆô¶¯×Ô¼ì£¡¿´¿´Ò»°´ÏÂ Play ÔËĞĞÊ±£¬ÄãÓ²ÅÌÀï¼ÓÔØ³öµÄµ½µ×ÊÇÊ²Ã´×ø±ê£¡ [3]
-        // ========================================================
-        Debug.Log($"<color=red><b>[´æµµ×Ô¼ì] ÓÎÏ·¸Õ¸ÕÆô¶¯£¡´ÓÓ²ÅÌÔØÈëµÄóô»ğ¸´»îµãÎª: {LastCheckpointPosition}</b></color>");
+        Debug.Log($"<color=red><b>[å­˜æ¡£è‡ªæ£€] æ¸¸æˆåˆšåˆšå¯åŠ¨!ä»ç¡¬ç›˜è½½å…¥çš„ç¯ç«å¤æ´»ç‚¹ä¸º: {LastCheckpointPosition}</b></color>");
+    }
+
+    // ============================================
+    // æ¢ç´¢æŠ€èƒ½å¯ç”¨çŠ¶æ€
+    // ============================================
+
+    public void SaveAbilityEnabled(ExplorationAbility ability, bool enabled)
+    {
+        PlayerPrefs.SetInt(AbilityEnabledPrefix + ability.ToString(), enabled ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public bool LoadAbilityEnabled(ExplorationAbility ability, bool defaultValue = true)
+    {
+        string key = AbilityEnabledPrefix + ability.ToString();
+        if (!PlayerPrefs.HasKey(key)) return defaultValue;
+        return PlayerPrefs.GetInt(key) == 1;
+    }
+
+    public Dictionary<ExplorationAbility, bool> LoadAllAbilityEnabledStates()
+    {
+        var states = new Dictionary<ExplorationAbility, bool>();
+        foreach (ExplorationAbility ability in System.Enum.GetValues(typeof(ExplorationAbility)))
+        {
+            states[ability] = LoadAbilityEnabled(ability);
+        }
+        return states;
+    }
+
+    // ============================================
+    // å¤§æ‹›è£…å¤‡
+    // ============================================
+
+    public void SaveEquippedUltimate(string ultimateName)
+    {
+        PlayerPrefs.SetString(EquippedUltimateKey, ultimateName ?? "");
+        PlayerPrefs.Save();
+    }
+
+    public string LoadEquippedUltimate()
+    {
+        return PlayerPrefs.GetString(EquippedUltimateKey, "");
     }
 }

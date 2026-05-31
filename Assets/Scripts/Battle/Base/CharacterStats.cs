@@ -1,43 +1,136 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
-    [Header("»ù´¡ÉúÃüÓë·¨Á¦")]
+    [Header("åŸºç¡€ç”Ÿå‘½ä¸æ³•åŠ›")]
     public int maxHP = 100;
     public int currentHP;
     public int maxMP = 50;
     public int currentMP;
 
-    [Header("»ù´¡Õ½¶·ÊôĞÔ")]
+    [Header("æŠ¤ç›¾ç³»ç»Ÿï¼ˆæ€æˆ®å°–å¡”é£æ ¼ï¼‰")]
+    public int shield;                    // å½“å‰æŠ¤ç›¾å€¼
+    public int maxShield = 999;           // æœ€å¤§æŠ¤ç›¾å€¼
+
+    [Header("åŸºç¡€æˆ˜æ–—å±æ€§")]
     public int attack = 15;
     public int defense = 5;
 
-    [Header("ÆÆ·ÀÌõ (Break Bar)")]
-    public int maxBreakValue = 50;          // ×î´óÆÆ·ÀÉÏÏŞ£¨°×É«ÆÆ·ÀÌõ£© [5]
-    public int currentBreakValue;           // µ±Ç°ÆÆ·ÀÖµ [5]
-    public bool isBroken = false;           // µ±Ç°ÊÇ·ñ´¦ÓÚÆÆ·À×´Ì¬ [5]
-    public float breakDamageMultiplier = 1.5f; // ÆÆ·À×´Ì¬ÏÂ£¬ÊÜµ½µÄÉËº¦±¶ÂÊ [5]
+    [Header("ç ´é˜²æ¡ (Break Bar)")]
+    public int maxBreakValue = 50;          // æœ€å¤§ç ´é˜²ä¸Šé™ï¼ˆç™½è‰²ç ´é˜²æ¡ï¼‰ [5]
+    public int currentBreakValue;           // å½“å‰ç ´é˜²å€¼ [5]
+    public bool isBroken = false;           // å½“å‰æ˜¯å¦å¤„äºç ´é˜²çŠ¶æ€ [5]
+    public float breakDamageMultiplier = 1.5f; // ç ´é˜²çŠ¶æ€ä¸‹ï¼Œå—åˆ°çš„ä¼¤å®³å€ç‡ [5]
 
-    [Header("Buff Òì³£×´Ì¬ÈİÆ÷")]
-    // ºËĞÄĞŞÕı£ºÊ¹ÓÃºÏ²¢ÖØ¹¹ºóµÄÍ³Ò» Buff ÀàĞÍÁĞ±í£¬³¹µ×Ïû³ıÒşÊ½×ª»»±¨´í [1]
+    [Header("Buff å¼‚å¸¸çŠ¶æ€å®¹å™¨")]
+    // æ ¸å¿ƒä¿®æ­£ï¼šä½¿ç”¨åˆå¹¶é‡æ„åçš„ç»Ÿä¸€ Buff ç±»å‹åˆ—è¡¨ï¼Œå½»åº•æ¶ˆé™¤éšå¼è½¬æ¢æŠ¥é”™ [1]
     public List<Buff> activeBuffs = new List<Buff>();
 
     public System.Action OnBuffsChanged;
     public System.Action OnHPChanged;
     public System.Action OnBreakChanged;
+    public System.Action OnShieldChanged;
 
     private void Awake()
     {
         currentHP = maxHP;
         currentMP = maxMP;
         currentBreakValue = maxBreakValue;
+        shield = 0;
+    }
+
+    // ============================================
+    // æŠ¤ç›¾ç³»ç»Ÿæ–¹æ³•
+    // ============================================
+
+    /// <summary>
+    /// æ·»åŠ æŠ¤ç›¾å€¼ï¼ˆç»è¿‡ buff é“¾æ‹¦æˆªä¿®æ­£ï¼‰
+    /// </summary>
+    public void AddShield(int amount)
+    {
+        if (amount <= 0) return;
+
+        // è°ƒç”¨æ‰€æœ‰æ´»è·ƒ Buff çš„æŠ¤ç›¾å¢ç›Šæ‹¦æˆªå™¨
+        int processedAmount = amount;
+        for (int i = activeBuffs.Count - 1; i >= 0; i--)
+        {
+            processedAmount = activeBuffs[i].OnBeforeGainShield(processedAmount);
+        }
+
+        shield = Mathf.Min(shield + processedAmount, maxShield);
+        OnShieldChanged?.Invoke();
+        Debug.Log($"[æŠ¤ç›¾] {gameObject.name} è·å¾— {processedAmount} æŠ¤ç›¾(åŸå§‹{amount})ï¼Œå½“å‰æŠ¤ç›¾: {shield}");
     }
 
     /// <summary>
-    /// ½ÓÊÕÉËº¦ÓëÆÆ·ÀÖµµÄ¼ÆËã [1, 5]
+    /// æ¸…é™¤æ‰€æœ‰æŠ¤ç›¾
     /// </summary>
-    /// <summary>Õ½¶·ÖÎÁÆ£¬²»³¬¹ı maxHP¡£</summary>
+    public void ClearShield()
+    {
+        if (shield <= 0) return;
+        shield = 0;
+        OnShieldChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// å¸¦æŠ¤ç›¾çš„ä¼¤å®³è®¡ç®—ï¼ˆæŠ¤ç›¾ä¼˜å…ˆæŠµæŒ¡ä¼¤å®³ï¼‰
+    /// </summary>
+    public int TakeDamageWithShield(int rawDamage, int breakDamage)
+    {
+        // 1. è°ƒç”¨æ‰€æœ‰æ´»è·ƒ Buff çš„ä¼¤å®³æ‹¦æˆªå™¨
+        int processedDamage = rawDamage;
+        for (int i = activeBuffs.Count - 1; i >= 0; i--)
+        {
+            processedDamage = activeBuffs[i].OnBeforeTakeDamage(processedDamage);
+        }
+
+        float finalMultiplier = isBroken ? breakDamageMultiplier : 1.0f;
+        int damageAfterDefense = Mathf.Max(Mathf.RoundToInt((processedDamage - defense) * finalMultiplier), 1);
+
+        // 2. æŠ¤ç›¾ä¼˜å…ˆæŠµæŒ¡ä¼¤å®³
+        int damageToShield = Mathf.Min(damageAfterDefense, shield);
+        shield -= damageToShield;
+        int remainingDamage = damageAfterDefense - damageToShield;
+
+        // 3. å‰©ä½™ä¼¤å®³æ‰£è¡€
+        int finalDamage = remainingDamage;
+        if (remainingDamage > 0)
+        {
+            currentHP = Mathf.Max(currentHP - remainingDamage, 0);
+        }
+
+        // 4. è§¦å‘äº‹ä»¶
+        if (damageToShield > 0)
+        {
+            OnShieldChanged?.Invoke();
+            Debug.Log($"[æŠ¤ç›¾] {gameObject.name} æŠ¤ç›¾æŠµæŒ¡äº† {damageToShield} ä¼¤å®³ï¼Œå‰©ä½™æŠ¤ç›¾: {shield}");
+        }
+
+        if (remainingDamage > 0 || damageToShield > 0)
+        {
+            OnHPChanged?.Invoke();
+        }
+
+        // 5. ç ´é˜²å€¼è®¡ç®—ï¼ˆæŠ¤ç›¾ä¸å½±å“ç ´é˜²ï¼‰
+        if (!isBroken)
+        {
+            currentBreakValue = Mathf.Max(currentBreakValue - breakDamage, 0);
+            OnBreakChanged?.Invoke();
+
+            if (currentBreakValue <= 0)
+            {
+                TriggerBreak();
+            }
+        }
+
+        return finalDamage;
+    }
+
+    /// <summary>
+    /// æ¥æ”¶ä¼¤å®³ä¸ç ´é˜²å€¼çš„è®¡ç®— [1, 5]
+    /// </summary>
+    /// <summary>æˆ˜æ–—æ²»ç–—ï¼Œä¸è¶…è¿‡ maxHPã€‚</summary>
     public void Heal(int amount)
     {
         if (amount <= 0) return;
@@ -45,10 +138,10 @@ public class CharacterStats : MonoBehaviour
         OnHPChanged?.Invoke();
     }
 
-    /// <summary>·µ»Ø±¾´ÎÊµ¼Ê¿ÛÑª finalDamage£¨¹©×°±¸ÎüÑªµÈ£©¡£</summary>
+    /// <summary>è¿”å›æœ¬æ¬¡å®é™…æ‰£è¡€ finalDamageï¼ˆä¾›è£…å¤‡å¸è¡€ç­‰ï¼‰ã€‚</summary>
     public int TakeDamage(int rawDamage, int breakDamage)
     {
-        // 1. µ÷ÓÃËùÓĞ»îÔ¾ Buff µÄÉËº¦À¹½ØÆ÷ [1, 5]
+        // 1. è°ƒç”¨æ‰€æœ‰æ´»è·ƒ Buff çš„ä¼¤å®³æ‹¦æˆªå™¨ [1, 5]
         int processedDamage = rawDamage;
         for (int i = activeBuffs.Count - 1; i >= 0; i--)
         {
@@ -79,7 +172,7 @@ public class CharacterStats : MonoBehaviour
     {
         isBroken = true;
         OnBreakChanged?.Invoke();
-        Debug.Log($"<color=red>¡ï¡ï [ÆÆ·À£¡] {gameObject.name} ±»Ç¿ĞĞÆÆ·À£¡ ¡ï¡ï</color>");
+        Debug.Log($"<color=red>â˜…â˜… [ç ´é˜²ï¼] {gameObject.name} è¢«å¼ºè¡Œç ´é˜²ï¼ â˜…â˜…</color>");
     }
 
     public void RecoverFromBreak()
@@ -89,8 +182,41 @@ public class CharacterStats : MonoBehaviour
             isBroken = false;
             currentBreakValue = maxBreakValue;
             OnBreakChanged?.Invoke();
-            Debug.Log($"[ÆÆ·À»Ö¸´] {gameObject.name} »Ö¸´ÁË¼ÜÊÆ£¬ÆÆ·ÀÌõÖØĞÂ»ØÂú¡£");
+            Debug.Log($"[ç ´é˜²æ¢å¤] {gameObject.name} æ¢å¤äº†æ¶åŠ¿ï¼Œç ´é˜²æ¡é‡æ–°å›æ»¡ã€‚");
         }
+    }
+
+    /// <summary>
+    /// é¢„è§ˆå¯¹æ­¤ç›®æ ‡é€ æˆçš„æœ€ç»ˆä¼¤å®³ï¼ˆç”¨äºå·¥å…·æç¤ºçš„åŠ¨æ€æ•°å€¼æ˜¾ç¤ºï¼‰
+    /// åªåæ˜ ç›®æ ‡èº«ä¸Šçš„ buff é“¾ï¼ˆå¦‚æ˜“ä¼¤ã€ç ´é˜²çŠ¶æ€ï¼‰å¯¹ä¼¤å®³çš„ä¿®æ­£ï¼Œ
+    /// ä¸åŒ…å«æ”»å‡»åŠ› stat å’Œé˜²å¾¡å‡å…ï¼Œè®©ç©å®¶çœ‹åˆ°çº¯ç²¹çš„ buff/debuff å½±å“
+    /// </summary>
+    /// <param name="baseDamage">æŠ€èƒ½åŸºç¡€ä¼¤å®³</param>
+    /// <returns>ç»è¿‡ç›®æ ‡ buff é“¾ä¿®æ­£åçš„é¢„ä¼°ä¼¤å®³</returns>
+    public int PreviewEffectiveDamage(int baseDamage)
+    {
+        // åªç»è¿‡ç›®æ ‡çš„ Buff æ‹¦æˆªå™¨é“¾ï¼ˆå¦‚ VulnerabilityBuff æ”¾å¤§ä¼¤å®³ï¼‰
+        int processedDamage = baseDamage;
+        for (int i = activeBuffs.Count - 1; i >= 0; i--)
+        {
+            processedDamage = activeBuffs[i].OnBeforeTakeDamage(processedDamage);
+        }
+        return processedDamage;
+    }
+
+    /// <summary>
+    /// é¢„è§ˆæ­¤ç›®æ ‡è·å¾—æŠ¤ç›¾çš„æœ€ç»ˆå€¼ï¼ˆç”¨äºå·¥å…·æç¤ºçš„åŠ¨æ€æ•°å€¼æ˜¾ç¤ºï¼‰
+    /// </summary>
+    /// <param name="baseShield">åŸºç¡€æŠ¤ç›¾å€¼</param>
+    /// <returns>ç»è¿‡ buff é“¾æ‹¦æˆªåçš„é¢„ä¼°æŠ¤ç›¾å€¼</returns>
+    public int PreviewBlockGain(int baseShield)
+    {
+        int processedAmount = baseShield;
+        for (int i = activeBuffs.Count - 1; i >= 0; i--)
+        {
+            processedAmount = activeBuffs[i].OnBeforeGainShield(processedAmount);
+        }
+        return processedAmount;
     }
 
     public bool ConsumeMP(int amount)
@@ -104,35 +230,35 @@ public class CharacterStats : MonoBehaviour
     }
 
     /// <summary>
-    /// Îª½ÇÉ«¸½¼Ó×´Ì¬£¬²¢ÔÚµ×²ã×Ô¶¯½øĞĞÔªËØ·´Ó¦ÅĞ¶¨ [1, 3]
+    /// ä¸ºè§’è‰²é™„åŠ çŠ¶æ€ï¼Œå¹¶åœ¨åº•å±‚è‡ªåŠ¨è¿›è¡Œå…ƒç´ ååº”åˆ¤å®š [1, 3]
     /// </summary>
     public void AddBuff(Buff newBuff)
     {
         if (newBuff == null) return;
 
-        // 1. ½øĞĞÔªËØ·´Ó¦½âÀëÅĞ¶Ï [1, 3]
+        // 1. è¿›è¡Œå…ƒç´ ååº”è§£ç¦»åˆ¤æ–­ [1, 3]
         if (CheckElementalReaction(newBuff))
         {
             return;
         }
 
         // ========================================================
-        // 2. ºËĞÄÖØ¹¹£ºÍ¬Ãû Buff À¹½Ø£¨Ë¢ĞÂ»ØºÏÊı¡¢µş¼Ó²ãÊı£¬·ÀÖ¹Í¼±êÖØ¸´Éú³É£© [2]
+        // 2. æ ¸å¿ƒé‡æ„ï¼šåŒå Buff æ‹¦æˆªï¼ˆåˆ·æ–°å›åˆæ•°ã€å åŠ å±‚æ•°ï¼Œé˜²æ­¢å›¾æ ‡é‡å¤ç”Ÿæˆï¼‰ [2]
         // ========================================================
         Buff existingBuff = activeBuffs.Find(b => b.buffName == newBuff.buffName);
         if (existingBuff != null)
         {
-            // Ë¢ĞÂ²¢ÀÛ¼Ó»ØºÏÊı£¨Éè¶¨×î´óÉÏÏŞ 5 »ØºÏ£©
+            // åˆ·æ–°å¹¶ç´¯åŠ å›åˆæ•°ï¼ˆè®¾å®šæœ€å¤§ä¸Šé™ 5 å›åˆï¼‰
             existingBuff.durationTurns = Mathf.Min(existingBuff.durationTurns + newBuff.durationTurns, 5);
 
-            // µİÔöµ±Ç°²ãÊı£¨Éè¶¨×î´óµş²ãÉÏÏŞ£© [2]
+            // é€’å¢å½“å‰å±‚æ•°ï¼ˆè®¾å®šæœ€å¤§å å±‚ä¸Šé™ï¼‰ [2]
             existingBuff.stacks = Mathf.Min(existingBuff.stacks + 1, existingBuff.maxStacks);
 
-            OnBuffsChanged?.Invoke(); // ´¥·¢Ë¢ĞÂ£¨»áÍ¨Öª UI ¸üĞÂÊı×Ö£©
-            return; // À¹½Ø³É¹¦£¬²»ÔÙÉú³ÉĞÂµÄÖØ¸´Í¼±ê£¡
+            OnBuffsChanged?.Invoke(); // è§¦å‘åˆ·æ–°ï¼ˆä¼šé€šçŸ¥ UI æ›´æ–°æ•°å­—ï¼‰
+            return; // æ‹¦æˆªæˆåŠŸï¼Œä¸å†ç”Ÿæˆæ–°çš„é‡å¤å›¾æ ‡ï¼
         }
 
-        // 3. ÉíÉÏÃ»ÓĞÍ¬Ãû Buff£¬Õı³£¹ÒÔØ
+        // 3. èº«ä¸Šæ²¡æœ‰åŒå Buffï¼Œæ­£å¸¸æŒ‚è½½
         newBuff.Initialize(this);
         activeBuffs.Add(newBuff);
         newBuff.OnApply();
@@ -141,7 +267,7 @@ public class CharacterStats : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼ì²âĞÂ¸½×ÅµÄÔªËØÊÇ·ñÓëÒÑÓĞÔªËØ·¢Éú»¯Ñ§·´Ó¦ [1, 3]
+    /// æ£€æµ‹æ–°é™„ç€çš„å…ƒç´ æ˜¯å¦ä¸å·²æœ‰å…ƒç´ å‘ç”ŸåŒ–å­¦ååº” [1, 3]
     /// </summary>
     private bool CheckElementalReaction(Buff incomingBuff)
     {
@@ -153,7 +279,7 @@ public class CharacterStats : MonoBehaviour
 
             if (activeBuff.element != ElementType.None && activeBuff.element != incomingBuff.element)
             {
-                // ºËĞÄ£º½«µ±Ç°¸½×Å×´Ì¬£¨°üº¬ËüµÄ²ãÊı£©Î¹¸ø·´Ó¦½áËãÆ÷£¡
+                // æ ¸å¿ƒï¼šå°†å½“å‰é™„ç€çŠ¶æ€ï¼ˆåŒ…å«å®ƒçš„å±‚æ•°ï¼‰å–‚ç»™ååº”ç»“ç®—å™¨ï¼
                 TriggerReaction(activeBuff, incomingBuff.element);
 
                 activeBuff.OnRemove();
@@ -167,51 +293,57 @@ public class CharacterStats : MonoBehaviour
     }
 
     /// <summary>
-    /// ·´Ó¦½áËãÆ÷£º²ãÊıÔ½¸ß£¬ÍşÁ¦Ô½Ç¿£¡ [3]
+    /// ååº”ç»“ç®—å™¨ï¼šå±‚æ•°è¶Šé«˜ï¼Œå¨åŠ›è¶Šå¼ºï¼ [3]
     /// </summary>
     private void TriggerReaction(Buff activeBuff, ElementType incomingElement)
     {
         ElementType activeElement = activeBuff.element;
-        int stacks = activeBuff.stacks; // ÌáÈ¡±»Òı±¬×´Ì¬µÄµ±Ç°µş²ãÊı£¡
+        int stacks = activeBuff.stacks; // æå–è¢«å¼•çˆ†çŠ¶æ€çš„å½“å‰å å±‚æ•°ï¼
 
-        // ·´Ó¦£º»ğ + ±ù = ÈÚ»¯
+        // ååº”ï¼šç« + å†° = èåŒ–
         if ((activeElement == ElementType.Fire && incomingElement == ElementType.Ice) ||
             (activeElement == ElementType.Ice && incomingElement == ElementType.Fire))
         {
             // ========================================================
-            // ºËĞÄĞŞ¸Ä£¨ÊıÖµÔ¾Éı£©£º·´Ó¦ÉËº¦ÓëÆÆ·ÀÖµ£¬Ö±½Ó³ËÒÔ±»Òı±¬µÄÔªËØ²ãÊı£¡
-            // ²ãÊıÔ½¸ß£¬·´Ó¦ÍşÁ¦Ô½¿Ö²À£¡ (1²ã=30ÆÆ·À, 3²ã=90ÆÆ·ÀÖ±½Ó¸ÉËé£¡) [5, 6]
+            // æ ¸å¿ƒä¿®æ”¹ï¼ˆæ•°å€¼è·ƒå‡ï¼‰ï¼šååº”ä¼¤å®³ä¸ç ´é˜²å€¼ï¼Œç›´æ¥ä¹˜ä»¥è¢«å¼•çˆ†çš„å…ƒç´ å±‚æ•°ï¼
+            // å±‚æ•°è¶Šé«˜ï¼Œååº”å¨åŠ›è¶Šææ€–ï¼ (1å±‚=30ç ´é˜², 3å±‚=90ç ´é˜²ç›´æ¥å¹²ç¢ï¼) [5, 6]
             // ========================================================
             int finalBreakDamage = 30 * stacks;
             int rawDamage = 15 * stacks;
 
-            Debug.Log($"<color=orange>¡ï¡ï [ÔªËØ·´Ó¦£ºÈÚ»¯£¡] µş²ã x{stacks} ±¬·¢£¡¶Ô {gameObject.name} Ôì³É {rawDamage} ÉËº¦ºÍ {finalBreakDamage} ÆÆ·À£¡ ¡ï¡ï</color>");
+            Debug.Log($"<color=orange>â˜…â˜… [å…ƒç´ ååº”ï¼šèåŒ–ï¼] å å±‚ x{stacks} çˆ†å‘ï¼å¯¹ {gameObject.name} é€ æˆ {rawDamage} ä¼¤å®³å’Œ {finalBreakDamage} ç ´é˜²ï¼ â˜…â˜…</color>");
             TakeDamage(rawDamage, finalBreakDamage);
 
-            // ¸½´øµÄÒ×ÉË±¶ÂÊÒ²Ëæ²ãÊıµİÔö [1, 5]
+            // é™„å¸¦çš„æ˜“ä¼¤å€ç‡ä¹Ÿéšå±‚æ•°é€’å¢ [1, 5]
             AddBuff(new VulnerabilityBuff(2, 1.2f + (0.1f * stacks)));
         }
 
-        // ·´Ó¦£ºË® + »ğ = Õô·¢
+        // ååº”ï¼šæ°´ + ç« = è’¸å‘
         if ((activeElement == ElementType.Water && incomingElement == ElementType.Fire) ||
             (activeElement == ElementType.Fire && incomingElement == ElementType.Water))
         {
             int rawDamage = 40 * stacks;
-            Debug.Log($"<color=blue>¡ï¡ï [ÔªËØ·´Ó¦£ºÕô·¢£¡] µş²ã x{stacks} ±¬·¢£¡¶Ô {gameObject.name} Ôì³É {rawDamage} µãÎŞÊÓ·ÀÓùÉËº¦£¡ ¡ï¡ï</color>");
+            Debug.Log($"<color=blue>â˜…â˜… [å…ƒç´ ååº”ï¼šè’¸å‘ï¼] å å±‚ x{stacks} çˆ†å‘ï¼å¯¹ {gameObject.name} é€ æˆ {rawDamage} ç‚¹æ— è§†é˜²å¾¡ä¼¤å®³ï¼ â˜…â˜…</color>");
             TakeDamage(rawDamage, 5);
         }
     }
 
     /// <summary>
-    /// ½áËã Buff »ØºÏµİ¼õºÍÌø¶¾ [1]
+    /// ç»“ç®— Buff å›åˆæ•ˆæœï¼ˆç‡ƒçƒ§/ä¸­æ¯’è·³ä¼¤å®³ç­‰ï¼‰ï¼Œåœ¨å›åˆå¼€å§‹æ—¶è°ƒç”¨
     /// </summary>
-    public void TickBuffs()
+    public void ProcTurnStartBuffs()
     {
         for (int i = activeBuffs.Count - 1; i >= 0; i--)
         {
             activeBuffs[i].OnTurnStart();
         }
+    }
 
+    /// <summary>
+    /// æ‰£å‡ Buff æŒç»­å›åˆæ•°å¹¶ç§»é™¤è¿‡æœŸ Buffï¼Œåœ¨å›åˆç»“æŸæ—¶è°ƒç”¨
+    /// </summary>
+    public void TickBuffDurations()
+    {
         for (int i = activeBuffs.Count - 1; i >= 0; i--)
         {
             activeBuffs[i].durationTurns--;
@@ -223,5 +355,14 @@ public class CharacterStats : MonoBehaviour
         }
 
         OnBuffsChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// å®Œæ•´çš„ Buff ç»“ç®—ï¼ˆæ•ˆæœ + æ‰£å›åˆï¼‰ï¼Œæ•Œæ–¹å›åˆç»“æŸæ—¶ä½¿ç”¨
+    /// </summary>
+    public void TickBuffs()
+    {
+        ProcTurnStartBuffs();
+        TickBuffDurations();
     }
 }

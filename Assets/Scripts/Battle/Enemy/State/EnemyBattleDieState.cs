@@ -1,27 +1,29 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ¹ÖÎïÕ½¶·ËÀÍö/Õ½°Ü×´Ì¬
+/// æ€ªç‰©æˆ˜æ–—æ­»äº¡/æˆ˜è´¥çŠ¶æ€
 /// </summary>
 public class EnemyBattleDieState : EnemyBaseBattleState, IDeathState
 {
-    protected override int AnimHash => Animator.StringToHash("Enemy_Die"); // ²¥·ÅËÀÍö¶¯»­
+    protected override int AnimHash => Animator.StringToHash("Enemy_Die"); // æ’­æ”¾æ­»äº¡åŠ¨ç”»
 
     public override void Enter()
     {
-        base.Enter(); // ²¥·ÅËÀÍö¶¯×÷
+        base.Enter(); // æ’­æ”¾æ­»äº¡åŠ¨ä½œ
         owner.SetHorizontalVelocity(0f);
 
-        // ºËĞÄ°²È«£º³¹µ×½ûÓÃÎïÀíÄ£Äâ£¡·ÀÖ¹ËÀºóµÄÊ¬Ìå×èµ²ÆäËû¹Ö³öÕĞ£¬»òÕß²úÉúÍÆ¼·Åö×²
+        // æ ¸å¿ƒå®‰å…¨ï¼šå½»åº•ç¦ç”¨ç‰©ç†æ¨¡æ‹Ÿï¼é˜²æ­¢æ­»åçš„å°¸ä½“é˜»æŒ¡å…¶ä»–æ€ªå‡ºæ‹›ï¼Œæˆ–è€…äº§ç”Ÿæ¨æŒ¤ç¢°æ’
         owner.rb.simulated = false;
 
-        Debug.Log($"[¹ÖÎïÕ½°Ü] {owner.gameObject.name} ±»»÷É±£¬ÇĞÈëËÀÍö¶¯×÷¡£");
+        Debug.Log($"[æ€ªç‰©æˆ˜è´¥] {owner.gameObject.name} è¢«å‡»æ€ï¼Œåˆ‡å…¥æ­»äº¡åŠ¨ä½œã€‚");
 
-        // Èç¹ûÔÚ¹ÖÎïÔ¤ÖÆÌåÃæ°åÉÏ¹´Ñ¡ÁË¡°ËÀºó×Ô¶¯ÏûÊ§¡± [5]
+        // å¦‚æœåœ¨æ€ªç‰©é¢„åˆ¶ä½“é¢æ¿ä¸Šå‹¾é€‰äº†â€œæ­»åè‡ªåŠ¨æ¶ˆå¤±â€ [5]
         if (owner.destroyOnDeath)
         {
-            owner.StartCoroutine(DestroyAndFadeRoutine(1.8f)); // 1.8 Ãëºó½¥Òş²¢Ïú»ÙÎïÉí
+            owner.StartCoroutine(DestroyAndFadeRoutine(1.8f)); // 1.8 ç§’åæ¸éšå¹¶é”€æ¯ç‰©èº«
         }
+
+        BattleCombatResolver.Instance.CheckBattleOver();
     }
 
     private System.Collections.IEnumerator DestroyAndFadeRoutine(float delay)
@@ -29,7 +31,7 @@ public class EnemyBattleDieState : EnemyBaseBattleState, IDeathState
         yield return new WaitForSeconds(delay);
 
         float elapsed = 0f;
-        float fadeDuration = 1.0f; // ½¥Òş³ÖĞø 1 Ãë
+        float fadeDuration = 1.0f; // æ¸éšæŒç»­ 1 ç§’
         Color originalColor = owner.sprite.color;
 
         while (elapsed < fadeDuration)

@@ -1,22 +1,22 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class FireAuraBuff : Buff
 {
-    private int burnDamage = 8; // Ã¿»ØºÏÈ¼ÉÕÉËº¦
+    private int burnDamage = 8; // æ¯å›åˆç‡ƒçƒ§ä¼¤å®³
 
     public FireAuraBuff(int turns)
     {
-        buffName = "»ğÔªËØ¸½×Å";
+        buffName = "ç«å…ƒç´ é™„ç€";
         durationTurns = turns;
-        description = "Ã¿»ØºÏ¿ªÊ¼Ê±ÊÜµ½ 8 µã»ğÑæ×ÆÉÕÉËº¦¡£";
-        element = ElementType.Fire; // ±ê¼ÇÎª»ğÔªËØ
-        icon = Resources.Load<Sprite>("UI/Buffs/Icon_Fire"); // ¶ÁÈ¡ÄãµÄÍ¼±ê
+        description = "æ¯å›åˆå¼€å§‹æ—¶å—åˆ° 8 ç‚¹ç«ç„°ç¼çƒ§ä¼¤å®³ã€‚";
+        element = ElementType.Fire; // æ ‡è®°ä¸ºç«å…ƒç´ 
+        icon = Resources.Load<Sprite>("UI/Buffs/Icon_Fire"); // è¯»å–ä½ çš„å›¾æ ‡
     }
 
     public override void OnTurnStart()
     {
-        // »ØºÏ¿ªÊ¼Ê±£¬×Ô¶¯Ö´ĞĞ×ÆÉÕ¿ÛÑª£¨²»¿Û³ıÆÆ·ÀÖµ£© [5]
+        // å›åˆå¼€å§‹æ—¶ï¼Œè‡ªåŠ¨æ‰§è¡Œç¼çƒ§æ‰£è¡€ï¼ˆä¸æ‰£é™¤ç ´é˜²å€¼ï¼‰ [5]
         owner.TakeDamage(burnDamage, 0);
-        Debug.Log($"{owner.gameObject.name} ÊÜµ½»ğÔªËØ×ÆÉÕ£¬ËğÊ§ÁË {burnDamage} µãÉúÃü£¡");
+        Debug.Log($"{owner.gameObject.name} å—åˆ°ç«å…ƒç´ ç¼çƒ§ï¼ŒæŸå¤±äº† {burnDamage} ç‚¹ç”Ÿå‘½ï¼");
     }
 }

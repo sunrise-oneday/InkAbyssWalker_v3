@@ -2,30 +2,25 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// ??????????? IGamePlayerActions ???
-public class GameplayInputReader : MonoBehaviour, InputAssets.IGamePlayerActions
+/// <summary>
+/// 游戏玩法输入读取器 - 纯 C# 类，由 InputManager 统一管理
+/// </summary>
+public class GameplayInputReader : InputAssets.IGamePlayerActions
 {
-    // ????????????????????????????????
+    // ========================================================
+    // 输入事件（通过 Action 委托分发给其他模块）
+    // ========================================================
     public event Action<Vector2> OnMoveInput = delegate { };
     public event Action<Vector2> OnLookInput = delegate { };
     public event Action OnFirePressed = delegate { };
     public event Action OnFireReleased = delegate { };
     public event Action OnDashPressed = delegate { };
-
-    // ????????????
     public event Action OnJumpPressed = delegate { };
-
-    private void Start()
-    {
-        if (InputManager.Instance != null && InputManager.Instance.Controls != null)
-        {
-            // ?????????? GamePlayer ????????????????
-            InputManager.Instance.Controls.GamePlayer.SetCallbacks(this);
-        }
-    }
+    public event Action OnOpenCharacterPanelPressed = delegate { };
+    public event Action OnInteractPressed = delegate { };
 
     // ========================================================
-    // ???��???????? IGamePlayerActions ?????????????
+    // IGamePlayerActions 接口实现
     // ========================================================
 
     public void OnMove(InputAction.CallbackContext context)
@@ -50,26 +45,39 @@ public class GameplayInputReader : MonoBehaviour, InputAssets.IGamePlayerActions
         }
     }
 
-    // 2. ??????????????
     public void OnJump(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            OnJumpPressed.Invoke(); // ?????????
+            OnJumpPressed.Invoke();
         }
     }
 
     public void OnDash(InputAction.CallbackContext context)
     {
-       if(context.phase == InputActionPhase.Performed)
+        if (context.phase == InputActionPhase.Performed)
         {
             OnDashPressed.Invoke();
         }
-
     }
 
-    // ???????? StoreInventoryInputBridge ??????????????????????? IGamePlayerActions
+    // 以下两个方法由外部接管，此处仅保留空实现以满足接口
     public void OnOpenInventory(InputAction.CallbackContext context) { }
-
     public void OnOpenShop(InputAction.CallbackContext context) { }
+
+    public void OnOpenCharacterPanel(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            OnOpenCharacterPanelPressed.Invoke();
+        }
+    }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            OnInteractPressed.Invoke();
+        }
+    }
 }

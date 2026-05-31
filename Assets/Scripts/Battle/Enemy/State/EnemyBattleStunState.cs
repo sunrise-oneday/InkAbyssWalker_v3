@@ -1,16 +1,16 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// µĞ·½Õ½¶·Ñ£ÔÎ/ÊÜ¿Ø×´Ì¬£¨ÔÚ´óÊÀ½ç±»´óÕĞÔÒÖĞÊ±£¬Ë²¼äÇĞÈë±¾×´Ì¬·£Õ¾£© [5]
+/// æ•Œæ–¹æˆ˜æ–—çœ©æ™•/å—æ§çŠ¶æ€ï¼ˆåœ¨å¤§ä¸–ç•Œè¢«å¤§æ‹›ç ¸ä¸­æ—¶ï¼Œç¬é—´åˆ‡å…¥æœ¬çŠ¶æ€ç½šç«™ï¼‰ [5]
 /// </summary>
 public class EnemyBattleStunState : EnemyBaseBattleState
 {
-    // ¶ÔÓ¦ Animator ÀïµÄ¹ÖÎïÑ£ÔÎ/ÊÜ»÷Ñ­»·¶¯»­£¨±ÈÈç Enemy_Dizzy£© [5]
+    // å¯¹åº” Animator é‡Œçš„æ€ªç‰©çœ©æ™•/å—å‡»å¾ªç¯åŠ¨ç”»ï¼ˆæ¯”å¦‚ Enemy_Dizzyï¼‰ [5]
     protected override int AnimHash => Animator.StringToHash("Enemy_Dizzy");
 
     public override void Enter()
     {
-        base.Enter(); // ²¥·ÅÑ£ÔÎ¶¯»­
-        owner.SetHorizontalVelocity(0f); // ÎïÀí¶¨Éí
+        base.Enter(); // æ’­æ”¾çœ©æ™•åŠ¨ç”»
+        owner.SetHorizontalVelocity(0f); // ç‰©ç†å®šèº«
     }
 }

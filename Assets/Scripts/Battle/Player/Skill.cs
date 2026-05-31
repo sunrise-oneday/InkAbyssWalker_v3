@@ -1,24 +1,24 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [System.Serializable]
 public class Skill
 {
-    public string skillName;       // ¼¼ÄÜÃû³Æ
-    public int mpCost;             // ÏûºÄ·¨Á¦ (MP)
-    public int baseDamage;         // »ù´¡ÉËº¦Öµ
-    public int breakDamage;        // Ï÷¼õÆÆ·ÀÖµ (Stance Damage) [5]
-    public string animationState;  // ¶ÔÓ¦µÄ¶¯»­ State Ãû×Ö
+    public string skillName;       // æŠ€èƒ½åç§°
+    public int mpCost;             // æ¶ˆè€—æ³•åŠ› (MP)
+    public int baseDamage;         // åŸºç¡€ä¼¤å®³å€¼
+    public int breakDamage;        // å‰Šå‡ç ´é˜²å€¼ (Stance Damage) [5]
+    public string animationState;  // å¯¹åº”çš„åŠ¨ç”» State åå­—
 
     // ========================================================
-    // ºËĞÄĞÂÔö£º¼¼ÄÜ¸½´øµÄÔªËØĞ§¹ûÓë³ÖĞøÊ±¼ä
+    // æ ¸å¿ƒæ–°å¢ï¼šæŠ€èƒ½é™„å¸¦çš„å…ƒç´ æ•ˆæœä¸æŒç»­æ—¶é—´
     // ========================================================
-    [Header("´óµØÍ¼/Õ½¶·¼¼ÄÜÔªËØ¸½×Å")]
-    public ElementType applyElement = ElementType.None; // ÊÍ·Å¸Ã¼¼ÄÜ»á¸½×ÅÊ²Ã´ÔªËØ
-    public int buffDuration = 3;                       // ¸½×Å³ÖĞø¼¸»ØºÏ
+    [Header("å¤§åœ°å›¾/æˆ˜æ–—æŠ€èƒ½å…ƒç´ é™„ç€")]
+    public ElementType applyElement = ElementType.None; // é‡Šæ”¾è¯¥æŠ€èƒ½ä¼šé™„ç€ä»€ä¹ˆå…ƒç´ 
+    public int buffDuration = 3;                       // é™„ç€æŒç»­å‡ å›åˆ
 
     // ========================================================
-    // ºËĞÄĞÂÔö£ºÊÍ·Å´Ë¼¼ÄÜÊ±£¬ÄÜ¹»ÎªÈ«¶Ó¹²Ïí´óÕĞ²Û»Ö¸´¶àÉÙÄÜÁ¿ [3, 5]
+    // æ ¸å¿ƒæ–°å¢ï¼šé‡Šæ”¾æ­¤æŠ€èƒ½æ—¶ï¼Œèƒ½å¤Ÿä¸ºå…¨é˜Ÿå…±äº«å¤§æ‹›æ§½æ¢å¤å¤šå°‘èƒ½é‡ [3, 5]
     // ========================================================
-    [Header("´óÕĞ³äÄÜÉèÖÃ")]
-    public int ultChargeValue = 15; // Ã¿´ÎÊÍ·Å¸Ã¼¼ÄÜ£¬´óÕĞÄÜÁ¿ +15
+    [Header("å¤§æ‹›å……èƒ½è®¾ç½®")]
+    public int ultChargeValue = 15; // æ¯æ¬¡é‡Šæ”¾è¯¥æŠ€èƒ½ï¼Œå¤§æ‹›èƒ½é‡ +15
 }

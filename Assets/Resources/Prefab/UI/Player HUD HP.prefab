@@ -1,5 +1,66 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1562724561595085979
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1580860015607647316}
+  - component: {fileID: 2261142489108630918}
+  m_Layer: 5
+  m_Name: BuffContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1580860015607647316
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562724561595085979}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8835334848639960175}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 74.7}
+  m_SizeDelta: {x: 150, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2261142489108630918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562724561595085979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 30, y: 30}
+  m_Spacing: {x: 5, y: 5}
+  m_Constraint: 1
+  m_ConstraintCount: 3
 --- !u!1 &8835334848639960174
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,6 +94,7 @@ RectTransform:
   - {fileID: 8835334849867338857}
   - {fileID: 8835334849315367416}
   - {fileID: 8835334849873469830}
+  - {fileID: 1580860015607647316}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -105,10 +167,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetStats: {fileID: 0}
+  targetEnemy: {fileID: 0}
   hpSlider: {fileID: 8835334848639960173}
   breakSlider: {fileID: 0}
-  buffContainer: {fileID: 0}
-  buffIconPrefab: {fileID: 0}
+  shieldSlider: {fileID: 0}
+  intentIcon: {fileID: 0}
+  intentContainer: {fileID: 0}
+  intentValueText: {fileID: 0}
+  intentTooltip: {fileID: 0}
+  intentTooltipText: {fileID: 0}
+  buffContainer: {fileID: 1580860015607647316}
+  buffIconPrefab: {fileID: 7653031246585005309, guid: dd0938282847e71478a26b5e0fe297ea, type: 3}
+  selectionIndicator: {fileID: 0}
 --- !u!1 &8835334848783715290
 GameObject:
   m_ObjectHideFlags: 0

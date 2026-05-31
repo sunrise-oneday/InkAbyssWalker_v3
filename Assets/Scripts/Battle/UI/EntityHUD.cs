@@ -1,34 +1,49 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Battle.Enemy;
 
 /// <summary>
-/// Õ½¶·ÊôĞÔÓë×´Ì¬Í¼±êÏÔÊ¾Æ÷£¨È«ÊÂ¼şÇı¶¯¡¢×ÔÏìÓ¦Ê½ UI£© [1]
+/// æˆ˜æ–—å±æ€§ä¸çŠ¶æ€å›¾æ ‡æ˜¾ç¤ºå™¨ï¼ˆå…¨äº‹ä»¶é©±åŠ¨ã€è‡ªå“åº”å¼ UIï¼‰ [1]
 /// </summary>
 public class EntityHUD : MonoBehaviour
 {
-    [Header("Êı¾İÔ´°ó¶¨")]
+    [Header("æ•°æ®æºç»‘å®š")]
     [SerializeField] private CharacterStats targetStats;
+    [SerializeField] private EnemyBattleEntity targetEnemy; // ç›®æ ‡æ•Œäººï¼ˆç”¨äºè·å–æ„å›¾ï¼‰
 
-    [Header("»ù´¡½ø¶ÈÌõ UI")]
+    [Header("åŸºç¡€è¿›åº¦æ¡ UI")]
     [SerializeField] private Slider hpSlider;
-    [SerializeField] private Slider breakSlider; // ÆÆ·ÀÌõ (¿ÉÑ¡)
+    [SerializeField] private Slider breakSlider; // ç ´é˜²æ¡ (å¯é€‰)
+    [SerializeField] private Slider shieldSlider; // æŠ¤ç›¾æ¡ (å¯é€‰)
 
-    [Header("Buff ×´Ì¬À¸ÅäÖÃ [1]")]
+    [Header("æ„å›¾å›¾æ ‡æ˜¾ç¤º")]
+    [SerializeField] private Image intentIcon;              // æ„å›¾å›¾æ ‡
+    [SerializeField] private GameObject intentContainer;    // æ„å›¾å®¹å™¨
+    [SerializeField] private TMP_Text intentValueText;      // æ„å›¾æ•°å€¼æ–‡æœ¬ï¼ˆå¯é€‰ï¼‰
+    [SerializeField] private GameObject intentTooltip;      // æ„å›¾æ‚¬æµ®æç¤ºé¢æ¿
+    [SerializeField] private TMP_Text intentTooltipText;    // æ„å›¾æè¿°æ–‡æœ¬
+
+    [Header("Buff çŠ¶æ€æ é…ç½® [1]")]
     [SerializeField] private Transform buffContainer;
     [SerializeField] private GameObject buffIconPrefab;
 
-    [Header("Ñ¡ÖĞÊÓ¾õ±íÏÖ [¿ÉÑ¡]")]
-    [SerializeField] private GameObject selectionIndicator; // ÍÏÈëÒ»¸ö×÷Îª¡°Ñ¡¶¨ºìÈ¦¡±»ò¡°ÏòÏÂ¼ıÍ·¡±µÄ×ÓÎïÌå
-    private Vector3 defaultWorldScale = new Vector3(0.005f, 0.005f, 1f); // Ä¬ÈÏµÄÊÀ½ç¿Õ¼äËõ·ÅÖµ
+    [Header("é€‰ä¸­è§†è§‰è¡¨ç° [å¯é€‰]")]
+    [SerializeField] private GameObject selectionIndicator; // æ‹–å…¥ä¸€ä¸ªä½œä¸º"é€‰å®šçº¢åœˆ"æˆ–"å‘ä¸‹ç®­å¤´"çš„å­ç‰©ä½“
+    [Header("ä¸–ç•Œç©ºé—´ç¼©æ”¾ï¼ˆç›´æ¥å¡«æ•°å€¼ï¼‰")]
+    [SerializeField] private float hudScale = 0.02f;
+    [SerializeField] private float hudScaleFactor = 0.022f;
 
     private void Start()
     {
+        // ç›´æ¥ç”¨ä½ å¡«çš„æ•°å€¼ï¼Œä¸åšä»»ä½•å€ç‡è®¡ç®—
+        transform.localScale = new Vector3(hudScale, hudScale, 1f);
+
         // ========================================================
-        // ºËĞÄĞŞ¸´£º±ØĞëÏÈ°²È«»ñÈ¡ Canvas£¬²¢¡¾ÅĞ¶Ï²»Îª¿Õ¡¿²Å½øĞĞ²Ù×÷£¡
-        // ÒòÎªÍæ¼Òµ×²¿µÄ HUD Ãæ°åÊÇ Screen-Space£¨ÆÁÄ»¿Õ¼ä£©£¬ËüµÄ¸ù½ÚµãÉÏÊÇÃ»ÓĞ Canvas ×é¼şµÄ¡£
-        // Èç¹û²»¼ÓÅĞ¶ÏÖ±½Ó GetComponent<Canvas>().worldCamera£¬¾Í»á´¥·¢ MissingComponentException ±¨´í²¢Ö±½Ó¿¨ËÀºóÃæµÄ³õÊ¼»¯£¡
+        // æ ¸å¿ƒä¿®å¤ï¼šå¿…é¡»å…ˆå®‰å…¨è·å– Canvasï¼Œå¹¶ã€åˆ¤æ–­ä¸ä¸ºç©ºã€‘æ‰è¿›è¡Œæ“ä½œï¼
+        // å› ä¸ºç©å®¶åº•éƒ¨çš„ HUD é¢æ¿æ˜¯ Screen-Spaceï¼ˆå±å¹•ç©ºé—´ï¼‰ï¼Œå®ƒçš„æ ¹èŠ‚ç‚¹ä¸Šæ˜¯æ²¡æœ‰ Canvas ç»„ä»¶çš„ã€‚
+        // å¦‚æœä¸åŠ åˆ¤æ–­ç›´æ¥ GetComponent<Canvas>().worldCameraï¼Œå°±ä¼šè§¦å‘ MissingComponentException æŠ¥é”™å¹¶ç›´æ¥å¡æ­»åé¢çš„åˆå§‹åŒ–ï¼
         // ========================================================
         Canvas canvas = GetComponent<Canvas>();
         if (canvas != null)
@@ -37,48 +52,65 @@ public class EntityHUD : MonoBehaviour
             {
                 if (Camera.main != null)
                 {
-                    canvas.worldCamera = Camera.main; // ×Ô¶¯°ó¶¨´óµØÍ¼Ïà»úÎªÊÂ¼şÏà»ú
+                    canvas.worldCamera = Camera.main; // è‡ªåŠ¨ç»‘å®šå¤§åœ°å›¾ç›¸æœºä¸ºäº‹ä»¶ç›¸æœº
                 }
             }
         }
 
         // ========================================================
-        // Ö»ÒªÇ°ÃæµÄÎïÀíÏà»ú°ó¶¨Ã»ÓĞ±¨´í£¬ÕâÀïµÄ³õÊ¼»¯ºÍÊÂ¼ş°ó¶¨¾ÍÄÜ°Ù·ÖÖ®°Ù°²È«Ö´ĞĞ£¡
-        // ÕâÑùÍæ¼Òµ×²¿µÄÑªÌõºÍ¹ÖÎïÍ·¶¥µÄ Buff ÏµÍ³¾Í»áÈ«²¿»Ö¸´Õı³££¡
+        // åªè¦å‰é¢çš„ç‰©ç†ç›¸æœºç»‘å®šæ²¡æœ‰æŠ¥é”™ï¼Œè¿™é‡Œçš„åˆå§‹åŒ–å’Œäº‹ä»¶ç»‘å®šå°±èƒ½ç™¾åˆ†ä¹‹ç™¾å®‰å…¨æ‰§è¡Œï¼
+        // è¿™æ ·ç©å®¶åº•éƒ¨çš„è¡€æ¡å’Œæ€ªç‰©å¤´é¡¶çš„ Buff ç³»ç»Ÿå°±ä¼šå…¨éƒ¨æ¢å¤æ­£å¸¸ï¼
         // ========================================================
         if (targetStats != null)
         {
             BindEvents();
             RefreshAll();
         }
+
+        // è‡ªåŠ¨è·å–çˆ¶çº§ï¼ˆBattleEnemyæ ¹èŠ‚ç‚¹ï¼‰ä¸Šçš„æ•Œäººå®ä½“
+        if (targetEnemy == null)
+        {
+            targetEnemy = GetComponentInParent<EnemyBattleEntity>();
+        }
+
+        // éšè—æ„å›¾æ‚¬æµ®æç¤ºé¢æ¿
+        if (intentTooltip != null)
+            intentTooltip.SetActive(false);
+
+        // ç»‘å®šæ•Œäººæ„å›¾æ”¹å˜äº‹ä»¶
+        if (targetEnemy != null)
+        {
+            targetEnemy.OnIntentChanged += OnIntentChanged;
+        }
     }
 
     /// <summary>
-    /// ºËĞÄĞÂÔö£º±»Íæ¼Òµã»÷Ñ¡ÖĞÊ±µÄÊÓ¾õ¸ßÁÁ·Å´ó±íÏÖ
+    /// æ ¸å¿ƒæ–°å¢ï¼šè¢«ç©å®¶ç‚¹å‡»é€‰ä¸­æ—¶çš„è§†è§‰é«˜äº®æ”¾å¤§è¡¨ç°
     /// </summary>
     public void SetSelected(bool isSelected)
     {
-        // 1. ÏÔÊ¾/Òş²ØÑ¡ÖĞµÄºìÉ«¼ıÍ·/¹âÈ¦
+        // 1. æ˜¾ç¤º/éšè—é€‰ä¸­çš„çº¢è‰²ç®­å¤´/å…‰åœˆ
         if (selectionIndicator != null)
         {
             selectionIndicator.SetActive(isSelected);
         }
 
-        // 2. ¶¯Ì¬·Å´óÍ·¶¥ÑªÌõ 1.25 ±¶£¬¸øÍæ¼Ò¼«ÆäÃ÷ÏÔµÄÊÓ¾õ»ØÀ¡£¡
-        transform.localScale = isSelected ? defaultWorldScale * 2.0f : defaultWorldScale;
+        // 2. é€‰ä¸­å˜å¤§ç”¨ hudScaleFactorï¼Œä¸é€‰ä¸­ç”¨ hudScale
+        float s = isSelected ? hudScaleFactor : hudScale;
+        transform.localScale = new Vector3(s, s, 1f);
     }
 
     /// <summary>
-    /// ºËĞÄÖØ¹¹£ºÓÃÓÚÔÚ¿ËÂ¡Éú³Éºó¶¯Ì¬°ó¶¨²»Í¬µÄ³öÕ½½ÇÉ«ÊôĞÔ [1]
+    /// æ ¸å¿ƒé‡æ„ï¼šç”¨äºåœ¨å…‹éš†ç”ŸæˆååŠ¨æ€ç»‘å®šä¸åŒçš„å‡ºæˆ˜è§’è‰²å±æ€§ [1]
     /// </summary>
     public void SetTargetStats(CharacterStats stats)
     {
-        // 1. ·ÀÂ©£ºÏÈ°²È«×¢Ïú¾ÉµÄÊı¾İÔ´ÊÂ¼ş°ó¶¨
+        // 1. é˜²æ¼ï¼šå…ˆå®‰å…¨æ³¨é”€æ—§çš„æ•°æ®æºäº‹ä»¶ç»‘å®š
         UnbindEvents();
 
         targetStats = stats;
 
-        // 2. °ó¶¨ĞÂÊı¾İÔ´µÄÉúÃü¡¢ÆÆ·À¡¢Buff ¸Ä±äÊÂ¼ş£¡ [1, 5]
+        // 2. ç»‘å®šæ–°æ•°æ®æºçš„ç”Ÿå‘½ã€ç ´é˜²ã€Buff æ”¹å˜äº‹ä»¶ï¼ [1, 5]
         BindEvents();
     }
 
@@ -91,9 +123,10 @@ public class EntityHUD : MonoBehaviour
     {
         if (targetStats != null)
         {
-            targetStats.OnHPChanged += RefreshHP;       // ¼àÌıÉúÃüÖµ¸Ä±ä [5]
-            targetStats.OnBreakChanged += RefreshBreak; // ¼àÌıÆÆ·ÀÖµ¸Ä±ä [5]
-            targetStats.OnBuffsChanged += RefreshBuffIcons; // ¼àÌı Buff ¸Ä±ä [1]
+            targetStats.OnHPChanged += RefreshHP;       // ç›‘å¬ç”Ÿå‘½å€¼æ”¹å˜ [5]
+            targetStats.OnBreakChanged += RefreshBreak; // ç›‘å¬ç ´é˜²å€¼æ”¹å˜ [5]
+            targetStats.OnBuffsChanged += RefreshBuffIcons; // ç›‘å¬ Buff æ”¹å˜ [1]
+            targetStats.OnShieldChanged += RefreshShield; // ç›‘å¬æŠ¤ç›¾å€¼æ”¹å˜
         }
     }
 
@@ -104,21 +137,246 @@ public class EntityHUD : MonoBehaviour
             targetStats.OnHPChanged -= RefreshHP;
             targetStats.OnBreakChanged -= RefreshBreak;
             targetStats.OnBuffsChanged -= RefreshBuffIcons;
+            targetStats.OnShieldChanged -= RefreshShield;
         }
     }
 
     /// <summary>
-    /// Í³Ò»µÄÖ÷¶¯Ë¢ĞÂ£¨Ö»ÔÚ¸Õ½øÈëÕ½³¡³õÊ¼»¯Ê±µ÷ÓÃÒ»´Î£© [5]
+    /// ç»Ÿä¸€çš„ä¸»åŠ¨åˆ·æ–°ï¼ˆåªåœ¨åˆšè¿›å…¥æˆ˜åœºåˆå§‹åŒ–æ—¶è°ƒç”¨ä¸€æ¬¡ï¼‰ [5]
     /// </summary>
     public void RefreshAll()
     {
         RefreshHP();
         RefreshBreak();
+        RefreshShield();
         RefreshBuffIcons();
+        RefreshIntent();
     }
 
     // ========================================================
-    // 3. ÊÂ¼şÇı¶¯µÄ·ÖÁ÷Ë¢ĞÂº¯Êı£ºÊı¾İÒ»±ä£¬Ë²¼ä¶¨Ïò×ÔÖØ»­£¬ĞÔÄÜ¼«¼Ñ£¡ [1, 5]
+    // æ„å›¾å›¾æ ‡ç›¸å…³æ–¹æ³•
+    // ========================================================
+
+    /// <summary>
+    /// è®¾ç½®ç›®æ ‡æ•Œäººï¼ˆç”¨äºè·å–æ„å›¾ï¼‰
+    /// </summary>
+    public void SetTargetEnemy(EnemyBattleEntity enemy)
+    {
+        // è§£ç»‘æ—§æ•Œäººçš„äº‹ä»¶
+        if (targetEnemy != null)
+        {
+            targetEnemy.OnIntentChanged -= OnIntentChanged;
+        }
+
+        targetEnemy = enemy;
+
+        // ç»‘å®šæ–°æ•Œäººçš„äº‹ä»¶
+        if (targetEnemy != null)
+        {
+            targetEnemy.OnIntentChanged += OnIntentChanged;
+        }
+
+        RefreshIntent();
+    }
+
+    /// <summary>
+    /// æ„å›¾æ”¹å˜äº‹ä»¶å¤„ç†
+    /// </summary>
+    private void OnIntentChanged(EnemyIntent intent)
+    {
+        RefreshIntent();
+    }
+
+    /// <summary>
+    /// åˆ·æ–°æ„å›¾å›¾æ ‡æ˜¾ç¤º
+    /// </summary>
+    public void RefreshIntent()
+    {
+        if (targetEnemy == null)
+        {
+            targetEnemy = GetComponentInParent<EnemyBattleEntity>();
+        }
+
+        if (targetEnemy == null || intentContainer == null) return;
+
+        EnemyIntent intent = targetEnemy.GetCurrentIntent();
+        if (intent == null)
+        {
+            // æ²¡æœ‰æ„å›¾æ—¶éšè—æ„å›¾å®¹å™¨
+            intentContainer.SetActive(false);
+            return;
+        }
+
+        // æ˜¾ç¤ºæ„å›¾å®¹å™¨
+        intentContainer.SetActive(true);
+
+        // è®¾ç½®æ„å›¾å›¾æ ‡
+        if (intentIcon != null)
+        {
+            if (intent.icon != null)
+            {
+                intentIcon.sprite = intent.icon;
+                intentIcon.gameObject.SetActive(true);
+            }
+            else
+            {
+                // æ²¡æœ‰è‡ªå®šä¹‰å›¾æ ‡ï¼Œä½¿ç”¨é»˜è®¤å›¾æ ‡
+                Sprite defaultIcon = GetDefaultIntentIcon(intent.type);
+                if (defaultIcon != null)
+                {
+                    intentIcon.sprite = defaultIcon;
+                    intentIcon.gameObject.SetActive(true);
+                }
+                else
+                {
+                    intentIcon.gameObject.SetActive(false);
+                }
+            }
+        }
+
+        // è®¾ç½®æ„å›¾æ•°å€¼æ–‡æœ¬ï¼ˆå¯é€‰ï¼‰
+        if (intentValueText != null)
+        {
+            switch (intent.type)
+            {
+                case EnemyIntentType.Attack:
+                case EnemyIntentType.MultiAttack:
+                case EnemyIntentType.SpecialAttack:
+                    intentValueText.text = intent.value.ToString();
+                    break;
+                case EnemyIntentType.Block:
+                    intentValueText.text = intent.value.ToString();
+                    break;
+                case EnemyIntentType.Heal:
+                    intentValueText.text = "+" + intent.value.ToString();
+                    break;
+                default:
+                    intentValueText.text = "";
+                    break;
+            }
+        }
+
+        // è®¾ç½®æ„å›¾æè¿°ï¼ˆç”¨äºæ‚¬æµ®æç¤ºï¼‰
+        UpdateIntentTooltip(intent);
+    }
+
+    /// <summary>
+    /// æ›´æ–°æ„å›¾æ‚¬æµ®æç¤ºå†…å®¹
+    /// </summary>
+    private void UpdateIntentTooltip(EnemyIntent intent)
+    {
+        if (intentTooltipText == null) return;
+
+        string description = GetIntentDescription(intent);
+        intentTooltipText.text = description;
+    }
+
+    /// <summary>
+    /// è·å–æ„å›¾æè¿°
+    /// </summary>
+    private string GetIntentDescription(EnemyIntent intent)
+    {
+        switch (intent.type)
+        {
+            case EnemyIntentType.Attack:
+                return "æ­¤æ•Œäººå³å°†æ”»å‡»";
+
+            case EnemyIntentType.MultiAttack:
+                return "æ­¤æ•Œäººå³å°†è¿›è¡Œå¤šæ®µæ”»å‡»";
+
+            case EnemyIntentType.SpecialAttack:
+                return "æ­¤æ•Œäººå³å°†å‘åŠ¨å¼ºåŠ›æ”»å‡»";
+
+            case EnemyIntentType.Block:
+                return "æ­¤æ•Œäººå³å°†é˜²å¾¡";
+
+            case EnemyIntentType.Heal:
+                return "æ­¤æ•Œäººå³å°†æ¢å¤ç”Ÿå‘½";
+
+            case EnemyIntentType.DebuffPlayer:
+                return "æ­¤æ•Œäººå³å°†æ–½åŠ è´Ÿé¢æ•ˆæœ";
+
+            case EnemyIntentType.BuffSelf:
+            case EnemyIntentType.Strengthen:
+                return "æ­¤æ•Œäººå³å°†å¼ºåŒ–è‡ªèº«";
+
+            case EnemyIntentType.Summon:
+                return "æ­¤æ•Œäººå³å°†å¬å”¤æ´å†›";
+
+            case EnemyIntentType.Unknown:
+                return "???";
+
+            default:
+                return "æœªçŸ¥è¡ŒåŠ¨";
+        }
+    }
+
+    /// <summary>
+    /// è·å–é»˜è®¤æ„å›¾å›¾æ ‡ï¼ˆä» Resources åŠ è½½ï¼‰
+    /// </summary>
+    private Sprite GetDefaultIntentIcon(EnemyIntentType intentType)
+    {
+        string iconName = intentType switch
+        {
+            EnemyIntentType.Attack => "Intent_Attack",
+            EnemyIntentType.MultiAttack => "Intent_MultiAttack",
+            EnemyIntentType.SpecialAttack => "Intent_SpecialAttack",
+            EnemyIntentType.Block => "Intent_Block",
+            EnemyIntentType.Heal => "Intent_Heal",
+            EnemyIntentType.BuffSelf => "Intent_Buff",
+            EnemyIntentType.Strengthen => "Intent_Strengthen",
+            EnemyIntentType.DebuffPlayer => "Intent_Debuff",
+            EnemyIntentType.Summon => "Intent_Summon",
+            EnemyIntentType.Unknown => "Intent_Unknown",
+            _ => "Intent_Attack"
+        };
+
+        return Resources.Load<Sprite>($"IntentIcons/{iconName}");
+    }
+
+    /// <summary>
+    /// æ˜¾ç¤ºæ„å›¾æ‚¬æµ®æç¤ºï¼ˆé¼ æ ‡æ‚¬åœæ—¶è°ƒç”¨ï¼‰
+    /// </summary>
+    public void ShowIntentTooltip()
+    {
+        if (targetEnemy == null)
+        {
+            targetEnemy = GetComponentInParent<EnemyBattleEntity>();
+        }
+
+        Debug.Log($"[æ„å›¾æ‚¬æµ®] ShowIntentTooltip è¢«è°ƒç”¨ - intentTooltip: {(intentTooltip != null ? "OK" : "NULL")}, targetEnemy: {(targetEnemy != null ? targetEnemy.gameObject.name : "NULL")}");
+
+        if (intentTooltip != null && targetEnemy != null)
+        {
+            EnemyIntent intent = targetEnemy.GetCurrentIntent();
+            Debug.Log($"[æ„å›¾æ‚¬æµ®] æ„å›¾: {(intent != null ? intent.type.ToString() : "NULL")}, icon: {(intent?.icon != null ? "OK" : "NULL")}");
+
+            if (intent != null)
+            {
+                UpdateIntentTooltip(intent);
+                intentTooltip.SetActive(true);
+                Debug.Log($"[æ„å›¾æ‚¬æµ®] æ˜¾ç¤ºæ‚¬æµ®æç¤ºæˆåŠŸ");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[æ„å›¾æ‚¬æµ®] æ— æ³•æ˜¾ç¤º - intentTooltip: {(intentTooltip != null ? "OK" : "NULL")}, targetEnemy: {(targetEnemy != null ? "OK" : "NULL")}");
+        }
+    }
+
+    /// <summary>
+    /// éšè—æ„å›¾æ‚¬æµ®æç¤ºï¼ˆé¼ æ ‡ç¦»å¼€æ—¶è°ƒç”¨ï¼‰
+    /// </summary>
+    public void HideIntentTooltip()
+    {
+        if (intentTooltip != null)
+        {
+            intentTooltip.SetActive(false);
+        }
+    }
+
+    // ========================================================
+    // 3. äº‹ä»¶é©±åŠ¨çš„åˆ†æµåˆ·æ–°å‡½æ•°ï¼šæ•°æ®ä¸€å˜ï¼Œç¬é—´å®šå‘è‡ªé‡ç”»ï¼Œæ€§èƒ½æä½³ï¼ [1, 5]
     // ========================================================
 
     private void RefreshHP()
@@ -135,39 +393,61 @@ public class EntityHUD : MonoBehaviour
         breakSlider.value = targetStats.currentBreakValue;
     }
 
+    private void RefreshShield()
+    {
+        if (targetStats == null || shieldSlider == null) return;
+
+        // æŠ¤ç›¾æ¡æœ€å¤§å€¼è®¾ä¸ºè§’è‰²æœ€å¤§HPï¼ˆå‚è€ƒæ€æˆ®å°–å¡”ï¼‰
+        shieldSlider.maxValue = targetStats.maxHP;
+        shieldSlider.value = targetStats.shield;
+
+        // å¦‚æœæ²¡æœ‰æŠ¤ç›¾ï¼Œéšè—æŠ¤ç›¾æ¡
+        shieldSlider.gameObject.SetActive(targetStats.shield > 0);
+    }
+
     private void RefreshBuffIcons()
     {
         if (buffContainer == null || buffIconPrefab == null || targetStats == null) return;
 
-        // Çå¿Õ¾ÉµÄ
+        // æ¸…ç©ºæ—§çš„
         foreach (Transform child in buffContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // ¶¯Ì¬¿ËÂ¡ĞÂµÄ×´Ì¬Í¼±ê£¬Ë®Æ½²¼¾Ö×éÈ«×Ô¶¯¶ÔÆë
+        // è·å– BuffTooltipPanelï¼ˆå¦‚æœæœ‰ï¼‰
+        BuffTooltipPanel tooltipPanel = FindObjectOfType<BuffTooltipPanel>();
+
+        // åŠ¨æ€å…‹éš†æ–°çš„çŠ¶æ€å›¾æ ‡ï¼Œæ°´å¹³å¸ƒå±€ç»„å…¨è‡ªåŠ¨å¯¹é½
         foreach (Buff buff in targetStats.activeBuffs)
         {
             GameObject iconObj = Instantiate(buffIconPrefab, buffContainer);
 
-            // 1. ÉèÖÃ Buff µÄ¾«ÁéÍ¼Æ¬ [1]
-            // ========================================================
-            // ºËĞÄĞŞ¸Ä£º¸ÄÓÃ»ñÈ¡ÎÒÃÇ¸ß¼¶µÄ BuffIcon ½Å±¾²¢Ò»¼ü×¢ÈëÊı¾İ£¡
-            // ========================================================
+            // 1. è®¾ç½® Buff çš„ç²¾çµå›¾ç‰‡
             BuffIcon iconScript = iconObj.GetComponent<BuffIcon>();
             if (iconScript != null)
             {
                 iconScript.Setup(buff);
             }
 
-            // ========================================================
-            // 2. ºËĞÄĞÂÔö£º×Ô¶¯×¥È¡×ÓÎïÌåÉÏµÄ Text£¬¶¯Ì¬Ë¢Èë¡°Ê£Óà»ØºÏÊı¡±Óë¡°²ãÊı£¨x2£©¡± [1]
-            // ========================================================
+            // 2. è‡ªåŠ¨æŠ“å–å­ç‰©ä½“ä¸Šçš„ Textï¼ŒåŠ¨æ€åˆ·å…¥"å‰©ä½™å›åˆæ•°"ä¸"å±‚æ•°ï¼ˆx2ï¼‰"
             Text turnText = iconObj.GetComponentInChildren<Text>();
             if (turnText != null)
             {
-                // Èç¹û²ãÊı´óÓÚ 1£¬ÔòÍ¬Ê±»»ĞĞÏÔÊ¾²ãÊı£¬ÀıÈçÏÔÊ¾ "3 \n x2" (3»ØºÏ£¬2²ã) [1]
                 turnText.text = buff.stacks > 1 ? $"{buff.durationTurns}\n<size=10>x{buff.stacks}</size>" : buff.durationTurns.ToString();
+            }
+
+            // 3. æ·»åŠ  Buff æ‚¬æµ®æç¤ºè§¦å‘å™¨
+            if (tooltipPanel != null)
+            {
+                // ç¡®ä¿æœ‰ Raycast Targetï¼ˆæ‰èƒ½æ¥æ”¶é¼ æ ‡äº‹ä»¶ï¼‰
+                Image iconImage = iconObj.GetComponent<Image>();
+                if (iconImage != null)
+                    iconImage.raycastTarget = true;
+
+                // æ·»åŠ è§¦å‘å™¨ç»„ä»¶
+                BuffTooltipTrigger trigger = iconObj.AddComponent<BuffTooltipTrigger>();
+                trigger.Setup(buff, tooltipPanel);
             }
         }
     }

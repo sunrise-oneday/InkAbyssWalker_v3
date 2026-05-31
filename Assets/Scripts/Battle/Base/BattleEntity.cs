@@ -15,7 +15,8 @@ public abstract class BattleEntity : EntityBase
 
     public virtual int ReceiveAttack(int damage, int breakDamage)
     {
-        int finalDamage = Stats.TakeDamage(damage, breakDamage);
+        // ä½¿ç”¨å¸¦æŠ¤ç›¾çš„ä¼¤å®³è®¡ç®—ï¼ˆæŠ¤ç›¾ä¼˜å…ˆæŠµæŒ¡ä¼¤å®³ï¼‰
+        int finalDamage = Stats.TakeDamageWithShield(damage, breakDamage);
         if (Stats.currentHP <= 0)
         {
             Die();
@@ -23,7 +24,7 @@ public abstract class BattleEntity : EntityBase
         else
         {
             // ========================================================
-            // ºËÐÄÖØ¹¹£ºÖ»ÒªÊÜÉËÇÒÎ´Õ½°Ü£¬È«×Ô¶¯¡¢ÎÞ·ì²¥·Å¡¾ÉÁºì + ¾Ö²¿ÊÜ»÷¶¶¶¯¡¿·´À¡£¡ [2, 5]
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ø¹ï¿½ï¿½ï¿½Ö»Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´Õ½ï¿½Ü£ï¿½È«ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Þ·ì²¥ï¿½Å¡ï¿½ï¿½ï¿½ï¿½ï¿½ + ï¿½Ö²ï¿½ï¿½Ü»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ [2, 5]
             // ========================================================
             PlayHitFeedback();
         }
@@ -32,18 +33,18 @@ public abstract class BattleEntity : EntityBase
     }
 
     /// <summary>
-    /// ²¥·ÅÍ¨ÓÃµÄÊÜ»÷·´À¡±íÏÖ [2]
+    /// ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Ãµï¿½ï¿½Ü»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ [2]
     /// </summary>
     public void PlayHitFeedback()
     {
-        // 1. ¾«Áé¾Ö²¿×ø±ê¶¶¶¯ 0.15 Ãë£¨·ù¶È 0.12£¬²»Ó°Ïì¸¸ÎïÌåµÄ×ø±ê£© [2]
+        // 1. ï¿½ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ê¶¶ï¿½ï¿½ 0.15 ï¿½ë£¨ï¿½ï¿½ï¿½ï¿½ 0.12ï¿½ï¿½ï¿½ï¿½Ó°ï¿½ì¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê£© [2]
         StartCoroutine(ShakeSpriteRoutine(0.15f, 0.12f));
-        // 2. ¾«ÁéÉÁË¸ºì¹â 0.12 Ãë [2]
+        // 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¸ï¿½ï¿½ï¿½ 0.12 ï¿½ï¿½ [2]
         StartCoroutine(FlashColorRoutine(Color.red, 0.12f));
     }
 
     /// <summary>
-    /// Í¨ÓÃ±äÉ«½Ó¿Ú£ºÏòÍâ±©Â¶£¨¹©ÍêÃÀÕÐ¼Ü³É¹¦Ê±ÉÁË¸Çà¹â¡¢±»»÷ÖÐÉÁºì¹âµÈµ÷ÓÃ£©
+    /// Í¨ï¿½Ã±ï¿½É«ï¿½Ó¿Ú£ï¿½ï¿½ï¿½ï¿½â±©Â¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼Ü³É¹ï¿½Ê±ï¿½ï¿½Ë¸ï¿½ï¿½â¡¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Èµï¿½ï¿½Ã£ï¿½
     /// </summary>
     public void FlashColor(Color color, float duration)
     {
@@ -56,7 +57,7 @@ public abstract class BattleEntity : EntityBase
         {
             sprite.color = color;
             yield return new WaitForSeconds(duration);
-            sprite.color = Color.white; // ×Ô¶¯¸´Ô­ÎªÕý³£°×É«
+            sprite.color = Color.white; // ï¿½Ô¶ï¿½ï¿½ï¿½Ô­Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
         }
     }
 
@@ -69,22 +70,22 @@ public abstract class BattleEntity : EntityBase
 
         while (elapsed < duration)
         {
-            // ¼ÆËãËæ»ú¶¶¶¯Æ«ÒÆÁ¿
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½
             float x = Random.Range(-1f, 1f) * magnitude;
             float y = Random.Range(-1f, 1f) * magnitude;
 
             sprite.transform.localPosition = originalLocalPos + new Vector3(x, y, 0f);
             elapsed += Time.deltaTime;
 
-            yield return null; // µÈ´ýÒ»Ö¡
+            yield return null; // ï¿½È´ï¿½Ò»Ö¡
         }
 
-        sprite.transform.localPosition = originalLocalPos; // ¶¶¶¯½áÊø£¬ÎïÀí¹éÎ»
+        sprite.transform.localPosition = originalLocalPos; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»
     }
 
     protected virtual void Die()
     {
-        Debug.Log($"{gameObject.name} Õ½°ÜÁË£¡");
+        Debug.Log($"{gameObject.name} Õ½ï¿½ï¿½ï¿½Ë£ï¿½");
     }
 
 }

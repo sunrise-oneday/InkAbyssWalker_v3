@@ -1,30 +1,30 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ¹ÖÎïÊÍ·Å¶à¶ÎÁ¬»÷µÄ×´Ì¬
+/// æ€ªç‰©é‡Šæ”¾å¤šæ®µè¿å‡»çš„çŠ¶æ€
 /// </summary>
 public class EnemyBattleState : EnemyBaseBattleState
 {
-    // ·ÏÆúĞ´ËÀµ¥¶¯×÷£¬¶¯»­±äÕĞÓÉ¶¯»­ÊÂ¼şÈ«×Ô¶¯Á÷×ª [1]
+    // åºŸå¼ƒå†™æ­»å•åŠ¨ä½œï¼ŒåŠ¨ç”»å˜æ‹›ç”±åŠ¨ç”»äº‹ä»¶å…¨è‡ªåŠ¨æµè½¬ [1]
     protected override int AnimHash => 0;
 
     public override void Enter()
     {
-        // ×Ô¶¯µ÷ÓÃ BaseState µÄ Enter ÖØÖÃ
+        // è‡ªåŠ¨è°ƒç”¨ BaseState çš„ Enter é‡ç½®
         base.Enter();
 
-        // 1. ºËĞÄ£º½øÈë×´Ì¬Ê±£¬Ö»¸ºÔğÒı±¬µÚÒ»Õ¶µÄ¶¯×÷Æô¶¯£¡ [1, 2]
+        // 1. æ ¸å¿ƒï¼šè¿›å…¥çŠ¶æ€æ—¶ï¼Œåªè´Ÿè´£å¼•çˆ†ç¬¬ä¸€æ–©çš„åŠ¨ä½œå¯åŠ¨ï¼ [1, 2]
         if (owner.anim != null && owner.HitAnimHashes != null && owner.HitAnimHashes.Length > 0)
         {
-            // ²¥·ÅµÚÒ»¶Î¹¥»÷¶¯»­£¨Èç Enemy_Attack_1£© [2]
+            // æ’­æ”¾ç¬¬ä¸€æ®µæ”»å‡»åŠ¨ç”»ï¼ˆå¦‚ Enemy_Attack_1ï¼‰ [2]
             owner.anim.CrossFade(owner.HitAnimHashes[0], 0.1f);
-            Debug.Log($"[×´Ì¬»ú] µĞÈË½øÈë¹¥»÷×´Ì¬£¬Æô¶¯µÚÒ»»÷: {owner.GetAttackSequence().hitAnimations[0]}");
+            Debug.Log($"[çŠ¶æ€æœº] æ•Œäººè¿›å…¥æ”»å‡»çŠ¶æ€ï¼Œå¯åŠ¨ç¬¬ä¸€å‡»: {owner.GetAttackSequence().hitAnimations[0]}");
         }
     }
 
     // ========================================================
-    // ³¹µ×½â·Å£¡ÕâÀï²»ĞèÒªÖØĞ´ Update()£¬²»ĞèÒª FixedUpdate()£¡
-    // ËùÓĞµÄ±äÕĞ¹ı¶É£¨TriggerNextAttack£©¡¢ÂäµãÅĞ¶¨£¨TriggerDamage£©¡¢
-    // ÒÔ¼°»ØºÏ½áÊøÍË»Ø£¨TriggerAttackFinished£©È«²¿ÓÉ Unity µÄ¶¯»­ÊÂ¼şÈ«×Ô¶¯¸ã¶¨£¡ [1]
+    // å½»åº•è§£æ”¾ï¼è¿™é‡Œä¸éœ€è¦é‡å†™ Update()ï¼Œä¸éœ€è¦ FixedUpdate()ï¼
+    // æ‰€æœ‰çš„å˜æ‹›è¿‡æ¸¡ï¼ˆTriggerNextAttackï¼‰ã€è½ç‚¹åˆ¤å®šï¼ˆTriggerDamageï¼‰ã€
+    // ä»¥åŠå›åˆç»“æŸé€€å›ï¼ˆTriggerAttackFinishedï¼‰å…¨éƒ¨ç”± Unity çš„åŠ¨ç”»äº‹ä»¶å…¨è‡ªåŠ¨æå®šï¼ [1]
     // ========================================================
 }
