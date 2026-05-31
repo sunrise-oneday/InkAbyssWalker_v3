@@ -88,7 +88,6 @@ namespace StoreAndInventory
             }
 
             var reasonPart = string.IsNullOrEmpty(reason) ? string.Empty : $" ({reason})";
-            StoreInventoryLog.Info($"[Wallet] Add {id} +{amount}{reasonPart} → {entry.amount} (was {before})");
             OnChanged?.Invoke(id, entry.amount);
         }
 
@@ -103,7 +102,6 @@ namespace StoreAndInventory
             var current = Get(id);
             if (current < amount)
             {
-                StoreInventoryLog.Info($"[Wallet] TrySpend failed: {id} 不足（拥有 {current}，需要 {amount}）");
                 return false;
             }
 
@@ -111,7 +109,6 @@ namespace StoreAndInventory
             entry.amount -= amount;
 
             var reasonPart = string.IsNullOrEmpty(reason) ? string.Empty : $" ({reason})";
-            StoreInventoryLog.Info($"[Wallet] Spend {id} -{amount}{reasonPart} → {entry.amount}");
             OnChanged?.Invoke(id, entry.amount);
             return true;
         }

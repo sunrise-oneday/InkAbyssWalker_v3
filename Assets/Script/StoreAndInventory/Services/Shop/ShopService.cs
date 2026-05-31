@@ -65,7 +65,6 @@ namespace StoreAndInventory
 
             ApplyArchivedRuntime(target.shopId);
 
-            StoreInventoryLog.Info($"[ShopService] Open: {target.shopId} {target.displayName}");
             OnShopOpened?.Invoke(target);
         }
 
@@ -79,7 +78,6 @@ namespace StoreAndInventory
             runtime = new ShopRuntimeData();
             entryById.Clear();
             stockById.Clear();
-            StoreInventoryLog.Info("[ShopService] Close");
             OnShopClosed?.Invoke();
         }
 
@@ -87,19 +85,16 @@ namespace StoreAndInventory
         {
             if (!IsOpen)
             {
-                StoreInventoryLog.Info("[ShopService] TryBuy → ShopClosed");
                 return BuyResult.ShopClosed;
             }
 
             if (count <= 0 || string.IsNullOrEmpty(itemId))
             {
-                StoreInventoryLog.Info($"[ShopService] TryBuy → InvalidItem (itemId={itemId}, count={count})");
                 return BuyResult.InvalidItem;
             }
 
             if (!entryById.TryGetValue(itemId, out var entry) || entry?.item == null)
             {
-                StoreInventoryLog.Info($"[ShopService] TryBuy → InvalidItem (not in fixedStock: {itemId})");
                 return BuyResult.InvalidItem;
             }
 
@@ -108,13 +103,11 @@ namespace StoreAndInventory
 
             if (!HasStockByCategory(item, entry, count))
             {
-                StoreInventoryLog.Info($"[ShopService] TryBuy → OutOfStock ({itemId} x{count})");
                 return BuyResult.OutOfStock;
             }
 
             if (wallet == null || !wallet.Has(CurrencyId.Ink, totalPrice))
             {
-                StoreInventoryLog.Info($"[ShopService] TryBuy → NoCurrency ({itemId}, need Ink={totalPrice})");
                 return BuyResult.NoCurrency;
             }
 
@@ -136,7 +129,6 @@ namespace StoreAndInventory
             }
 
             ConsumeStockIfEquipment(item, entry, count);
-            StoreInventoryLog.Info($"[ShopService] TryBuy → Success ({itemId} x{count}, Ink -{totalPrice})");
             OnShopChanged?.Invoke();
             return BuyResult.Success;
         }
@@ -179,7 +171,6 @@ namespace StoreAndInventory
             if (!def.canSell)
             {
                 message = "not sellable";
-                StoreInventoryLog.Info($"[ShopService] TrySell → NotSellable ({def.id})");
                 return SellResult.NotSellable;
             }
 
@@ -197,7 +188,6 @@ namespace StoreAndInventory
             if (wallet != null)
                 wallet.Add(CurrencyId.Ink, totalPrice, $"sell {def.id} x{count}");
 
-            StoreInventoryLog.Info($"[ShopService] TrySell → Success ({def.id} x{count}, Ink +{totalPrice})");
             OnShopChanged?.Invoke();
             return SellResult.Success;
         }

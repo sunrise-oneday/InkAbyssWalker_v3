@@ -37,7 +37,16 @@ public class CharacterStats : MonoBehaviour
     /// <summary>
     /// 接收伤害与破防值的计算 [1, 5]
     /// </summary>
-    public void TakeDamage(int rawDamage, int breakDamage)
+    /// <summary>战斗治疗，不超过 maxHP。</summary>
+    public void Heal(int amount)
+    {
+        if (amount <= 0) return;
+        currentHP = Mathf.Min(currentHP + amount, maxHP);
+        OnHPChanged?.Invoke();
+    }
+
+    /// <summary>返回本次实际扣血 finalDamage（供装备吸血等）。</summary>
+    public int TakeDamage(int rawDamage, int breakDamage)
     {
         // 1. 调用所有活跃 Buff 的伤害拦截器 [1, 5]
         int processedDamage = rawDamage;
@@ -62,6 +71,8 @@ public class CharacterStats : MonoBehaviour
                 TriggerBreak();
             }
         }
+
+        return finalDamage;
     }
 
     private void TriggerBreak()

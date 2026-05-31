@@ -344,18 +344,7 @@ namespace StoreAndInventory
             return statName;
         }
 
-        static string StatLabel(StatType stat)
-        {
-            return stat switch
-            {
-                StatType.Attack => "Attack",
-                StatType.MaxHp => "Max HP",
-                StatType.Defense => "Defense",
-                StatType.Speed => "Speed",
-                StatType.CritRate => "Crit Rate",
-                _ => stat.ToString()
-            };
-        }
+        static string StatLabel(StatType stat) => StatDisplayUtil.Label(stat);
 
         static void SetField(TextMeshProUGUI text, string value)
         {

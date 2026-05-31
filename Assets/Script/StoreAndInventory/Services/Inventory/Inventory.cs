@@ -216,7 +216,6 @@ namespace StoreAndInventory
             }
 
             OnChanged?.Invoke();
-            StoreInventoryLog.Info($"[Inventory] TryAdd ok: {item.id} +{count}, slots now={items.Count}");
             return true;
         }
 
@@ -246,7 +245,6 @@ namespace StoreAndInventory
             if (total < count)
             {
                 message = $"不足：拥有 {total}，需要 {count}";
-                StoreInventoryLog.Info($"[Inventory] TryConsume failed: {message}");
                 return false;
             }
 
@@ -268,7 +266,6 @@ namespace StoreAndInventory
             }
 
             OnChanged?.Invoke();
-            StoreInventoryLog.Info($"[Inventory] TryConsume ok: {definitionId} -{count}, slots now={items.Count}");
             return true;
         }
 
@@ -293,7 +290,6 @@ namespace StoreAndInventory
 
             items.RemoveAt(index);
             OnChanged?.Invoke();
-            StoreInventoryLog.Info($"[Inventory] TryTakeAt [{index}]: {Format(taken)}");
             return true;
         }
 
@@ -344,7 +340,6 @@ namespace StoreAndInventory
             }
 
             OnChanged?.Invoke();
-            StoreInventoryLog.Info($"[Inventory] TryTakePartialAt [{index}] -{count}: {Format(taken)}");
             return true;
         }
 
@@ -379,7 +374,6 @@ namespace StoreAndInventory
                     instanceGuid = stack.instanceGuid
                 });
                 OnChanged?.Invoke();
-                StoreInventoryLog.Info($"[Inventory] TryAddStack equip: {Format(stack)}");
                 return true;
             }
 

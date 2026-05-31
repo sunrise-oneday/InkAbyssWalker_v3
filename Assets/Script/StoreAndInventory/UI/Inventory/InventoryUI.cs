@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,8 +9,10 @@ namespace StoreAndInventory
     {
         [SerializeField] Inventory inventory;
         [SerializeField] ItemDatabase database;
-        [SerializeField] TestCharacter testCharacter;
+        [SerializeField] MainCharacterStatSource statSource;
         [SerializeField] EquipmentService equipmentService;
+
+        ICharacterStatSource StatSource => statSource;
 
         [SerializeField] InventoryItemUI itemPrefab;
         [SerializeField] Transform content;
@@ -27,14 +30,17 @@ namespace StoreAndInventory
 
         public bool IsOpen => gameObject.activeSelf;
 
+        /// <summary>背包面板关闭时触发（含 Close 按钮）；供 StoreInventoryInputBridge 恢复探索输入。</summary>
+        public event Action Closed;
+
         void Awake()
         {
             if (inventory == null)
                 inventory = FindObjectOfType<Inventory>();
             if (database == null)
                 database = FindObjectOfType<ItemDatabase>();
-            if (testCharacter == null)
-                testCharacter = FindObjectOfType<TestCharacter>();
+            if (statSource == null)
+                statSource = CharacterStatSourceLocator.Resolve();
             if (equipmentService == null)
                 equipmentService = FindObjectOfType<EquipmentService>();
             if (itemInfoPanel == null)
@@ -108,6 +114,7 @@ namespace StoreAndInventory
             selectedBagIndex = -1;
             selectedRuneSlotIndex = -1;
             infoPanelRuneSlotIndex = -1;
+            Closed?.Invoke();
         }
 
         public void Toggle()
@@ -133,7 +140,6 @@ namespace StoreAndInventory
             RefreshRuneSlots();
             RefreshItems();
             RefreshStats();
-            LogStatSnapshot($"equip change slot={slotIndex} id={stack?.definitionId}");
 
             if (infoPanelRuneSlotIndex == slotIndex && equipmentService.GetEquippedStack(slotIndex) == null)
                 itemInfoPanel?.Hide();
@@ -265,16 +271,6 @@ namespace StoreAndInventory
                 return;
             }
 
-            if (effects != null)
-            {
-                for (var i = 0; i < effects.Count; i++)
-                {
-                    var fx = effects[i];
-                    var fxName = fx != null ? fx.name : "(null)";
-                    StoreInventoryLog.Info($"[InventoryUI] Use effect: {fxName}");
-                }
-            }
-
             itemInfoPanel?.Hide();
             selectedBagIndex = -1;
             RefreshItems();
@@ -294,31 +290,18 @@ namespace StoreAndInventory
             RefreshRuneSlotSelection();
         }
 
-        public void RefreshStats()
+        void EnsureStatSource()
         {
-            if (testCharacter == null || statLines == null) return;
-
-            var mods = equipmentService != null ? equipmentService.GetAllStatMods() : null;
-
-            for (var i = 0; i < statLines.Length; i++)
-            {
-                var line = statLines[i];
-                if (line == null) continue;
-
-                var stat = line.StatType;
-                var baseValue = testCharacter.Get(stat);
-                var bonus = StatDisplayUtil.SumEquipmentBonus(baseValue, stat, mods);
-                line.Bind(baseValue, bonus);
-            }
+            if (statSource == null)
+                statSource = CharacterStatSourceLocator.Resolve();
         }
 
-        void LogStatSnapshot(string reason)
+        public void RefreshStats()
         {
-            if (testCharacter == null || statLines == null) return;
+            EnsureStatSource();
 
-            var mods = equipmentService != null ? equipmentService.GetAllStatMods() : null;
-            var modCount = mods?.Count ?? 0;
-            StoreInventoryLog.Info($"[InventoryUI] {reason} statMods={modCount}");
+            if (StatSource == null || !StatSource.IsBound || statLines == null)
+                return;
 
             for (var i = 0; i < statLines.Length; i++)
             {
@@ -326,12 +309,12 @@ namespace StoreAndInventory
                 if (line == null) continue;
 
                 var stat = line.StatType;
-                var baseValue = testCharacter.Get(stat);
-                var bonus = StatDisplayUtil.SumEquipmentBonus(baseValue, stat, mods);
-                var effective = baseValue + bonus;
-                StoreInventoryLog.Info(
-                    $"[InventoryUI]   {StatDisplayUtil.Label(stat)} base={StatDisplayUtil.FormatValue(stat, baseValue)} " +
-                    $"bonus={StatDisplayUtil.FormatValue(stat, bonus)} effective={StatDisplayUtil.FormatValue(stat, effective)}");
+                if (!CharacterStatFieldMap.IsInventoryPanelStat(stat))
+                    continue;
+
+                var baseValue = EffectiveStatCalculator.GetBase(StatSource, stat);
+                var bonus = EffectiveStatCalculator.GetEquipmentBonus(StatSource, stat, equipmentService);
+                line.Bind(baseValue, bonus);
             }
         }
 

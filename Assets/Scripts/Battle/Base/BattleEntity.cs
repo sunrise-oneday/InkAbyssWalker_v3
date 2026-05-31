@@ -13,9 +13,9 @@ public abstract class BattleEntity : EntityBase
         Stats = GetComponent<CharacterStats>();
     }
 
-    public virtual void ReceiveAttack(int damage, int breakDamage)
+    public virtual int ReceiveAttack(int damage, int breakDamage)
     {
-        Stats.TakeDamage(damage, breakDamage);
+        int finalDamage = Stats.TakeDamage(damage, breakDamage);
         if (Stats.currentHP <= 0)
         {
             Die();
@@ -27,6 +27,8 @@ public abstract class BattleEntity : EntityBase
             // ========================================================
             PlayHitFeedback();
         }
+
+        return finalDamage;
     }
 
     /// <summary>

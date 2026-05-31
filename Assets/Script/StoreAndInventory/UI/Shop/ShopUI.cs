@@ -250,7 +250,6 @@ namespace StoreAndInventory
 
             var itemId = selectedEntry.item.id;
             var result = shopService.TryBuy(itemId, 1);
-            StoreInventoryLog.Info($"[ShopUI] Buy {itemId} → {result}");
 
             if (result == BuyResult.Success)
             {

@@ -8,18 +8,18 @@ namespace StoreAndInventory
         {
             return stat switch
             {
-                StatType.Attack => "Attack",
-                StatType.MaxHp => "Max HP",
-                StatType.Defense => "Defense",
-                StatType.Speed => "Speed",
-                StatType.CritRate => "Crit Rate",
+                StatType.Attack => "攻击",
+                StatType.MaxHp => "生命",
+                StatType.MaxMp => "法力",
+                StatType.Defense => "防御",
+                StatType.MaxBreak => "破防上限",
                 _ => stat.ToString()
             };
         }
 
         public static string FormatValue(StatType stat, float value)
         {
-            return stat == StatType.CritRate ? value.ToString("0.##") : value.ToString("0");
+            return value.ToString("0");
         }
 
         /// <summary>

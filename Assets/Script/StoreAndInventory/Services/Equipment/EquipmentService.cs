@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 
 namespace StoreAndInventory
@@ -118,9 +117,7 @@ namespace StoreAndInventory
             PutInCache(taken);
             data.runes[runeSlotIndex].instanceGuid = taken.instanceGuid;
 
-            LogEquip($"Equip slot={runeSlotIndex} guid={taken.instanceGuid} id={taken.definitionId}");
             InvalidateModCache();
-            LogEquippedStatMods(def as Equipment);
             OnEquipped?.Invoke(runeSlotIndex, taken);
             return true;
         }
@@ -164,9 +161,7 @@ namespace StoreAndInventory
             }
 
             data.runes[runeSlotIndex].instanceGuid = null;
-            LogEquip($"Unequip slot={runeSlotIndex} guid={stack.instanceGuid} id={stack.definitionId}");
             InvalidateModCache();
-            LogAggregateStatMods("after unequip");
             OnUnequipped?.Invoke(runeSlotIndex, stack);
             return true;
         }
@@ -410,47 +405,6 @@ namespace StoreAndInventory
             }
 
             return -1;
-        }
-
-        [Conditional("DEBUG_STORE_INVENTORY")]
-        static void LogEquip(string msg)
-        {
-            StoreInventoryLog.Info($"[EquipmentService] {msg}");
-        }
-
-        [Conditional("DEBUG_STORE_INVENTORY")]
-        void LogEquippedStatMods(Equipment equip)
-        {
-            if (equip == null)
-            {
-                StoreInventoryLog.Info("[EquipmentService] equipped item has no statMods (null Equipment def)");
-                return;
-            }
-
-            var count = equip.statMods?.Count ?? 0;
-            StoreInventoryLog.Info($"[EquipmentService] equipped {equip.id} statMods on item={count}");
-            if (equip.statMods == null) return;
-
-            for (var i = 0; i < equip.statMods.Count; i++)
-            {
-                var m = equip.statMods[i];
-                StoreInventoryLog.Info(
-                    $"[EquipmentService]   mod[{i}] {m.stat} flat={m.flat} pct={m.percent}");
-            }
-
-            LogAggregateStatMods("after equip");
-        }
-
-        [Conditional("DEBUG_STORE_INVENTORY")]
-        void LogAggregateStatMods(string reason)
-        {
-            var all = GetAllStatMods();
-            StoreInventoryLog.Info($"[EquipmentService] {reason} aggregate statMods={all.Count}");
-            for (var i = 0; i < all.Count; i++)
-            {
-                var m = all[i];
-                StoreInventoryLog.Info($"[EquipmentService]   agg[{i}] {m.stat} flat={m.flat} pct={m.percent}");
-            }
         }
     }
 }

@@ -71,6 +71,24 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""465a63e6-46d8-4dc4-b715-8777e1d06bbb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenShop"",
+                    ""type"": ""Button"",
+                    ""id"": ""2af57925-d8a3-4951-90d2-a26c42044923"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -313,6 +331,28 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""969e5d79-0bbc-4783-be7e-ff234ab91eba"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0164327e-e15d-4390-b4ae-ddcb357a9d47"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""OpenShop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1033,6 +1073,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         m_GamePlayer_Fire = m_GamePlayer.FindAction("Fire", throwIfNotFound: true);
         m_GamePlayer_Jump = m_GamePlayer.FindAction("Jump", throwIfNotFound: true);
         m_GamePlayer_Dash = m_GamePlayer.FindAction("Dash", throwIfNotFound: true);
+        m_GamePlayer_OpenInventory = m_GamePlayer.FindAction("OpenInventory", throwIfNotFound: true);
+        m_GamePlayer_OpenShop = m_GamePlayer.FindAction("OpenShop", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1119,6 +1161,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
     private readonly InputAction m_GamePlayer_Fire;
     private readonly InputAction m_GamePlayer_Jump;
     private readonly InputAction m_GamePlayer_Dash;
+    private readonly InputAction m_GamePlayer_OpenInventory;
+    private readonly InputAction m_GamePlayer_OpenShop;
     public struct GamePlayerActions
     {
         private @InputAssets m_Wrapper;
@@ -1128,6 +1172,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         public InputAction @Fire => m_Wrapper.m_GamePlayer_Fire;
         public InputAction @Jump => m_Wrapper.m_GamePlayer_Jump;
         public InputAction @Dash => m_Wrapper.m_GamePlayer_Dash;
+        public InputAction @OpenInventory => m_Wrapper.m_GamePlayer_OpenInventory;
+        public InputAction @OpenShop => m_Wrapper.m_GamePlayer_OpenShop;
         public InputActionMap Get() { return m_Wrapper.m_GamePlayer; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1152,6 +1198,12 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
+            @OpenInventory.started += instance.OnOpenInventory;
+            @OpenInventory.performed += instance.OnOpenInventory;
+            @OpenInventory.canceled += instance.OnOpenInventory;
+            @OpenShop.started += instance.OnOpenShop;
+            @OpenShop.performed += instance.OnOpenShop;
+            @OpenShop.canceled += instance.OnOpenShop;
         }
 
         private void UnregisterCallbacks(IGamePlayerActions instance)
@@ -1171,6 +1223,12 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
+            @OpenInventory.started -= instance.OnOpenInventory;
+            @OpenInventory.performed -= instance.OnOpenInventory;
+            @OpenInventory.canceled -= instance.OnOpenInventory;
+            @OpenShop.started -= instance.OnOpenShop;
+            @OpenShop.performed -= instance.OnOpenShop;
+            @OpenShop.canceled -= instance.OnOpenShop;
         }
 
         public void RemoveCallbacks(IGamePlayerActions instance)
@@ -1444,6 +1502,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         void OnFire(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnOpenInventory(InputAction.CallbackContext context);
+        void OnOpenShop(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

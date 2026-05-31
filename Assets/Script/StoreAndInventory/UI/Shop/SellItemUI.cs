@@ -63,7 +63,6 @@ namespace StoreAndInventory
             if (shopService == null || bagIndex < 0) return;
 
             var result = shopService.TrySell(bagIndex, 1, out var msg);
-            StoreInventoryLog.Info($"[SellItemUI] Sell index={bagIndex} -> {result} {msg}");
         }
     }
 }

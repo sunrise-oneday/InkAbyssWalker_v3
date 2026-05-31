@@ -3,15 +3,6 @@ using System.Collections.Generic;
 
 namespace StoreAndInventory
 {
-    // Contract for external save systems; chunk export is implemented by StoreSaveService.
-    public interface ISaveBlock
-    {
-        string Key { get; }
-        int Version { get; }
-        string ToJson();
-        bool TryFromJson(string json, out string error);
-    }
-
     [Serializable]
     public class SaveChunk
     {
@@ -32,12 +23,13 @@ namespace StoreAndInventory
         public const int InventoryVersion = 1;
         public const int EquipmentVersion = 1;
         public const int WalletVersion = 1;
-        public const int CharacterVersion = 1;
         public const int ShopRuntimeVersion = 1;
 
         public const string Inventory = "inv.v1";
         public const string Equipment = "equip.v1";
         public const string Wallet = "wallet.v1";
+
+        /// <summary>v2 起不再 Capture；Apply 时忽略旧档中的该块。</summary>
         public const string Character = "character.v1";
 
         public static string Shop(string shopId) => $"shop.{shopId}.v1";

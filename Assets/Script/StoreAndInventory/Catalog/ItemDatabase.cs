@@ -37,7 +37,6 @@ namespace StoreAndInventory
                 _byId[def.id] = def;
             }
 
-            StoreInventoryLog.Info($"[ItemDatabase] Built index: {_byId.Count} items.");
         }
 
         public bool TryGet(string id, out ItemBase item)

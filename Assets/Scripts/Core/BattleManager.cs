@@ -106,7 +106,14 @@ public class BattleManager : MonoBehaviour
 
     private void Update()
     {
-        // ========================================================
+        if (currentPhase != BattlePhase.PlayerTurn)
+            return;
+
+        HandleTargetSelection();
+        CheckAndAutoSelectNextTarget();
+    }
+
+    /// <summary>
     /// �����������Զ���ѡĿ���߼�������ǰ�����Ĺ������������Զ�ָ����һ�����Ĺ�
     /// </summary>
     private void CheckAndAutoSelectNextTarget()
@@ -366,6 +373,9 @@ public class BattleManager : MonoBehaviour
         }
 
         // 9. ��̬��¡���� 
+        ApplyEquipmentStatsToProtagonist();
+        BindEquipmentEffectsForBattle();
+
         activeEnemies.Clear();
         if (groupIndex >= 0 && groupIndex < enemyDatabase.Count)
         {
@@ -502,6 +512,7 @@ public class BattleManager : MonoBehaviour
             // 6. ��������ԭλ�������ƶ�
             if (playerController != null)
             {
+                RestoreEquipmentStatsToProtagonist();
                 playerController.enabled = true;                playerController.rb.velocity = Vector2.zero;
                 playerController.rb.position = savedExplorePosition; // ԭ����������
                 Physics2D.SyncTransforms();
@@ -562,6 +573,7 @@ public class BattleManager : MonoBehaviour
             // 4. ��ȡ�浵�����ݣ�����Ѫ�����ȫ�����ǣ��������͵����һ�����𼤻�������ϣ�
             if (playerController != null)
             {
+                RestoreEquipmentStatsToProtagonist();
                 // ����Ѫ��״̬
                 var stats = playerController.GetComponent<CharacterStats>();
                 if (stats != null)
@@ -1044,4 +1056,60 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(duration); // ʹ�ò���ʱ������Ӱ�����ʵ����
         Time.timeScale = 1.0f;  // �ָ�����
     }
+
+    void ApplyEquipmentStatsToProtagonist()
+    {
+        if (playerController == null)
+            return;
+
+        var stats = playerController.GetComponent<CharacterStats>();
+        if (stats == null)
+            return;
+
+        StoreAndInventory.BattleStatSyncBridge.ApplyToCharacterStats(stats);
+    }
+
+    void RestoreEquipmentStatsToProtagonist()
+    {
+        if (playerController == null)
+            return;
+
+        var stats = playerController.GetComponent<CharacterStats>();
+        if (stats == null)
+            return;
+
+        StoreAndInventory.BattleStatSyncBridge.RestoreCharacterStats(stats);
+        ClearEquipmentEffectsForBattle();
+    }
+
+    void BindEquipmentEffectsForBattle()
+    {
+        if (playerController == null)
+            return;
+
+        var stats = playerController.GetComponent<CharacterStats>();
+        var battleEntity = playerController.GetComponent<PlayerBattleEntity>();
+        if (stats == null || battleEntity == null)
+            return;
+
+        var runner = playerController.GetComponent<EquipmentEffectRunner>();
+        if (runner == null)
+            runner = playerController.gameObject.AddComponent<EquipmentEffectRunner>();
+
+        var equipmentService = FindObjectOfType<StoreAndInventory.EquipmentService>();
+        runner.BindForBattle(equipmentService, stats, battleEntity);
+        battleEntity.SetEquipmentEffectRunner(runner);
+    }
+
+    void ClearEquipmentEffectsForBattle()
+    {
+        if (playerController == null)
+            return;
+
+        var battleEntity = playerController.GetComponent<PlayerBattleEntity>();
+        var runner = playerController.GetComponent<EquipmentEffectRunner>();
+        runner?.ClearBattleCache();
+        battleEntity?.SetEquipmentEffectRunner(null);
+    }
+
 }

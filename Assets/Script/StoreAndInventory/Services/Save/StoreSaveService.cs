@@ -10,13 +10,13 @@ namespace StoreAndInventory
     /// </summary>
     public class StoreSaveService : MonoBehaviour
     {
-        public const int BundleVersion = 1;
+        /// <summary>v2：不再读写 SaveKeys.Character，基础属性以主工程 CharacterStats 为准。</summary>
+        public const int BundleVersion = 2;
 
         [SerializeField] Inventory inventory;
         [SerializeField] WalletService wallet;
         [SerializeField] EquipmentService equipment;
         [SerializeField] ShopService shop;
-        [SerializeField] TestCharacter testCharacter;
 
         void Awake()
         {
@@ -24,7 +24,6 @@ namespace StoreAndInventory
             if (wallet == null) wallet = FindObjectOfType<WalletService>();
             if (equipment == null) equipment = FindObjectOfType<EquipmentService>();
             if (shop == null) shop = FindObjectOfType<ShopService>();
-            if (testCharacter == null) testCharacter = FindObjectOfType<TestCharacter>();
         }
 
         public SaveBundle CaptureAll()
@@ -58,16 +57,6 @@ namespace StoreAndInventory
                     key = SaveKeys.Wallet,
                     version = SaveKeys.WalletVersion,
                     json = JsonUtility.ToJson(wallet.Data)
-                });
-            }
-
-            if (testCharacter != null)
-            {
-                bundle.chunks.Add(new SaveChunk
-                {
-                    key = SaveKeys.Character,
-                    version = SaveKeys.CharacterVersion,
-                    json = JsonUtility.ToJson(testCharacter.Data)
                 });
             }
 
@@ -143,9 +132,7 @@ namespace StoreAndInventory
 
                 if (chunk.key == SaveKeys.Character)
                 {
-                    if (testCharacter == null) continue;
-                    var data = JsonUtility.FromJson<CharacterStatsData>(chunk.json);
-                    testCharacter.LoadFromData(data);
+                    // 旧档兼容：基础属性由主工程 CharacterStats 管理，不再 Apply TestCharacter 数据。
                     continue;
                 }
 
@@ -180,94 +167,6 @@ namespace StoreAndInventory
 
             var bundle = JsonUtility.FromJson<SaveBundle>(json);
             return ApplyAll(bundle, out error);
-        }
-
-        public bool RoundTripSelfTest(out string error)
-        {
-            error = null;
-
-            var before = CaptureAll();
-            if (before?.chunks == null || before.chunks.Count == 0)
-            {
-                error = "capture produced no chunks";
-                return false;
-            }
-
-            if (!ApplyAll(before, out error))
-                return false;
-
-            var after = CaptureAll();
-            if (after?.chunks == null)
-            {
-                error = "second capture failed";
-                return false;
-            }
-
-            if (before.chunks.Count != after.chunks.Count)
-            {
-                error = $"chunk count {before.chunks.Count} vs {after.chunks.Count}";
-                return false;
-            }
-
-            for (var i = 0; i < before.chunks.Count; i++)
-            {
-                var a = before.chunks[i];
-                var b = FindChunk(after, a.key);
-                if (b == null)
-                {
-                    error = $"missing chunk {a.key}";
-                    return false;
-                }
-
-                if (a.json != b.json)
-                {
-                    error = $"json mismatch for {a.key}";
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        static SaveChunk FindChunk(SaveBundle bundle, string key)
-        {
-            for (var i = 0; i < bundle.chunks.Count; i++)
-            {
-                var c = bundle.chunks[i];
-                if (c != null && c.key == key)
-                    return c;
-            }
-
-            return null;
-        }
-
-        public void LogExternalQuerySnapshot()
-        {
-            if (equipment != null)
-            {
-                var statMods = equipment.GetAllStatMods();
-                Debug.Log($"[StoreSave] GetAllStatMods count={statMods.Count}");
-                for (var i = 0; i < statMods.Count; i++)
-                {
-                    var m = statMods[i];
-                    Debug.Log($"[StoreSave]   stat={m.stat} flat={m.flat} pct={m.percent}");
-                }
-
-                var skillMods = equipment.GetAllSkillMods();
-                Debug.Log($"[StoreSave] GetAllSkillMods count={skillMods.Count}");
-
-                var effects = equipment.GetAllExtraEffects();
-                Debug.Log($"[StoreSave] GetAllExtraEffects count={effects.Count}");
-                for (var i = 0; i < effects.Count; i++)
-                    Debug.Log($"[StoreSave]   fx={(effects[i] != null ? effects[i].effectTag : "null")}");
-            }
-
-            if (inventory != null)
-            {
-                var battle = inventory.GetConsumables(UseContext.Battle);
-                var any = inventory.GetConsumables(null);
-                Debug.Log($"[StoreSave] GetConsumables battle={battle.Count} all={any.Count}");
-            }
         }
     }
 }

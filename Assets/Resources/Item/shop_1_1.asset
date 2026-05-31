@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d7d43dfde631854b8fe9834c4c1b1d6, type: 3}
+  m_Name: shop_1_1
+  m_EditorClassIdentifier: 
+  idSuffix: 1
+  shopId: shop_1
+  displayName: 1
+  fixedStock:
+  - item: {fileID: 11400000, guid: f943ef808aaa8cc4bbb603563d7764b4, type: 2}
+    priceOverride: 0
+    stock: 1
+    weight: 0
+  randomPool: []
+  randomSlotCount: 3
+  priceMultiplier: 1
+  refreshCostCurrency: 0
