@@ -1,19 +1,19 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Íæ¼ÒÕ½¶·ËÀÍö×´Ì¬£¨Õ½¶·Ê§°ÜÊ±´¥·¢£¬²¥·ÅËÀÍö¶¯»­²¢ËøËÀÎïÀí¸ÕÌå£© [5]
+/// ç©å®¶æˆ˜æ–—æ­»äº¡çŠ¶æ€ï¼ˆæˆ˜æ–—å¤±è´¥æ—¶è§¦å‘ï¼Œæ’­æ”¾æ­»äº¡åŠ¨ç”»å¹¶é”æ­»ç‰©ç†åˆšä½“ï¼‰ [5]
 /// </summary>
 public class PlayerBattleDieState : PlayerBattleState, IDeathState
 {
-    // Ö¸¶¨²¥·ÅÄã Animator ÀïµÄ Player_BattleDie ¶¯»­×´Ì¬Ãû×Ö
+    // æŒ‡å®šæ’­æ”¾ä½  Animator é‡Œçš„ Player_BattleDie åŠ¨ç”»çŠ¶æ€åå­—
     protected override int AnimHash => Animator.StringToHash("Player_BattleDie");
 
     public override void Enter()
     {
-        base.Enter(); // ×´Ì¬¼ÆÊ±Æ÷ÖØÖÃ£¬²¢²¥·ÅËÀÍöµ¹µØ¶¯»­
+        base.Enter(); // çŠ¶æ€è®¡æ—¶å™¨é‡ç½®ï¼Œå¹¶æ’­æ”¾æ­»äº¡å€’åœ°åŠ¨ç”»
 
         owner.SetHorizontalVelocity(0f);
 
-        Debug.Log($"[Íæ¼ÒËÀÍö] {owner.gameObject.name} ²¥·ÅËÀÍö¶¯×÷£¡");
+        Debug.Log($"[ç©å®¶æ­»äº¡] {owner.gameObject.name} æ’­æ”¾æ­»äº¡åŠ¨ä½œï¼");
     }
 }

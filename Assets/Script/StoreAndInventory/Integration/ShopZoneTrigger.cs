@@ -153,7 +153,7 @@ public class ShopZoneTrigger : MonoBehaviour
         if (BattleManager.Instance == null)
             return true;
 
-        return BattleManager.Instance.currentPhase == BattlePhase.None;
+        return BattleTurnManager.Instance.currentPhase == BattlePhase.None;
     }
 
     void SetPromptVisible(bool visible)

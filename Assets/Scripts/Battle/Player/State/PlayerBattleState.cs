@@ -1,7 +1,7 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Õ½¶·×´Ì¬»ùÀà£¬Æä·ºĞÍ T Ö±½ÓÔ¼ÊøÎª PlayerBattleEntity
+/// æˆ˜æ–—çŠ¶æ€åŸºç±»ï¼Œå…¶æ³›å‹ T ç›´æ¥çº¦æŸä¸º PlayerBattleEntity
 /// </summary>
 public abstract class PlayerBattleState : BaseState<PlayerBattleEntity>
 {
@@ -10,9 +10,9 @@ public abstract class PlayerBattleState : BaseState<PlayerBattleEntity>
 
     public override void Enter()
     {
-        base.Enter(); // ×Ô¶¯µ÷ÓÃ BaseState µÄ¼ÆÊ±Æ÷ÇåÁã
+        base.Enter(); // è‡ªåŠ¨è°ƒç”¨ BaseState çš„è®¡æ—¶å™¨æ¸…é›¶
 
-        // Ö±½ÓÍ¨¹ı owner (PlayerBattleEntity) ·ÃÎÊ¶¯»­»ú£¬²¥·ÅÕ½¶·¶¯»­
+        // ç›´æ¥é€šè¿‡ owner (PlayerBattleEntity) è®¿é—®åŠ¨ç”»æœºï¼Œæ’­æ”¾æˆ˜æ–—åŠ¨ç”»
         if (AnimHash != 0 && owner.anim != null)
         {
             owner.anim.CrossFade(AnimHash, CrossFadeDuration);
@@ -21,6 +21,6 @@ public abstract class PlayerBattleState : BaseState<PlayerBattleEntity>
 
     public override void Update()
     {
-        base.Update(); // ×Ô¶¯µ÷ÓÃ BaseState µÄÊ±¼äÀÛ¼Ó
+        base.Update(); // è‡ªåŠ¨è°ƒç”¨ BaseState çš„æ—¶é—´ç´¯åŠ 
     }
 }

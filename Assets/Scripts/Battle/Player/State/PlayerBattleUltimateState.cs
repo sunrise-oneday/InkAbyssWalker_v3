@@ -1,83 +1,83 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Íæ¼ÒÖÕ¼«°ÂÒåÊÍ·Å×´Ì¬£¨È«Õï¶ÏÈÕÖ¾ + ´¿Ãæ°åÊı¾İ¶ÔÆë°æ£© [2, 3]
+/// ç©å®¶ç»ˆæå¥¥ä¹‰é‡Šæ”¾çŠ¶æ€ï¼ˆå…¨è¯Šæ–­æ—¥å¿— + çº¯é¢æ¿æ•°æ®å¯¹é½ç‰ˆï¼‰ [2, 3]
 /// </summary>
 public class PlayerBattleUltimateState : PlayerBattleState
 {
     protected override int AnimHash => Animator.StringToHash(owner.equippedUltimate.animationState);
 
-    private float localTimer;      // ´¿ÊÖĞ´¸ß¾«¶È¼ÆÊ±Æ÷
+    private float localTimer;      // çº¯æ‰‹å†™é«˜ç²¾åº¦è®¡æ—¶å™¨
     private UltimateSkill currentUlt;
     private bool hasDealtDamage;
 
     public override void Enter()
     {
-        base.Enter(); // ×Ô¶¯½øÈë¼ÆÊ±Æ÷¹éÁã
+        base.Enter(); // è‡ªåŠ¨è¿›å…¥è®¡æ—¶å™¨å½’é›¶
 
         localTimer = 0f;
         hasDealtDamage = false;
         owner.SetHorizontalVelocity(0f);
-        owner.CanFlip = false; // ËøËÀ´óÊÀ½çÎïÀí×ªÍ·
+        owner.CanFlip = false; // é”æ­»å¤§ä¸–ç•Œç‰©ç†è½¬å¤´
 
         currentUlt = owner.equippedUltimate;
 
         if (currentUlt == null || string.IsNullOrEmpty(currentUlt.ultimateName) || currentUlt.ultimateName == "0")
         {
-            Debug.LogWarning("[´óÕĞ×´Ì¬] ¼ì²âµ½Î´ÅäÖÃÈÎºÎºÏ·¨´óÕĞ£¡Ö±½ÓÍË»Ø´ı»ú¡£");
+            Debug.LogWarning("[å¤§æ‹›çŠ¶æ€] æ£€æµ‹åˆ°æœªé…ç½®ä»»ä½•åˆæ³•å¤§æ‹›ï¼ç›´æ¥é€€å›å¾…æœºã€‚");
             stateMachine.ChangeState<PlayerBattleIdleState>();
             return;
         }
 
-        // ´óÕĞ¿ªÊ¼£º¾µÍ·¿ªÊ¼Õğ¶¯
-        BattleManager.Instance.ShakeCamera(0.4f, 0.35f);
+        // å¤§æ‹›å¼€å§‹ï¼šé•œå¤´å¼€å§‹éœ‡åŠ¨
+        BattleEffectManager.Instance.ShakeCamera(0.4f, 0.35f);
 
-        // 1. ×¥°üÈÕÖ¾ 1£º
-        Debug.Log($"<color=orange>[´óÕĞµ÷ÊÔ] ===== ÕıÊ½½øÈë PlayerBattleUltimateState °ÂÒåÊÍ·Å£¡ =====\n" +
-                  $"°ÂÒåÃû³Æ: {currentUlt.ultimateName} | ¶¯»­×´Ì¬: {currentUlt.animationState} | ÅäÖÃÊ±¼ä: {currentUlt.duration}s | ÅĞ¶¨½ø¶È: {currentUlt.hitProgress}</color>");
+        // 1. æŠ“åŒ…æ—¥å¿— 1ï¼š
+        Debug.Log($"<color=orange>[å¤§æ‹›è°ƒè¯•] ===== æ­£å¼è¿›å…¥ PlayerBattleUltimateState å¥¥ä¹‰é‡Šæ”¾ï¼ =====\n" +
+                  $"å¥¥ä¹‰åç§°: {currentUlt.ultimateName} | åŠ¨ç”»çŠ¶æ€: {currentUlt.animationState} | é…ç½®æ—¶é—´: {currentUlt.duration}s | åˆ¤å®šè¿›åº¦: {currentUlt.hitProgress}</color>");
     }
 
     public override void Update()
     {
-        // 2. ºËĞÄĞŞ¸´£ºÊÖ¶¯ÀÛ¼ÓÊ±¼ä
+        // 2. æ ¸å¿ƒä¿®å¤ï¼šæ‰‹åŠ¨ç´¯åŠ æ—¶é—´
         localTimer += Time.deltaTime;
 
         if (currentUlt == null) return;
 
-        // 3. ×¥°üÈÕÖ¾ 2£ºÊµÊ±¿´¼ÆÊ±Æ÷ÊÇ·ñÔÚÅÜ£¨Èç¹ûÃ»´òÓ¡£¬ËµÃ÷×´Ì¬»úÔÚÒ»½øÈëÊ±¾Í±¨´íËÀËøÁË£©
-        // Debug.Log($"[´óÕĞµ÷ÊÔ] µ¹¼ÆÊ±: {localTimer:F2}s / ×ÜÊ±³¤: {currentUlt.duration:F2}s");
+        // 3. æŠ“åŒ…æ—¥å¿— 2ï¼šå®æ—¶çœ‹è®¡æ—¶å™¨æ˜¯å¦åœ¨è·‘ï¼ˆå¦‚æœæ²¡æ‰“å°ï¼Œè¯´æ˜çŠ¶æ€æœºåœ¨ä¸€è¿›å…¥æ—¶å°±æŠ¥é”™æ­»é”äº†ï¼‰
+        // Debug.Log($"[å¤§æ‹›è°ƒè¯•] å€’è®¡æ—¶: {localTimer:F2}s / æ€»æ—¶é•¿: {currentUlt.duration:F2}s");
 
-        float damageHitTime = currentUlt.duration * currentUlt.hitProgress; // 0.8 * 0.4 = 0.32Ãë
+        float damageHitTime = currentUlt.duration * currentUlt.hitProgress; // 0.8 * 0.4 = 0.32ç§’
 
-        // 4. ÉËº¦ÅĞ¶¨µã
+        // 4. ä¼¤å®³åˆ¤å®šç‚¹
         if (localTimer >= damageHitTime && !hasDealtDamage)
         {
             hasDealtDamage = true;
             ExecuteUltimateEffects();
         }
 
-        // 5. ºËĞÄ£º´óÕĞ¶¯×÷²¥·ÅÍê±Ï£¬×Ô¶¯·µ»Ø´ı»ú
+        // 5. æ ¸å¿ƒï¼šå¤§æ‹›åŠ¨ä½œæ’­æ”¾å®Œæ¯•ï¼Œè‡ªåŠ¨è¿”å›å¾…æœº
         if (localTimer >= currentUlt.duration)
         {
-            Debug.Log($"<color=orange>[´óÕĞµ÷ÊÔ] ===== ´óÕĞ¶¯×÷Íê³É£¬ÕıÔÚÍË»ØÕ½¶·´ı»ú£¡ =====</color>");
+            Debug.Log($"<color=orange>[å¤§æ‹›è°ƒè¯•] ===== å¤§æ‹›åŠ¨ä½œå®Œæˆï¼Œæ­£åœ¨é€€å›æˆ˜æ–—å¾…æœºï¼ =====</color>");
             stateMachine.ChangeState<PlayerBattleIdleState>();
         }
     }
 
     /// <summary>
-    /// ¸ù¾İ´óÕĞÀàĞÍ£¬·ÖÁ÷½áËã
+    /// æ ¹æ®å¤§æ‹›ç±»å‹ï¼Œåˆ†æµç»“ç®—
     /// </summary>
     private void ExecuteUltimateEffects()
     {
-        Debug.Log($"<color=orange>[´óÕĞµ÷ÊÔ] ===== ¿ªÊ¼Ö´ĞĞ´óÕĞĞ§¹û½áËã£¡ÀàĞÍ: {currentUlt.ultimateType} =====</color>");
+        Debug.Log($"<color=orange>[å¤§æ‹›è°ƒè¯•] ===== å¼€å§‹æ‰§è¡Œå¤§æ‹›æ•ˆæœç»“ç®—ï¼ç±»å‹: {currentUlt.ultimateType} =====</color>");
 
-        BattleManager.Instance.ShakeCamera(0.25f, 0.45f);
-        BattleManager.Instance.HitStop(0.12f); // ¿¨Èâ¶Ù´ì
+        BattleEffectManager.Instance.ShakeCamera(0.25f, 0.45f);
+        BattleEffectManager.Instance.HitStop(0.12f); // å¡è‚‰é¡¿æŒ«
 
         switch (currentUlt.ultimateType)
         {
             case UltimateSkill.UltimateType.SingleTarget:
-                var target = BattleManager.Instance.selectedEnemy;
+                var target = BattleTurnManager.Instance.selectedEnemy;
                 if (target != null)
                 {
                     target.ReceiveAttack(currentUlt.baseDamage, currentUlt.breakDamage);
@@ -97,21 +97,21 @@ public class PlayerBattleUltimateState : PlayerBattleState
 
             case UltimateSkill.UltimateType.Control:
                 // ========================================================
-                // ºËĞÄ¶ÔÆë£º¿ØÖÆĞÍ´óÕĞ£¬Ö»¶Ôµ±Ç°Ñ¡ÖĞµÄ¹ÖÎïÊ©¼ÓÑ£ÔÎ [1]
+                // æ ¸å¿ƒå¯¹é½ï¼šæ§åˆ¶å‹å¤§æ‹›ï¼Œåªå¯¹å½“å‰é€‰ä¸­çš„æ€ªç‰©æ–½åŠ çœ©æ™• [1]
                 // ========================================================
-                var ctrlTarget = BattleManager.Instance.selectedEnemy;
+                var ctrlTarget = BattleTurnManager.Instance.selectedEnemy;
                 if (ctrlTarget != null)
                 {
-                    Debug.Log($"[´óÕĞµ÷ÊÔ] ÕıÔÚ¶ÔÄ¿±ê {ctrlTarget.gameObject.name} ½øĞĞ¿ØÖÆ´óÕĞ´ò»÷...");
+                    Debug.Log($"[å¤§æ‹›è°ƒè¯•] æ­£åœ¨å¯¹ç›®æ ‡ {ctrlTarget.gameObject.name} è¿›è¡Œæ§åˆ¶å¤§æ‹›æ‰“å‡»...");
                     ctrlTarget.ReceiveAttack(currentUlt.baseDamage, currentUlt.breakDamage);
 
-                    // Ê©¼ÓÑ£ÔÎ Buff£¨Ëü»á×Ô¶¯Ë²¼ä½Ó¹Ü¹ÖÎïµÄ¶¯»­£©
+                    // æ–½åŠ çœ©æ™• Buffï¼ˆå®ƒä¼šè‡ªåŠ¨ç¬é—´æ¥ç®¡æ€ªç‰©çš„åŠ¨ç”»ï¼‰
                     ctrlTarget.Stats.AddBuff(new StunBuff(currentUlt.stunTurns));
                 }
                 break;
         }
 
-        // Ë¢ĞÂÑªÌõ
+        // åˆ·æ–°è¡€æ¡
         if (BattleUIController.Instance != null)
         {
             BattleUIController.Instance.RefreshUI();

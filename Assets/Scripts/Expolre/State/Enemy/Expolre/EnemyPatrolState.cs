@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class EnemyPatrolState : OverworldEnemyState
 {
@@ -13,7 +13,7 @@ public class EnemyPatrolState : OverworldEnemyState
     {
         base.Update();
 
-        // 1. ·¢ÏÖÍæ¼Ò£¬ÇĞÈë×·»÷
+        // 1. å‘ç°ç©å®¶ï¼Œåˆ‡å…¥è¿½å‡»
         if (owner.IsPlayerInRange())
         {
             stateMachine.ChangeState<EnemyChaseState>();

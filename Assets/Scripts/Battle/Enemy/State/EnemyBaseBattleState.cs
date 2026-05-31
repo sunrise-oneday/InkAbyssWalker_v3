@@ -1,19 +1,19 @@
-
+ï»¿
 using UnityEngine;
 
 /// <summary>
-/// ¹ÖÎïÕ½¶·×´Ì¬»ùÀà£¬Æä·ºĞÍ T ÑÏ¸ñÔ¼ÊøÎª EnemyBattleEntity
+/// æ€ªç‰©æˆ˜æ–—çŠ¶æ€åŸºç±»ï¼Œå…¶æ³›å‹ T ä¸¥æ ¼çº¦æŸä¸º EnemyBattleEntity
 /// </summary>
 public abstract class EnemyBaseBattleState : BaseState<EnemyBattleEntity>
 {
-    // ×ÓÀàÖØĞ´´ËÊôĞÔ£¬Ìá¹©¹ÖÎïÌØÓĞµÄÕ½¶·¶¯»­ Hash
+    // å­ç±»é‡å†™æ­¤å±æ€§ï¼Œæä¾›æ€ªç‰©ç‰¹æœ‰çš„æˆ˜æ–—åŠ¨ç”» Hash
     protected virtual int AnimHash => 0;
 
     public override void Enter()
     {
-        base.Enter(); // ×Ô¶¯µ÷ÓÃ BaseState ½øĞĞ¼ÆÊ±Æ÷¹éÁã
+        base.Enter(); // è‡ªåŠ¨è°ƒç”¨ BaseState è¿›è¡Œè®¡æ—¶å™¨å½’é›¶
 
-        // ½øÈë×´Ì¬Ê±£¬È«×Ô¶¯²¥·Å¹ÖÎï¶ÔÓ¦µÄÕ½¶·¶¯»­
+        // è¿›å…¥çŠ¶æ€æ—¶ï¼Œå…¨è‡ªåŠ¨æ’­æ”¾æ€ªç‰©å¯¹åº”çš„æˆ˜æ–—åŠ¨ç”»
         if (AnimHash != 0 && owner.anim != null)
         {
             owner.anim.CrossFade(AnimHash, 0.1f);

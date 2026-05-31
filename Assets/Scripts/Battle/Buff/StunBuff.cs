@@ -1,16 +1,16 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Ç¿Á¦¿ØÖÆ£ºÑ£ÔÎ×´Ì¬£¨´¿×´Ì¬Êı¾İÀà£¬·ûºÏµ¥Ò»Ö°ÔğÔ­Ôò£¬²»²ÎÓëÈÎºÎ×´Ì¬»úÇĞ»»Âß¼­£© [1]
+/// å¼ºåŠ›æ§åˆ¶ï¼šçœ©æ™•çŠ¶æ€ï¼ˆçº¯çŠ¶æ€æ•°æ®ç±»ï¼Œç¬¦åˆå•ä¸€èŒè´£åŸåˆ™ï¼Œä¸å‚ä¸ä»»ä½•çŠ¶æ€æœºåˆ‡æ¢é€»è¾‘ï¼‰ [1]
 /// </summary>
 public class StunBuff : Buff
 {
     public StunBuff(int turns)
     {
-        buffName = "Ñ£ÔÎ";
+        buffName = "çœ©æ™•";
         durationTurns = turns;
-        element = ElementType.None; // ÊôÓÚÎïÀí¿ØÖÆÒì³££¬ÎŞÔªËØ
-        icon = Resources.Load<Sprite>("UI/Buffs/Icon_Stun"); // Ë®¾§Í¼Æ¬
-        description = "±»Ç¿Á¦¿ØÖÆ£¡´¦ÓÚÑ£ÔÎ×´Ì¬£¬±¾´ó»ØºÏÄÚÎŞ·¨Ö´ĞĞÈÎºÎĞĞ¶¯¡£";
+        element = ElementType.None; // å±äºç‰©ç†æ§åˆ¶å¼‚å¸¸ï¼Œæ— å…ƒç´ 
+        icon = Resources.Load<Sprite>("UI/Buffs/Icon_Stun"); // æ°´æ™¶å›¾ç‰‡
+        description = "è¢«å¼ºåŠ›æ§åˆ¶ï¼å¤„äºçœ©æ™•çŠ¶æ€ï¼Œæœ¬å¤§å›åˆå†…æ— æ³•æ‰§è¡Œä»»ä½•è¡ŒåŠ¨ã€‚";
     }
 }

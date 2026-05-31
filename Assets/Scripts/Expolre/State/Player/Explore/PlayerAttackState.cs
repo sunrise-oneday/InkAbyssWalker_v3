@@ -1,27 +1,27 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerAttackState : PlayerState
 {
-    // ºËĞÄ½âñî£º½øÈë×´Ì¬Ê±£¬×Ô¶¯»ñÈ¡µ±Ç°Á¬ÕĞ²½Êı¶ÔÓ¦µÄ¶¯»­ Hash
+    // æ ¸å¿ƒè§£è€¦ï¼šè¿›å…¥çŠ¶æ€æ—¶ï¼Œè‡ªåŠ¨è·å–å½“å‰è¿æ‹›æ­¥æ•°å¯¹åº”çš„åŠ¨ç”» Hash
     protected override int AnimHash => owner.AttackAnimHashes[owner.CurrentComboIndex];
 
     private bool wantsNextCombo;
-    private bool hasCheckedHit; // ·ÀÖ¹Ò»´Î»Óµ¶ÔÚ¶àÖ¡ÄÚÖØ¸´ÅĞ¶¨»÷ÖĞ
+    private bool hasCheckedHit; // é˜²æ­¢ä¸€æ¬¡æŒ¥åˆ€åœ¨å¤šå¸§å†…é‡å¤åˆ¤å®šå‡»ä¸­
 
     public override void Enter()
     {
-        base.Enter(); // È«×Ô¶¯²¥·Åµ±Ç°Á¬ÕĞ¶¯»­
+        base.Enter(); // å…¨è‡ªåŠ¨æ’­æ”¾å½“å‰è¿æ‹›åŠ¨ç”»
 
         // ========================================================
-        // ¹Ø¼üĞŞ¸´£ºÒ»µ©½øÈë¹¥»÷×´Ì¬£¬Á¢¿Ì°Ñ¿ØÖÆÆ÷µÄ¹¥»÷ÊäÈë±ê¼ÇÖØÖÃÎª false£¡
-        // ÕâÑù»ÓÍêµ¶ºó£¬×´Ì¬»ú¾Í²»»áÒòÎª¾ÉµÄ²ĞÁôĞÅºÅ¶ø×Ô¶¯ÖØĞÂ¹¥»÷¡£
+        // å…³é”®ä¿®å¤ï¼šä¸€æ—¦è¿›å…¥æ”»å‡»çŠ¶æ€ï¼Œç«‹åˆ»æŠŠæ§åˆ¶å™¨çš„æ”»å‡»è¾“å…¥æ ‡è®°é‡ç½®ä¸º falseï¼
+        // è¿™æ ·æŒ¥å®Œåˆ€åï¼ŒçŠ¶æ€æœºå°±ä¸ä¼šå› ä¸ºæ—§çš„æ®‹ç•™ä¿¡å·è€Œè‡ªåŠ¨é‡æ–°æ”»å‡»ã€‚
         // ========================================================
         owner.UseAttackInput(); 
         wantsNextCombo = false;
-        hasCheckedHit = false; // <--- ºËĞÄĞÂÔö£ºÃ¿´Î»Óµ¶¿ªÊ¼Ê±ÖØÖÃ±ê¼Ç
+        hasCheckedHit = false; // <--- æ ¸å¿ƒæ–°å¢ï¼šæ¯æ¬¡æŒ¥åˆ€å¼€å§‹æ—¶é‡ç½®æ ‡è®°
 
-        // ¹¥»÷¿ªÊ¼Ê±£¬Çå³ıË®Æ½ËÙ¶È·ÀÖ¹»¬ĞĞ£¨Ò²¿ÉÒÔ±£ÁôÒ»¶¡µãÎ»ÒÆ×÷ÎªÇ°³å£¬ÔÚ´Ë¿É×ÔÓÉÎ¢µ÷£©
+        // æ”»å‡»å¼€å§‹æ—¶ï¼Œæ¸…é™¤æ°´å¹³é€Ÿåº¦é˜²æ­¢æ»‘è¡Œï¼ˆä¹Ÿå¯ä»¥ä¿ç•™ä¸€ä¸ç‚¹ä½ç§»ä½œä¸ºå‰å†²ï¼Œåœ¨æ­¤å¯è‡ªç”±å¾®è°ƒï¼‰
         owner.SetHorizontalVelocity(0f);
     }
 
@@ -29,25 +29,25 @@ public class PlayerAttackState : PlayerState
     {
         base.Update();
 
-        // 1. ÊäÈëÔ¤Â¼£ºÔÚ»Óµ¶ÆÚ¼ä£¬Ö»ÒªÍæ¼ÒÔÙ´Î°´ÏÂ¹¥»÷¼ü£¬Ôİ´æ¡°ÏÂÒ»»÷¡±ÇëÇó
+        // 1. è¾“å…¥é¢„å½•ï¼šåœ¨æŒ¥åˆ€æœŸé—´ï¼Œåªè¦ç©å®¶å†æ¬¡æŒ‰ä¸‹æ”»å‡»é”®ï¼Œæš‚å­˜â€œä¸‹ä¸€å‡»â€è¯·æ±‚
         if (owner.AttackInputBuffered)
         {
-            owner.UseAttackInput();// Ïû·ÑÊäÈë£¬±ÜÃâ²ĞÁô 
+            owner.UseAttackInput();// æ¶ˆè´¹è¾“å…¥ï¼Œé¿å…æ®‹ç•™ 
             wantsNextCombo = true;
         }
 
         // ========================================================
-        // ºËĞÄĞŞ¸Ä£º¶ÁÈ¡´Ó´óµØÍ¼ PlayerController Í³Ò»ÅäÖÃ²¢±©Â¶µÄÎïÀí²ÎÊı
-        // ÕâÑù²»½öÖ§³ÖËæÊ±µ÷²Î£¬»¹Ö§³ÖÔÚ Scene ÊÓÍ¼ÀïÊµÊ±¿´µ½ÇàÉ«µÄ¹¥»÷ÅĞ¶¨È¦
+        // æ ¸å¿ƒä¿®æ”¹ï¼šè¯»å–ä»å¤§åœ°å›¾ PlayerController ç»Ÿä¸€é…ç½®å¹¶æš´éœ²çš„ç‰©ç†å‚æ•°
+        // è¿™æ ·ä¸ä»…æ”¯æŒéšæ—¶è°ƒå‚ï¼Œè¿˜æ”¯æŒåœ¨ Scene è§†å›¾é‡Œå®æ—¶çœ‹åˆ°é’è‰²çš„æ”»å‡»åˆ¤å®šåœˆ
         // ========================================================
         if (stateTimer >= owner.overworldAttackHitTime && !hasCheckedHit)
         {
             hasCheckedHit = true;
 
-            // ¼ÆËãÍæ¼ÒÕıÇ°·½µÄÌ½²âÆğµã£¨´ÓÃæ°åÊôĞÔ¶¯Ì¬¶ÁÈ¡ range£©
+            // è®¡ç®—ç©å®¶æ­£å‰æ–¹çš„æ¢æµ‹èµ·ç‚¹ï¼ˆä»é¢æ¿å±æ€§åŠ¨æ€è¯»å– rangeï¼‰
             Vector2 checkPos = (Vector2)owner.transform.position + new Vector2(owner.FacingDirection * owner.overworldAttackRange, -0.2f);
 
-            // Ì½²âÇ°·½Ô²ĞÎ·¶Î§ÄÚÓĞÃ»ÓĞ¹Ö£¨´ÓÃæ°åÊôĞÔ¶¯Ì¬¶ÁÈ¡ radius£©
+            // æ¢æµ‹å‰æ–¹åœ†å½¢èŒƒå›´å†…æœ‰æ²¡æœ‰æ€ªï¼ˆä»é¢æ¿å±æ€§åŠ¨æ€è¯»å– radiusï¼‰
             Collider2D hitCollider = Physics2D.OverlapCircle(checkPos, owner.overworldAttackRadius, LayerMask.GetMask("Enemy"));
 
             if (hitCollider != null)
@@ -55,7 +55,7 @@ public class PlayerAttackState : PlayerState
                 OverworldEnemy enemy = hitCollider.GetComponentInParent<OverworldEnemy>();
                 if (enemy != null)
                 {
-                    Debug.Log("<color=green>[Ö÷¶¯ÍµÏ®£¡] Íæ¼Ò³É¹¦ÇÀÏÈ»Óµ¶»÷ÖĞÁË¹ÖÎï£¡½øÈëÏÈÖÆÕ½¶·£¡</color>");
+                    Debug.Log("<color=green>[ä¸»åŠ¨å·è¢­ï¼] ç©å®¶æˆåŠŸæŠ¢å…ˆæŒ¥åˆ€å‡»ä¸­äº†æ€ªç‰©ï¼è¿›å…¥å…ˆåˆ¶æˆ˜æ–—ï¼</color>");
                     enemy.OnHitByOverworldAttack(isPreemptive: true);
                     return;
                 }
@@ -63,26 +63,26 @@ public class PlayerAttackState : PlayerState
         }
 
         // ========================================================
-        // ºËĞÄĞÂÔö£ºÖ÷¶¯È¡ÏûºóÒ¡£¨Jump Cancel£©
-        // ¼ÙÉè¹¥»÷¿ªÊ¼ 0.15 Ãëºó£¬µ¶¹âÉËº¦ÅĞ¶¨ÒÑ¾­·¢Éú£¬
-        // ´ËÊ±Ö»ÒªÍæ¼Ò°´ÏÂÌøÔ¾¼ü£¬¾Í¿ÉÒÔÇ¿ĞĞ¡°Æş¶Ï¡±µ±Ç°¹¥»÷£¬ÖØÖÃÁ¬»÷²¢Ö±½ÓÌøÆğ£¡
+        // æ ¸å¿ƒæ–°å¢ï¼šä¸»åŠ¨å–æ¶ˆåæ‘‡ï¼ˆJump Cancelï¼‰
+        // å‡è®¾æ”»å‡»å¼€å§‹ 0.15 ç§’åï¼Œåˆ€å…‰ä¼¤å®³åˆ¤å®šå·²ç»å‘ç”Ÿï¼Œ
+        // æ­¤æ—¶åªè¦ç©å®¶æŒ‰ä¸‹è·³è·ƒé”®ï¼Œå°±å¯ä»¥å¼ºè¡Œâ€œææ–­â€å½“å‰æ”»å‡»ï¼Œé‡ç½®è¿å‡»å¹¶ç›´æ¥è·³èµ·ï¼
         // ========================================================
         if (stateTimer > 0.15f)
         {
             if (owner.JumpInputBuffered)
             {
                 // ========================================================
-                // ºËĞÄĞŞ¸´£ºÔÚÕâÀï´ò¶ÏÇĞ»»×´Ì¬Ê±£¬±ØĞëÁ¢¿Ì½«ÌøÔ¾ÊäÈëÏû·Ñµô£¡
-                // ·ñÔòÕâ¸öĞÅºÅÔÚ¿ÕÖĞ»áÒ»Ö±±£³ÖÎª true£¬µ¼ÖÂÂäµØÊ±ÔÙ´ÎÆğÌø£¡ [2]
+                // æ ¸å¿ƒä¿®å¤ï¼šåœ¨è¿™é‡Œæ‰“æ–­åˆ‡æ¢çŠ¶æ€æ—¶ï¼Œå¿…é¡»ç«‹åˆ»å°†è·³è·ƒè¾“å…¥æ¶ˆè´¹æ‰ï¼
+                // å¦åˆ™è¿™ä¸ªä¿¡å·åœ¨ç©ºä¸­ä¼šä¸€ç›´ä¿æŒä¸º trueï¼Œå¯¼è‡´è½åœ°æ—¶å†æ¬¡èµ·è·³ï¼ [2]
                 // ========================================================
                 owner.UseJumpInput();
 
-                owner.CurrentComboIndex = 0; // Æş¶ÏÊ±£¬ÖØÖÃÁ¬»÷
-                stateMachine.ChangeState<PlayerJumpState>(); // Ç¿ĞĞÇĞÈëÌøÔ¾×´Ì¬£¬ÖĞ¶Ï¹¥»÷¶¯»­
+                owner.CurrentComboIndex = 0; // ææ–­æ—¶ï¼Œé‡ç½®è¿å‡»
+                stateMachine.ChangeState<PlayerJumpState>(); // å¼ºè¡Œåˆ‡å…¥è·³è·ƒçŠ¶æ€ï¼Œä¸­æ–­æ”»å‡»åŠ¨ç”»
                 return;
             }
 
-            // ÌáÊ¾£ºÈç¹ûÄãÒÔºó×öÁËÉÁ±Ü/³å´Ì¶¯×÷£¬Ò²¿ÉÒÔÔÚÕâÀïĞ´£º
+            // æç¤ºï¼šå¦‚æœä½ ä»¥ååšäº†é—ªé¿/å†²åˆºåŠ¨ä½œï¼Œä¹Ÿå¯ä»¥åœ¨è¿™é‡Œå†™ï¼š
             if (owner.DashInputBuffered)
             {
                 owner.UseDashInput();
@@ -91,22 +91,22 @@ public class PlayerAttackState : PlayerState
             }
         }
 
-        // »ñÈ¡µ±Ç°ÕâÒ»»÷Ó¦¸Ã³ÖĞøµÄÊ±¼ä
+        // è·å–å½“å‰è¿™ä¸€å‡»åº”è¯¥æŒç»­çš„æ—¶é—´
         float currentAttackDuration = owner.AttackDurations[owner.CurrentComboIndex];
 
-        // 2. µ±Ç°ÕâÒ»Õ¶µÄ»Óµ¶Ê±¼ä½áÊø£¬½øĞĞ½áËã
+        // 2. å½“å‰è¿™ä¸€æ–©çš„æŒ¥åˆ€æ—¶é—´ç»“æŸï¼Œè¿›è¡Œç»“ç®—
         if (stateTimer >= currentAttackDuration)
         {
             if (wantsNextCombo)
             {
-                // ¿ñ°´°´¼ü£ºÁ¢¿Ì½øÈëÏÂÒ»»÷
+                // ç‹‚æŒ‰æŒ‰é”®ï¼šç«‹åˆ»è¿›å…¥ä¸‹ä¸€å‡»
                 owner.CurrentComboIndex = (owner.CurrentComboIndex + 1) % owner.MaxComboCount;
                 stateMachine.ChangeState<PlayerAttackState>();
             }
             else
             {
-                // ºËĞÄĞŞ¸´£º¼´Ê¹¶¯»­×ÔÈ»²¥ÍêÍË»Ø Idle£¬ÎÒÃÇÒ²°ÑÁ¬»÷²½Êı¡°×¼±¸ºÃ¡±Ö¸ÏòÏÂÒ»»÷£¡
-                // Èç¹ûÍæ¼ÒÔÚ½ÓÏÂÀ´µÄ 1 ÃëÄÚ°´¼ü£¬¾ÍÄÜË³Àû´ò³öµÚ¶şÕ¶£»Èç¹û³¬Ê±£¬GroundedState »á×Ô¶¯ÇåÁã¡£
+                // æ ¸å¿ƒä¿®å¤ï¼šå³ä½¿åŠ¨ç”»è‡ªç„¶æ’­å®Œé€€å› Idleï¼Œæˆ‘ä»¬ä¹ŸæŠŠè¿å‡»æ­¥æ•°â€œå‡†å¤‡å¥½â€æŒ‡å‘ä¸‹ä¸€å‡»ï¼
+                // å¦‚æœç©å®¶åœ¨æ¥ä¸‹æ¥çš„ 1 ç§’å†…æŒ‰é”®ï¼Œå°±èƒ½é¡ºåˆ©æ‰“å‡ºç¬¬äºŒæ–©ï¼›å¦‚æœè¶…æ—¶ï¼ŒGroundedState ä¼šè‡ªåŠ¨æ¸…é›¶ã€‚
                 owner.CurrentComboIndex = (owner.CurrentComboIndex + 1) % owner.MaxComboCount;
                 stateMachine.ChangeState<PlayerIdleState>();
             }
@@ -117,7 +117,7 @@ public class PlayerAttackState : PlayerState
     public override void Exit()
     {
         base.Exit();
-        // ¼ÇÂ¼ÕâÒ»´ÎÁ¬ÕĞ½áÊøµÄÊ±¼ä´Á£¬ÓÃÓÚÏÂÒ»´Î°´¼üÅĞ¶ÏÊÇ·ñ³¬Ê±
+        // è®°å½•è¿™ä¸€æ¬¡è¿æ‹›ç»“æŸçš„æ—¶é—´æˆ³ï¼Œç”¨äºä¸‹ä¸€æ¬¡æŒ‰é”®åˆ¤æ–­æ˜¯å¦è¶…æ—¶
         owner.LastAttackTime = Time.time;
     }
 }

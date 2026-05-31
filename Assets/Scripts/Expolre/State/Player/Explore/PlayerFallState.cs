@@ -1,11 +1,11 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Íæ¼ÒÏÂÂä×´Ì¬£¨ÏÂ½µ¶Î£©
+/// ç©å®¶ä¸‹è½çŠ¶æ€ï¼ˆä¸‹é™æ®µï¼‰
 /// </summary>
-public class PlayerFallState : PlayerAirborneState // ¼Ì³Ğ×Ô¿ÕÖĞ»ùÀà
+public class PlayerFallState : PlayerAirborneState // ç»§æ‰¿è‡ªç©ºä¸­åŸºç±»
 {
     protected override int AnimHash => PlayerController.Anim_Fall;
 
@@ -16,12 +16,12 @@ public class PlayerFallState : PlayerAirborneState // ¼Ì³Ğ×Ô¿ÕÖĞ»ùÀà
 
     public override void Update()
     {
-        base.Update(); // Ö´ĞĞ»ùÀàµÄ¿ÕÖĞ³å´ÌºÍÊäÈë¶ªÆú¼ì²â
+        base.Update(); // æ‰§è¡ŒåŸºç±»çš„ç©ºä¸­å†²åˆºå’Œè¾“å…¥ä¸¢å¼ƒæ£€æµ‹
 
-        // ºËĞÄÌø×ªµã£ºµ±ÏÂÂä¼ì²âµ½²ÈÔÚµØÃæÉÏÊ±
+        // æ ¸å¿ƒè·³è½¬ç‚¹ï¼šå½“ä¸‹è½æ£€æµ‹åˆ°è¸©åœ¨åœ°é¢ä¸Šæ—¶
         if (owner.CheckIsGrounded())
         {
-            // ¸ù¾İÍæ¼Òµ±Ç°ÓĞÃ»ÓĞ°´ A/D ¼ü£¬¾ö¶¨ÂäµØÊÇÖ±½Ó¾²Ö¹(Idle)»¹ÊÇ¼ÌĞø×ßÂ·(Walk)
+            // æ ¹æ®ç©å®¶å½“å‰æœ‰æ²¡æœ‰æŒ‰ A/D é”®ï¼Œå†³å®šè½åœ°æ˜¯ç›´æ¥é™æ­¢(Idle)è¿˜æ˜¯ç»§ç»­èµ°è·¯(Walk)
             if (Mathf.Abs(owner.MoveInput.x) > 0.01f)
             {
                 stateMachine.ChangeState<PlayerWalkState>();

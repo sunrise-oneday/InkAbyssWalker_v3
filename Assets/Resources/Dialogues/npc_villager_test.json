@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "dialogueId": "npc_villager_test",
+  "variables": [
+    {
+      "name": "hasDeliveredOre",
+      "type": "Bool",
+      "defaultValue": "false"
+    },
+    {
+      "name": "trustLevel",
+      "type": "Int",
+      "defaultValue": "0"
+    },
+    {
+      "name": "greetedTimes",
+      "type": "Int",
+      "defaultValue": "0"
+    }
+  ],
+  "startNodeId": "start",
+  "nodes": [
+    {
+      "nodeId": "start",
+      "type": "Dialogue",
+      "speaker": "村民",
+      "portrait": "",
+      "text": "你好，旅行者！欢迎来到我们的村庄。",
+      "typewriterSpeed": 0,
+      "onShowActions": [
+        {
+          "type": "IncrementVariable",
+          "key": "greetedTimes",
+          "value": "",
+          "count": 1
+        }
+      ],
+      "next": "check_first_meeting"
+    },
+    {
+      "nodeId": "check_first_meeting",
+      "type": "Condition",
+      "speaker": "",
+      "portrait": "",
+      "text": "",
+      "typewriterSpeed": 0,
+      "onShowActions": null,
+      "prompt": "",
+      "options": null,
+      "conditions": [
+        {
+          "variable": "greetedTimes",
+          "op": "Equals",
+          "value": "1",
+          "nextIfTrue": "first_meeting",
+          "nextIfFalse": "repeat_meeting"
+        }
+      ],
+      "defaultNext": "repeat_meeting",
+      "actions": null,
+      "next": ""
+    },
+    {
+      "nodeId": "first_meeting",
+      "type": "Dialogue",
+      "speaker": "村民",
+      "portrait": "",
+      "text": "这是我们第一次见面吧？让我给你介绍一下这里的情况。",
+      "typewriterSpeed": 0,
+      "onShowActions": null,
+      "next": "intro_choice"
+    },
+    {
+      "nodeId": "repeat_meeting",
+      "type": "Dialogue",
+      "speaker": "村民",
+      "portrait": "",
+      "text": "又见面了！最近过得怎么样？",
+      "typewriterSpeed": 0,
+      "onShowActions": null,
+      "next": "intro_choice"
+    },
+    {
+      "nodeId": "intro_choice",
+      "type": "Choice",
+      "speaker": "",
+      "portrait": "",
+      "text": "",
+      "typewriterSpeed": 0,
+      "onShowActions": null,
+      "prompt": "请选择你的回应：",
+      "options": [
+        {
+          "text": "这里有什么有趣的地方吗？",
+          "next": "ask_places",
+          "condition": null,
+          "actions": null
+        },
+        {
+          "text": "我需要帮助。",
+          "next": "ask_help",
+          "condition": null,
+          "actions": null
+        },
+        {
+          "text": "我有一些矿石要给你。",
+          "next": "give_ore",
+          "condition": {
+            "variable": "hasDeliveredOre",
+            "op": "Equals",
+            "value": "true",
+            "nextIfTrue": "",
+            "nextIfFalse": ""
+          },
+          "actions": null
+        }
+      ],
+      "conditions": null,
+      "defaultNext": "",
+      "actions": null,
+      "next": ""
+    },
+    {
+      "nodeId": "ask_places",
+      "type": "Dialogue",
+      "speaker": "村民",
+      "portrait": "",
+      "text": "村庄东边有一片古老的森林，传说那里藏着珍贵的矿石。不过要小心，森林里有危险的怪物。",
+      "typewriterSpeed": 0,
+      "onShowActions": null,
+      "next": "end"
+    },
+    {
+      "nodeId": "ask_help",
+      "type": "Dialogue",
+      "speaker": "村民",
+      "portrait": "",
+      "text": "如果你需要帮助，可以去找村长。他住在村子中心最大的房子里。",
+      "typewriterSpeed": 0,
+      "onShowActions": null,
+      "next": "end"
+    },
+    {
+      "nodeId": "give_ore",
+      "type": "Action",
+      "speaker": "",
+      "portrait": "",
+      "text": "",
+      "typewriterSpeed": 0,
+      "onShowActions": null,
+      "prompt": "",
+      "options": null,
+      "conditions": null,
+      "defaultNext": "",
+      "actions": [
+        {
+          "type": "SetVariable",
+          "key": "hasDeliveredOre",
+          "value": "false",
+          "count": 0
+        },
+        {
+          "type": "IncrementVariable",
+          "key": "trustLevel",
+          "value": "",
+          "count": 1
+        },
+        {
+          "type": "AddItem",
+          "key": "gold_coin",
+          "value": "",
+          "count": 10
+        }
+      ],
+      "next": "give_ore_thanks"
+    },
+    {
+      "nodeId": "give_ore_thanks",
+      "type": "Dialogue",
+      "speaker": "村民",
+      "portrait": "",
+      "text": "太感谢了！这些矿石对我很重要。这是给你的报酬，10个金币。",
+      "typewriterSpeed": 0,
+      "onShowActions": null,
+      "next": "end"
+    },
+    {
+      "nodeId": "end",
+      "type": "End",
+      "speaker": "",
+      "portrait": "",
+      "text": "",
+      "typewriterSpeed": 0,
+      "onShowActions": null,
+      "next": ""
+    }
+  ]
+}

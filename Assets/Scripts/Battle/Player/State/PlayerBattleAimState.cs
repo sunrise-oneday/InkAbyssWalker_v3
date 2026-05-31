@@ -1,72 +1,72 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Íæ¼ÒÕ½¶·ÌØÓĞÃé×¼¿ª»ğ×´Ì¬£¨Ê×»÷Ëø¶¨£¬´Î»÷¿ª»ğÈ·ÈÏ°æ£© [1, 2]
+/// ç©å®¶æˆ˜æ–—ç‰¹æœ‰ç„å‡†å¼€ç«çŠ¶æ€ï¼ˆé¦–å‡»é”å®šï¼Œæ¬¡å‡»å¼€ç«ç¡®è®¤ç‰ˆï¼‰ [1, 2]
 /// </summary>
 public class PlayerBattleAimState : PlayerBattleState
 {
-    // Ä¬ÈÏ²¥·Å³ÖÇ¹´ı»úµÄÃé×¼Ñ­»·×ËÌ¬
+    // é»˜è®¤æ’­æ”¾æŒæªå¾…æœºçš„ç„å‡†å¾ªç¯å§¿æ€
     protected override int AnimHash => PlayerBattleEntity.Anim_Aim_Loop;
 
     private float shootTimer;
-    private float shootDuration = 0.42f; // µ¥´ÎÉä»÷µÄºó×øÁ¦»Ö¸´Ê±¼ä£¨ÔÚ´ËÆÚ¼äÆÁ±Î°´¼ü£©
+    private float shootDuration = 0.42f; // å•æ¬¡å°„å‡»çš„åååŠ›æ¢å¤æ—¶é—´ï¼ˆåœ¨æ­¤æœŸé—´å±è”½æŒ‰é”®ï¼‰
     private bool isShooting;
 
-    // µãÉäµÄ»ù´¡ÎïÀíÉËº¦ºÍÏ÷ÈÍÊıÖµ
+    // ç‚¹å°„çš„åŸºç¡€ç‰©ç†ä¼¤å®³å’Œå‰ŠéŸ§æ•°å€¼
     private int shootDamage = 25;
     private int shootBreakDamage = 15;
 
     public override void Enter()
     {
-        base.Enter(); // ×´Ì¬¼ÆÊ±Æ÷×Ô¶¯¹éÁã£¬²¢¿ªÊ¼²¥·ÅÃé×¼Ñ­»·¶¯»­
+        base.Enter(); // çŠ¶æ€è®¡æ—¶å™¨è‡ªåŠ¨å½’é›¶ï¼Œå¹¶å¼€å§‹æ’­æ”¾ç„å‡†å¾ªç¯åŠ¨ç”»
 
-        // 1. ºËĞÄ£ºÍ¨¹ı owner (PlayerBattleEntity) Ïû·ÑÃé×¼ºÍµãÉä»º´æÊäÈë [2]
+        // 1. æ ¸å¿ƒï¼šé€šè¿‡ owner (PlayerBattleEntity) æ¶ˆè´¹ç„å‡†å’Œç‚¹å°„ç¼“å­˜è¾“å…¥ [2]
         owner.UseAimInput();
         owner.UseShootInput();
 
         isShooting = false;
         owner.SetHorizontalVelocity(0f);
-        owner.CanFlip = false; // Ãé×¼ÆÚ¼äËøËÀ´óÊÀ½çµÄÎïÀí×ªÍ·
+        owner.CanFlip = false; // ç„å‡†æœŸé—´é”æ­»å¤§ä¸–ç•Œçš„ç‰©ç†è½¬å¤´
 
-        // ×Ô¶¯½«ÉíÌåºÍÎäÆ÷³¯Ïò¶Ô×¼µ±Ç°±»Ñ¡ÖĞµÄ¹ÖÎï
+        // è‡ªåŠ¨å°†èº«ä½“å’Œæ­¦å™¨æœå‘å¯¹å‡†å½“å‰è¢«é€‰ä¸­çš„æ€ªç‰©
         FaceTarget();
 
-        // ±íÏÖÉè¼Æ£º½øÈëÃé×¼¾µºó£¬Òş²ØÕû¸öµ×²¿µÄ UGUI ¼¼ÄÜÃæ°å
+        // è¡¨ç°è®¾è®¡ï¼šè¿›å…¥ç„å‡†é•œåï¼Œéšè—æ•´ä¸ªåº•éƒ¨çš„ UGUI æŠ€èƒ½é¢æ¿
         if (BattleUIController.Instance != null)
         {
             BattleUIController.Instance.SetActionPanelActive(false);
         }
 
-        Debug.Log("<color=cyan>[Ãé×¼Ä£Ê½] ÒÑ½øÈëÃé×¼×ËÌ¬£¡°´ÏÂ¡¾Êó±ê×ó¼ü¡¿ÏûºÄ 1 AP ½øĞĞµãÉä¡£ÔÙ´Î°´ÏÂ¡¾Q ¼ü¡¿ÊÕÇ¹ÍË³ö¡£</color>");
+        Debug.Log("<color=cyan>[ç„å‡†æ¨¡å¼] å·²è¿›å…¥ç„å‡†å§¿æ€ï¼æŒ‰ä¸‹ã€é¼ æ ‡å·¦é”®ã€‘æ¶ˆè€— 1 AP è¿›è¡Œç‚¹å°„ã€‚å†æ¬¡æŒ‰ä¸‹ã€Q é”®ã€‘æ”¶æªé€€å‡ºã€‚</color>");
     }
 
     public override void Update()
     {
-        // 1. Èç¹ûÕıÔÚÉä»÷µÄºó×øÁ¦Ó²Ö±ÖĞ
+        // 1. å¦‚æœæ­£åœ¨å°„å‡»çš„åååŠ›ç¡¬ç›´ä¸­
         if (isShooting)
         {
             shootTimer += Time.deltaTime;
             if (shootTimer >= shootDuration)
             {
                 isShooting = false;
-                // Éä»÷Íê±Ï£¬Æ½»¬ÍË»Øµ½¡¾Ãé×¼´ı»ú¶¯»­¡¿
+                // å°„å‡»å®Œæ¯•ï¼Œå¹³æ»‘é€€å›åˆ°ã€ç„å‡†å¾…æœºåŠ¨ç”»ã€‘
                 owner.anim.CrossFade(PlayerBattleEntity.Anim_Aim_Loop, 0.1f);
-                Debug.Log("[Ãé×¼Ä£Ê½] ºó×øÁ¦»Ö¸´£¬¼ÌĞø´¦ÓÚÃé×¼ÖĞ¡£");
+                Debug.Log("[ç„å‡†æ¨¡å¼] åååŠ›æ¢å¤ï¼Œç»§ç»­å¤„äºç„å‡†ä¸­ã€‚");
             }
-            return; // Éä»÷Ó²Ö±ÖĞ£¬ÆÁ±ÎÈÎºÎÆäËû²Ù×÷£¬±£Ö¤¶¯»­²»»á¹íĞó
+            return; // å°„å‡»ç¡¬ç›´ä¸­ï¼Œå±è”½ä»»ä½•å…¶ä»–æ“ä½œï¼Œä¿è¯åŠ¨ç”»ä¸ä¼šé¬¼ç•œ
         }
 
-        // ÊµÊ±ÈÃÍæ¼ÒÃæ³¯ËûÑ¡ÖĞµÄ¹ÖÎï
+        // å®æ—¶è®©ç©å®¶é¢æœä»–é€‰ä¸­çš„æ€ªç‰©
         FaceTarget();
 
         // ========================================================
-        // ºËĞÄÖØ¹¹£ºË«ÖØµã»÷ÅĞ¶¨£¨×ó¼ü´¥·¢£© [1, 2]
+        // æ ¸å¿ƒé‡æ„ï¼šåŒé‡ç‚¹å‡»åˆ¤å®šï¼ˆå·¦é”®è§¦å‘ï¼‰ [1, 2]
         // ========================================================
         if (owner.ShootInputBuffered)
         {
-            owner.UseShootInput(); // Ïû·ÑÊäÈë [2]
+            owner.UseShootInput(); // æ¶ˆè´¹è¾“å…¥ [2]
 
-            // 1. ·¢Éä 2D ÉäÏß£¬Ì½²âÍæ¼ÒÊó±êµãÖĞµÄÊÇÄÄ¸ö¹ÖÎï
+            // 1. å‘å°„ 2D å°„çº¿ï¼Œæ¢æµ‹ç©å®¶é¼ æ ‡ç‚¹ä¸­çš„æ˜¯å“ªä¸ªæ€ªç‰©
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
@@ -75,35 +75,35 @@ public class PlayerBattleAimState : PlayerBattleState
                 EnemyBattleEntity clickedEnemy = hit.collider.GetComponentInParent<EnemyBattleEntity>();
                 if (clickedEnemy != null)
                 {
-                    // 2. ºËĞÄ£ºÅĞ¶Ïµã»÷µÄ¹Ö£¬ÊÇ²»ÊÇÒÑ¾­ÊÇµ±Ç°¡°ÒÑËø¶¨¡±µÄ¹Ö£¿ [1, 2]
-                    if (clickedEnemy == BattleManager.Instance.selectedEnemy)
+                    // 2. æ ¸å¿ƒï¼šåˆ¤æ–­ç‚¹å‡»çš„æ€ªï¼Œæ˜¯ä¸æ˜¯å·²ç»æ˜¯å½“å‰â€œå·²é”å®šâ€çš„æ€ªï¼Ÿ [1, 2]
+                    if (clickedEnemy == BattleTurnManager.Instance.selectedEnemy)
                     {
-                        // ÅĞ¶¨ A£ºÈç¹ûÊÇÍ¬Ò»¸ö¹Ö£¬Ö´ĞĞ¡¾¿ªÇ¹µãÉä¡¿£¡
-                        if (BattleManager.Instance.sharedAP >= 1)
+                        // åˆ¤å®š Aï¼šå¦‚æœæ˜¯åŒä¸€ä¸ªæ€ªï¼Œæ‰§è¡Œã€å¼€æªç‚¹å°„ã€‘ï¼
+                        if (BattleResourceManager.Instance.sharedAP >= 1)
                         {
                             ExecuteShoot();
                         }
                         else
                         {
-                            Debug.LogWarning("[Ãé×¼Ä£Ê½] ¹²Ïí AP ²»×ã£¬ÎŞ·¨¿ª»ğ£¡");
+                            Debug.LogWarning("[ç„å‡†æ¨¡å¼] å…±äº« AP ä¸è¶³ï¼Œæ— æ³•å¼€ç«ï¼");
                         }
                     }
                     else
                     {
-                        // ÅĞ¶¨ B£ºÈç¹ûÊÇĞÂµÄ¹Ö£¬½ö½öÖ´ĞĞ¡¾¸üĞÂËø¶¨Ä¿±ê¡¿£¬²»×¼¿ªÇ¹£¡ [1, 2]
-                        BattleManager.Instance.SelectTarget(clickedEnemy);
-                        Debug.Log($"[Ãé×¼Ä£Ê½] Ä¿±êÒÑÇĞ»»£¬³É¹¦Ëø¶¨ĞÂµĞÈË: {clickedEnemy.gameObject.name}¡£ÔÙ´Îµã»÷Ëü¼´¿É¿ªÇ¹£¡");
+                        // åˆ¤å®š Bï¼šå¦‚æœæ˜¯æ–°çš„æ€ªï¼Œä»…ä»…æ‰§è¡Œã€æ›´æ–°é”å®šç›®æ ‡ã€‘ï¼Œä¸å‡†å¼€æªï¼ [1, 2]
+                        BattleTurnManager.Instance.SelectTarget(clickedEnemy);
+                        Debug.Log($"[ç„å‡†æ¨¡å¼] ç›®æ ‡å·²åˆ‡æ¢ï¼ŒæˆåŠŸé”å®šæ–°æ•Œäºº: {clickedEnemy.gameObject.name}ã€‚å†æ¬¡ç‚¹å‡»å®ƒå³å¯å¼€æªï¼");
                     }
                 }
             }
         }
 
-        // 3. ÍË³öÖ¸Áî£º°´ÏÂ Q ¼ü£¨OnAimPressed£©
+        // 3. é€€å‡ºæŒ‡ä»¤ï¼šæŒ‰ä¸‹ Q é”®ï¼ˆOnAimPressedï¼‰
         if (owner.AimInputBuffered)
         {
             owner.UseAimInput();
 
-            // ÍË³öÃé×¼£¬°²È«»Øµ½Õı³£µÄ¡¾Õ½¶·´ı»ú×´Ì¬¡¿
+            // é€€å‡ºç„å‡†ï¼Œå®‰å…¨å›åˆ°æ­£å¸¸çš„ã€æˆ˜æ–—å¾…æœºçŠ¶æ€ã€‘
             stateMachine.ChangeState<PlayerBattleIdleState>();
         }
     }
@@ -113,38 +113,38 @@ public class PlayerBattleAimState : PlayerBattleState
         isShooting = true;
         shootTimer = 0f;
 
-        // 1. ¿Û³ı 1 µã¶ÓÎé¹«¹² AP£¬²¢¼´Ê±Ë¢ĞÂ UGUI ½çÃæ [3]
-        BattleManager.Instance.sharedAP -= 1;
+        // 1. æ‰£é™¤ 1 ç‚¹é˜Ÿä¼å…¬å…± APï¼Œå¹¶å³æ—¶åˆ·æ–° UGUI ç•Œé¢ [3]
+        BattleResourceManager.Instance.sharedAP -= 1;
         if (BattleUIController.Instance != null)
         {
             BattleUIController.Instance.RefreshUI();
         }
 
-        // 2. ²¥·ÅÉä»÷¿ª»ğ¶¯»­
+        // 2. æ’­æ”¾å°„å‡»å¼€ç«åŠ¨ç”»
         if (owner.anim != null)
         {
             owner.anim.CrossFade(PlayerBattleEntity.Anim_Shoot, 0.05f);
         }
 
-        // 3. ¶Ô×¼Íæ¼Òµ±Ç°ÓÃÊó±êËø¶¨µÄÄÇ¸ö¹ÖÎï£¬¿Û³ıÆäÑªÁ¿ºÍ°×É«ÆÆ·ÀÖµ [2, 5]
-        var target = BattleManager.Instance.selectedEnemy;
+        // 3. å¯¹å‡†ç©å®¶å½“å‰ç”¨é¼ æ ‡é”å®šçš„é‚£ä¸ªæ€ªç‰©ï¼Œæ‰£é™¤å…¶è¡€é‡å’Œç™½è‰²ç ´é˜²å€¼ [2, 5]
+        var target = BattleTurnManager.Instance.selectedEnemy;
         if (target != null)
         {
             target.ReceiveAttack(shootDamage, shootBreakDamage);
 
-            // ÎïÀí·´À¡£º¿ªÇ¹Ê±ÆÁÄ»Î¢Õğ
-            BattleManager.Instance.ShakeCamera(0.12f, 0.18f);
+            // ç‰©ç†åé¦ˆï¼šå¼€æªæ—¶å±å¹•å¾®éœ‡
+            BattleEffectManager.Instance.ShakeCamera(0.12f, 0.18f);
         }
 
-        Debug.Log($"[Ãé×¼Ä£Ê½] ¿ªÇ¹µãÉä£¡ÏûºÄ 1 AP£¬Ê£Óà AP: {BattleManager.Instance.sharedAP}");
+        Debug.Log($"[ç„å‡†æ¨¡å¼] å¼€æªç‚¹å°„ï¼æ¶ˆè€— 1 APï¼Œå‰©ä½™ AP: {BattleResourceManager.Instance.sharedAP}");
     }
 
     private void FaceTarget()
     {
-        var target = BattleManager.Instance.selectedEnemy;
+        var target = BattleTurnManager.Instance.selectedEnemy;
         if (target != null)
         {
-            // Í¨¹ı¼Ì³Ğ×Ô EntityBase µÄÊôĞÔ£¬¼ÆËã³¯Ïò
+            // é€šè¿‡ç»§æ‰¿è‡ª EntityBase çš„å±æ€§ï¼Œè®¡ç®—æœå‘
             float dirToTarget = target.transform.position.x - owner.transform.position.x;
             owner.AdjustFacingDirection(dirToTarget);
         }
@@ -153,13 +153,13 @@ public class PlayerBattleAimState : PlayerBattleState
     public override void Exit()
     {
         base.Exit();
-        owner.CanFlip = true; // »Ö¸´ÎïÀí×ªÍ·
+        owner.CanFlip = true; // æ¢å¤ç‰©ç†è½¬å¤´
 
-        // ÍË³öÃé×¼×´Ì¬£¬»Ö¸´ÏÔÊ¾ UGUI ¿ØÖÆ´óÃæ°å
+        // é€€å‡ºç„å‡†çŠ¶æ€ï¼Œæ¢å¤æ˜¾ç¤º UGUI æ§åˆ¶å¤§é¢æ¿
         if (BattleUIController.Instance != null)
         {
             BattleUIController.Instance.SetActionPanelActive(true);
         }
-        Debug.Log("[Ãé×¼Ä£Ê½] ÍË³öÃé×¼£¬»Ö¸´ÆÕÍ¨Õ½¶·×ËÊÆ¡£");
+        Debug.Log("[ç„å‡†æ¨¡å¼] é€€å‡ºç„å‡†ï¼Œæ¢å¤æ™®é€šæˆ˜æ–—å§¿åŠ¿ã€‚");
     }
 }

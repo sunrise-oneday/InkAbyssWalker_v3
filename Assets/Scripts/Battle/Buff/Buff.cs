@@ -1,34 +1,34 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Î´À´Èç¹ûÏë¼Ó²İ¡¢À×¡¢·çµÈÔªËØ£¬Ö±½ÓÔÚÕâÀïÌí¼Ó¼´¿É£º
+/// æœªæ¥å¦‚æœæƒ³åŠ è‰ã€é›·ã€é£ç­‰å…ƒç´ ï¼Œç›´æ¥åœ¨è¿™é‡Œæ·»åŠ å³å¯ï¼š
 /// </summary>
 public enum ElementType
 {
     None,
-    Fire,  // »ğÔªËØ
-    Ice,   // ±ùÔªËØ
-    Water  // Ë®ÔªËØ£¨×÷ÎªÍØÕ¹ÑİÊ¾£©
+    Fire,  // ç«å…ƒç´ 
+    Ice,   // å†°å…ƒç´ 
+    Water  // æ°´å…ƒç´ ï¼ˆä½œä¸ºæ‹“å±•æ¼”ç¤ºï¼‰
 }
 
 /// <summary>
-/// ×´Ì¬Òì³£/ÔöÒæĞ§¹û»ùÀà£¨´¿ C# Àà£¬ÎŞ MonoBehaviour ¿ªÏú£© [1]
+/// çŠ¶æ€å¼‚å¸¸/å¢ç›Šæ•ˆæœåŸºç±»ï¼ˆçº¯ C# ç±»ï¼Œæ—  MonoBehaviour å¼€é”€ï¼‰ [1]
 /// </summary>
 public abstract class Buff
 {
-    public string buffName;           // Buff Ãû×Ö
-    public Sprite icon;               // ¶ÔÓ¦µÄ UGUI Í¼±ê [1]
-    public int durationTurns;         // ³ÖĞø»ØºÏÊı
-    public string description;        // ĞüÍ£Ê±ÏÔÊ¾µÄÃèÊöÎÄ±¾£¨ºÏ²¢×ÔÔ­ÓĞÀà£©
-    public ElementType element = ElementType.None; // ¸½×ÅµÄÔªËØÀàĞÍ
+    public string buffName;           // Buff åå­—
+    public Sprite icon;               // å¯¹åº”çš„ UGUI å›¾æ ‡ [1]
+    public int durationTurns;         // æŒç»­å›åˆæ•°
+    public string description;        // æ‚¬åœæ—¶æ˜¾ç¤ºçš„æè¿°æ–‡æœ¬ï¼ˆåˆå¹¶è‡ªåŸæœ‰ç±»ï¼‰
+    public ElementType element = ElementType.None; // é™„ç€çš„å…ƒç´ ç±»å‹
 
     // ========================================================
-    // ºËĞÄĞÂÔö£ºµş²ãÊôĞÔ£¨ÓÃÓÚµş²ãºÍÉËº¦±¶ÂÊ¼ÆËã£© [2]
+    // æ ¸å¿ƒæ–°å¢ï¼šå å±‚å±æ€§ï¼ˆç”¨äºå å±‚å’Œä¼¤å®³å€ç‡è®¡ç®—ï¼‰ [2]
     // ========================================================
-    public int stacks = 1;         // µ±Ç°²ãÊı£¬Ä¬ÈÏÊÇ 1 ²ã [2]
-    public int maxStacks = 3;      // ×î´óµş²ãÉÏÏŞ£¨¿ÉÔÚ×ÓÀàÀï×ÔÓÉĞŞ¸Ä£¬±ÈÈç¸Ä³É×î´ó5²ã£© [2]
+    public int stacks = 1;         // å½“å‰å±‚æ•°ï¼Œé»˜è®¤æ˜¯ 1 å±‚ [2]
+    public int maxStacks = 3;      // æœ€å¤§å å±‚ä¸Šé™ï¼ˆå¯åœ¨å­ç±»é‡Œè‡ªç”±ä¿®æ”¹ï¼Œæ¯”å¦‚æ”¹æˆæœ€å¤§5å±‚ï¼‰ [2]
 
-    public CharacterStats owner { get; private set; } // ¸Ã Buff ¹ÒÔÚË­ÉíÉÏ
+    public CharacterStats owner { get; private set; } // è¯¥ Buff æŒ‚åœ¨è°èº«ä¸Š
 
     public void Initialize(CharacterStats owner)
     {
@@ -36,16 +36,22 @@ public abstract class Buff
     }
 
     // ==========================================
-    // ×´Ì¬ÉúÃüÖÜÆÚ¹³×Ó£¨×ÓÀà°´ĞèÖØĞ´£©
+    // çŠ¶æ€ç”Ÿå‘½å‘¨æœŸé’©å­ï¼ˆå­ç±»æŒ‰éœ€é‡å†™ï¼‰
     // ==========================================
-    public virtual void OnApply() { }              // ¸Õ¸Õ¹ÒÔØÊ±´¥·¢ [1]
-    public virtual void OnTurnStart() { }          // ½ÇÉ«»ØºÏ¿ªÊ¼Ê±´¥·¢£¨ÀıÈç£ºÈ¼ÉÕ¿ÛÑª£©
-    public virtual void OnTurnEnd() { }            // ½ÇÉ«»ØºÏ½áÊøÊ±´¥·¢
-    public virtual void OnRemove() { }             // ×´Ì¬ÏûÊ§Ê±´¥·¢
+    public virtual void OnApply() { }              // åˆšåˆšæŒ‚è½½æ—¶è§¦å‘ [1]
+    public virtual void OnTurnStart() { }          // è§’è‰²å›åˆå¼€å§‹æ—¶è§¦å‘ï¼ˆä¾‹å¦‚ï¼šç‡ƒçƒ§æ‰£è¡€ï¼‰
+    public virtual void OnTurnEnd() { }            // è§’è‰²å›åˆç»“æŸæ—¶è§¦å‘
+    public virtual void OnRemove() { }             // çŠ¶æ€æ¶ˆå¤±æ—¶è§¦å‘
 
     /// <summary>
-    /// ºËĞÄ£ºÉËº¦À¹½ØÆ÷¡£ÔÚ½ÇÉ«¼ÆËã»¤¼×ºÍÉËº¦Ç°µ÷ÓÃ£¬
-    /// ¿ÉÓÃÓÚÊµÏÖ¡°ÃâÉË¶Ü¡±¡¢¡°Á÷Ñª¼ÓÉî¡±»ò¡°Ò×ÉË¡±µÈĞ§¹û£¬³¹µ×½âñîÉËº¦¼ÆËã£¡ [1, 5]
+    /// æ ¸å¿ƒï¼šä¼¤å®³æ‹¦æˆªå™¨ã€‚åœ¨è§’è‰²è®¡ç®—æŠ¤ç”²å’Œä¼¤å®³å‰è°ƒç”¨ï¼Œ
+    /// å¯ç”¨äºå®ç°â€å…ä¼¤ç›¾â€ã€â€æµè¡€åŠ æ·±â€æˆ–â€æ˜“ä¼¤â€ç­‰æ•ˆæœï¼Œå½»åº•è§£è€¦ä¼¤å®³è®¡ç®—ï¼ [1, 5]
     /// </summary>
     public virtual int OnBeforeTakeDamage(int rawDamage) => rawDamage;
+
+    /// <summary>
+    /// æŠ¤ç›¾å¢ç›Šæ‹¦æˆªå™¨ã€‚åœ¨è§’è‰²è·å¾—æŠ¤ç›¾å‰è°ƒç”¨ï¼Œ
+    /// å¯ç”¨äºå®ç°â€è„†å¼±â€(Frail)ç­‰é™ä½æŠ¤ç›¾è·å–é‡çš„æ•ˆæœã€‚
+    /// </summary>
+    public virtual int OnBeforeGainShield(int baseShield) => baseShield;
 }

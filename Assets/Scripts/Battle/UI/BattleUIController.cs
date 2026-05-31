@@ -1,632 +1,126 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
+/// <summary>
+/// æˆ˜æ–— UI ç®¡ç†å™¨ï¼ˆFacade æ¨¡å¼ï¼‰
+/// ç»Ÿä¸€ç®¡ç†æˆ˜æ–—åœºæ™¯ä¸­çš„æ‰€æœ‰é¢æ¿ç»„ä»¶ã€‚
+///
+/// ã€èŒè´£ã€‘
+/// 1. æŒæœ‰æ‰€æœ‰æˆ˜æ–—é¢æ¿çš„å¼•ç”¨
+/// 2. å¯¹å¤–æš´éœ²ç»Ÿä¸€çš„ APIï¼ˆå¤–éƒ¨ä»£ç é€šè¿‡ BattleUIController.Instance è°ƒç”¨ï¼‰
+/// 3. å†…éƒ¨é€»è¾‘å§”æ‰˜ç»™å…·ä½“çš„é¢æ¿ç±»å¤„ç†
+///
+/// ã€æ‰©å±•ç°æœ‰é¢æ¿ã€‘
+/// åœ¨ Inspector ä¸­æ‹–æ‹½èµ‹å€¼å³å¯ã€‚
+///
+/// ã€æ·»åŠ æ–°é¢æ¿ã€‘
+/// 1. åˆ›å»ºç»§æ‰¿ BasePanel çš„æ–°ç±»ï¼Œå†™å¥½ç‹¬ç«‹é€»è¾‘å’Œ SerializeField
+/// 2. åœ¨æ­¤ç±»ä¸­æ·»åŠ  [SerializeField] å¼•ç”¨
+/// 3. åœ¨éœ€è¦çš„åœ°æ–¹è°ƒç”¨ panel.OnOpen/OnClose/OnRefresh
+/// </summary>
 public class BattleUIController : MonoBehaviour
 {
     public static BattleUIController Instance { get; private set; }
 
-    [Header("Canvas ÕûÌå¿ØÖÆ")]
-    [SerializeField] private GameObject battleCanvas;
+    [Header("Canvas æ ¹èŠ‚ç‚¹")]
+    [SerializeField] private GameObject battlePanel;
 
-    [Header("»ØºÏÖÆ¶¥²ãÈ«¾ÖÊı¾İ")]
-    [SerializeField] private Text turnText;
+    [Header("é¢æ¿ç»„ä»¶")]
+    [SerializeField] private BattleInfoPanel infoPanel;
+    [SerializeField] private BattleActionPanel actionPanel;
+    [SerializeField] private BuffTooltipPanel buffTooltip;
+    [SerializeField] private FixedTooltipPanel fixedTooltip;
+    [SerializeField] private BattleResultPanel resultPanel;
+    [SerializeField] private EntityHudSpawner hudSpawner;
 
-    [Header("¶ÓÎé¹²Ïí×ÊÔ´ UI [¹²ÓÃ]")]
-    [SerializeField] private Text sharedApText;
-    [SerializeField] private Slider sharedMpSlider;
-    [SerializeField] private Text sharedMpText;
-
-    [Header("Íæ¼Ò¶ÓÎéÊôĞÔÈİÆ÷ (µ×²¿µÄ Horizontal Layout Group)")]
-    [SerializeField] private Transform playerHUDContainer;
-    [SerializeField] private GameObject playerHUDPrefab;
-
-    // ========================================================
-    // ºËĞÄÖØ¹¹£º½«Ô­±¾µÄ GameObject Òş²Ø¸ÄÎªÓÃ CanvasGroup ½øĞĞ¡°°ëÍ¸Ã÷½»»¥ËøËÀ¡±¿ØÖÆ£¡
-    // ========================================================
-    [Header("ĞĞ¶¯Ãæ°å CanvasGroup ¿ØÖÆ")]
-    [SerializeField] private CanvasGroup actionPanelGroup;  // ÍÏÈë¹ÒÔØÁË CanvasGroup ×é¼şµÄĞĞ¶¯´óÃæ°åÎïÌå [2]
-
-    [SerializeField] private Button endTurnButton;
-    [SerializeField] private List<Button> skillButtons;
-    [SerializeField] private List<Button> formButtons;
-    // ========================================================
-
-    // ========================================================
-    // ºËĞÄÖØ¹¹£ºÉ±Â¾¼âËşÊ½¶à Buff ÅÅ¶ÓÌáÊ¾Ãæ°å [1]
-    // ========================================================
-    [Header("É±Â¾¼âËşÊ½ ÌáÊ¾Ãæ°å [1]")]
-    [SerializeField] private GameObject tooltipPanel;         // ÌáÊ¾Ãæ°å´óºĞ×ÓÎïÌå
-    [SerializeField] private Transform tooltipListContainer;  // ´óºĞ×ÓÀïµÄ´¹Ö±²¼¾Ö×éÈİÆ÷£¨´ÓÉÏÍùÏÂÅÅ¶Ó£©
-    [SerializeField] private GameObject tooltipRowPrefab;     // µ¥¸ö Buff ÃèÊöµÄµ¥ĞĞÔ¤ÖÆÌå£¨×óÍ¼ÓÒÎÄ£© [1]
-
-    // ========================================================
-    // ºËĞÄÖØ¹¹£º´óÕĞ UGUI Êı¾İ°ó¶¨ [3]
-    // ========================================================
-    [Header("¶ÓÎé¹²Ïí´óÕĞ UI [×óÉÏ½Ç]")]
-    [SerializeField] private Slider sharedUltSlider;       // È«¾Ö¹«¹²´óÕĞÄÜÁ¿Ìõ [3]
-    [SerializeField] private Text sharedUltText;           // ÏÔÊ¾¹«¹²´óÕĞ°Ù·Ö±È£¬Èç "100%" [3]
-    [SerializeField] private Button ultimateButton;        // ´óÕĞÊÍ·Å°´Å¥
-                                                           // ========================================================
-
-    [Header("¹Ì¶¨Î»ÖÃÃèÊöÃæ°å [ĞÂÔö]")]
-    [SerializeField] private CanvasGroup fixedTooltipGroup; // ÃèÊö´óÃæ°åµÄ CanvasGroup [1]
-    [SerializeField] private CanvasGroup tooltipTextGroup;  // ÄÚ²¿ËùÓĞÎÄ±¾µÄ×Ó CanvasGroup£¨ÓÃÓÚÎÄ×Ö¼«ËÙ½¥±ä£©
-    [SerializeField] private Text fixedTitleText;          // ÌáÊ¾Ãû×Ö [1]
-    [SerializeField] private Text fixedCostText;           // ÌáÊ¾ÏûºÄ [1]
-    [SerializeField] private Text fixedDescText;           // ÌáÊ¾ÃèÊö [1]
-
-    // ºËĞÄĞÂÔö£ºÓÃÓÚ¿ØÖÆ´¿Ô­ÉúĞ­³Ì¶¯»­µÄÖ¸Õë»º´æ£¬·À¶¶´ò¶Ï [2]
-    private Coroutine activeFadeRoutine;
-    private Coroutine activeScaleRoutine;
-    private Coroutine activeTextRoutine;
-
-    private string currentActiveTitle = ""; // ¼ÇÂ¼µ±Ç°ÁÁÆğµÄÃèÊö±êÌâ£¬ÓÃ×÷·ÀÖØÅĞ¶Ï
-
-    [Header("Ê¤¸ºÃæ°å [ĞÂÔö]")]
-    [SerializeField] private GameObject victoryPanel;
-    [SerializeField] private GameObject defeatPanel;
-    public void ShowVictoryPanel(bool isShow) => victoryPanel?.SetActive(isShow);
-    public void ShowDefeatPanel(bool isShow) => defeatPanel?.SetActive(isShow);
-
-    private List<GameObject> spawnedHUDs = new List<GameObject>();
     private PlayerBattleEntity mainPlayer;
+    public PlayerBattleEntity MainPlayer => mainPlayer;
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
+            return;
         }
 
-        if (battleCanvas != null) battleCanvas.SetActive(false);
-        if (tooltipPanel != null) tooltipPanel.SetActive(false); // Ä¬ÈÏÒş²ØÌáÊ¾¿ò
+        if (battlePanel != null) battlePanel.SetActive(false);
     }
 
     private void Start()
     {
-        if (endTurnButton != null)
-        {
-            endTurnButton.onClick.AddListener(OnEndTurnClicked);
-        }
-
-        // ========================================================
-        // ºËĞÄ£º°ó¶¨´óÕĞ°´Å¥µÄ onClick µã»÷ÊÂ¼ş£¡
-        // ========================================================
-        if (ultimateButton != null)
-        {
-            ultimateButton.onClick.AddListener(OnUltimateButtonClicked);
-        }
+        // ç»‘å®šå…¨å±€æŒ‰é’®äº‹ä»¶
+        actionPanel?.BindEndTurnButton(() => BattleTurnManager.Instance.EnterEnemyTurn());
     }
 
-    private void Update()
-    {
-        // ÌáÊ¾£ºÈç¹ûÌáÊ¾Ãæ°åÕı´¦ÓÚÏÔÊ¾×´Ì¬£¬Ã¿Ö¡ÃüÁîËü¸ú×ÅÊó±êÒÆ¶¯
-        if (tooltipPanel != null && tooltipPanel.activeSelf)
-        {
-            UpdateTooltipPosition();
-        }
-    }
+    // ============================================
+    // Facade API â€” å¯¹å¤–æš´éœ²ï¼Œå†…éƒ¨å§”æ‰˜ç»™é¢æ¿
+    // ============================================
 
-    /// <summary>
-    /// Ìá¹©¸øÍâ²¿µ÷ÓÃ£ºÏÔÊ¾ Buff ÃèÊöÃæ°å [1]
-    /// </summary>
-    /// <summary>
-    /// ºËĞÄÖØ¹¹£ºÕ¹Ê¾É±Â¾¼âËşÊ½µÄ¶à Buff ÅÅ¶ÓÌáÊ¾¿ò [1]
-    /// </summary>
-    /// <param name="activeBuffs">µ±Ç°½ÇÉ«ÉíÉÏÕıÔÚ¹ÒÔØµÄÈ«²¿ Buff ÁĞ±í</param>
-    public void ShowTooltipList(List<Buff> activeBuffs)
-    {
-        if (tooltipPanel == null || tooltipListContainer == null || tooltipRowPrefab == null) return;
-        if (activeBuffs == null || activeBuffs.Count == 0) return;
-
-        // 1. Çå¿Õ¾ÉµÄÌáÊ¾Ìõ£¨´òÉ¨Õ½³¡£©
-        foreach (Transform child in tooltipListContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        // 2. ±éÀú¸Ã½ÇÉ«ÉíÉÏËùÓĞµÄ Buff£¬¶¯Ì¬¿ËÂ¡²¢Éú³ÉÒ»ĞĞĞĞµÄÃèÊöÌõ£¡ [1]
-        foreach (Buff buff in activeBuffs)
-        {
-            GameObject rowObj = Instantiate(tooltipRowPrefab, tooltipListContainer);
-
-            // ×Ô¶¯Ñ°ÕÒ²¢äÖÈ¾×ó²àµÄ Buff Í¼Ïñ [1]
-            Image img = rowObj.transform.Find("Icon")?.GetComponent<Image>();
-            if (img != null) img.sprite = buff.icon;
-
-            // ×Ô¶¯Ñ°ÕÒ²¢äÖÈ¾ÓÒ²àµÄÃû×Ö [1]
-            Text nameTxt = rowObj.transform.Find("txtName")?.GetComponent<Text>();
-            if (nameTxt != null) nameTxt.text = buff.buffName;
-
-            // ×Ô¶¯Ñ°ÕÒ²¢äÖÈ¾ÓÒ²àµÄÃèÊö [1]
-            Text descTxt = rowObj.transform.Find("txtDesc")?.GetComponent<Text>();
-            if (descTxt != null)
-            {
-                descTxt.text = $"{buff.description} <color=yellow>(Ê£ {buff.durationTurns} »ØºÏ)</color>";
-            }
-        }
-
-        // ========================================================
-        // 3. ºËĞÄĞŞ¸´£ºÓÃ´úÂëÇ¿ÖÆ¶ÔÌáÊ¾´óÃæ°å¹ÒÔØ²¢ÉèÖÃ CanvasGroup£¡
-        // Ç¿ĞĞ¹Ø±Õ blocksRaycasts ×èµ²¡£ÕâÑùÊó±êÉäÏß»áÍêÈ«´©Í¸Ëü£¬Ò»ÉÁÒ»ÉÁµÄ Bug ÓÀ¾Ã±»Ïû³ı£¡ [2]
-        // ========================================================
-        CanvasGroup cg = tooltipPanel.GetComponent<CanvasGroup>();
-        if (cg == null) cg = tooltipPanel.AddComponent<CanvasGroup>();
-        cg.blocksRaycasts = false;
-        cg.interactable = false;
-
-        tooltipPanel.SetActive(true);
-        UpdateTooltipPosition();
-    }
-
-    /// <summary>
-    /// Ìá¹©¸øÍâ²¿µ÷ÓÃ£ºÒş²Ø Buff ÃèÊöÃæ°å
-    /// </summary>
-    public void HideTooltip()
-    {
-        if (tooltipPanel != null)
-        {
-            tooltipPanel.SetActive(false);
-        }
-    }
-
-    /// <summary>
-    /// ÈÃÃæ°å¸ú×ÅÊó±ê×ßµÄÎ»ÒÆÂß¼­£¨Î¢µ÷Æ«ÒÆ£¬·ÀÖ¹µ²×¡Ö¸Õë£© [1]
-    /// </summary>
-    private void UpdateTooltipPosition()
-    {
-        // »ñÈ¡Êó±êµ±Ç°µÄÆÁÄ»ÏñËØ×ø±ê£¬²¢ÉÔÎ¢Íù×óÉÏ·½½øĞĞÏñËØÎ¢µ÷
-        Vector2 mousePos = Input.mousePosition;
-        tooltipPanel.transform.position = mousePos + new Vector2(-120f, 60f); // Æ«×ó 120 ÏñËØ£¬Æ«ÉÏ 60 ÏñËØ
-    }
-
+    /// <summary>åˆå§‹åŒ–æˆ˜æ–— UIï¼ˆåœ¨æˆ˜æ–—å¼€å§‹æ—¶è°ƒç”¨ï¼‰</summary>
     public void InitializeUI(List<PlayerBattleEntity> party, List<EnemyBattleEntity> enemies)
     {
         if (party.Count == 0 || enemies.Count == 0) return;
-
         mainPlayer = party[0];
 
-        if (battleCanvas != null) battleCanvas.SetActive(true);
+        if (battlePanel != null) battlePanel.SetActive(true);
 
-        ClearOldHUDs();
-
-        if (playerHUDContainer != null && playerHUDPrefab != null)
-        {
-            foreach (var member in party)
-            {
-                if (member == null) continue;
-
-                GameObject hudObj = Instantiate(playerHUDPrefab, playerHUDContainer);
-                spawnedHUDs.Add(hudObj);
-
-                EntityHUD hudScript = hudObj.GetComponent<EntityHUD>();
-                if (hudScript != null)
-                {
-                    hudScript.SetTargetStats(member.Stats);
-                    hudScript.RefreshAll();
-                }
-            }
-        }
+        hudSpawner?.SpawnHUDs(party);
+        infoPanel?.SetPlayer(mainPlayer);
+        actionPanel?.SetPlayer(mainPlayer);
+        infoPanel?.BindUltimateButton(() => mainPlayer?.CastUltimate());
 
         RefreshUI();
     }
 
+    /// <summary>åˆ·æ–°æ‰€æœ‰é¢æ¿æ•°æ®</summary>
     public void RefreshUI()
     {
-        if (mainPlayer == null) return;
-
-        if (turnText != null)
-        {
-            turnText.text = $"»ØºÏ {BattleManager.Instance.currentTurn}";
-        }
-
-        if (sharedApText != null)
-        {
-            sharedApText.text = $"AP: {BattleManager.Instance.sharedAP}/{BattleManager.Instance.maxSharedAP}";
-        }
-
-        if (sharedMpSlider != null)
-        {
-            sharedMpSlider.maxValue = BattleManager.Instance.maxSharedMP;
-            sharedMpSlider.value = BattleManager.Instance.sharedMP;
-        }
-
-        if (sharedMpText != null)
-        {
-            sharedMpText.text = $"MP:{BattleManager.Instance.sharedMP}/{BattleManager.Instance.maxSharedMP}";
-        }
-
-        // ========================================================
-        // ºËĞÄĞÂÔö£º¸üĞÂ×óÉÏ½Ç´óÕĞ½ø¶ÈÌõ£¬²¢¶¯Ì¬¼ÆËã´óÕĞ°´Å¥µÄÁÁÆğ×´Ì¬£¡ [3]
-        // ========================================================
-        if (sharedUltSlider != null)
-        {
-            sharedUltSlider.maxValue = BattleManager.Instance.maxSharedUltimateEnergy;
-            sharedUltSlider.value = BattleManager.Instance.sharedUltimateEnergy;
-        }
-
-        if (sharedUltText != null)
-        {
-            sharedUltText.text = $"{BattleManager.Instance.sharedUltimateEnergy}%";
-        }
-
-        if (ultimateButton != null)
-        {
-            // ÁÁÆğ¹æÔò£ºÖ»ÓĞµ±´óÕĞÄÜÁ¿ÂúÁË£¨>=100£©£¬²¢ÇÒµ±Ç°´¦ÓÚÍæ¼Ò×Ô¼ºµÄ»ØºÏÊ±£¬°´Å¥²ÅÔÊĞí¸ßÁÁÁÁÆğ£¡ [3]
-            bool canCastUlt = (BattleManager.Instance.sharedUltimateEnergy >= BattleManager.Instance.maxSharedUltimateEnergy)
-                              && (BattleManager.Instance.currentPhase == BattlePhase.PlayerTurn);
-
-            ultimateButton.interactable = canCastUlt; // ×Ô¶¯¿ØÖÆÖÃ»ÒÓëÁÁÆğ
-
-            // ========================================================
-            // ºËĞÄĞÂÔö£º×Ô¶¯Îª´óÕĞ£¨ÖÕ½á°ÂÒå£©°´Å¥¶¯Ì¬×¢Èë²¢¸üĞÂÌáÊ¾Êı¾İ£¡
-            // ========================================================
-            UITooltipTrigger trigger = ultimateButton.GetComponent<UITooltipTrigger>();
-            if (trigger == null) trigger = ultimateButton.gameObject.AddComponent<UITooltipTrigger>();
-
-            string ultName = mainPlayer.equippedUltimate != null ? mainPlayer.equippedUltimate.ultimateName : "Î´×°±¸´óÕĞ";
-            string ultDesc = mainPlayer.equippedUltimate != null ? mainPlayer.equippedUltimate.description : "´óÕĞÄÜÁ¿Âú 100% ºó£¬¿Éµã»÷±¬ÁÑÊÍ·Å¡£";
-            trigger.SetTooltipData(ultName, "ÏûºÄ: 100% Å­Æø", ultDesc, 0, 0); // ´«Èë 0 ÏûºÄ£¬´óÕĞÅ­ÆøÁíÍâµ¥¶ÀÅĞ¶Ï
-        }
-
-        SetupFormButtons();
-        SetupSkillButtons();
+        infoPanel?.OnRefresh();
+        actionPanel?.OnRefresh();
     }
 
-    private void OnUltimateButtonClicked()
+    /// <summary>åˆ·æ–°æ‰€æœ‰å®ä½“è¡€æ¡</summary>
+    public void RefreshHUDs()
     {
-        // ´¥·¢´óÕĞÊÍ·Å
-        if (mainPlayer != null)
-        {
-            mainPlayer.CastUltimate();
-        }
+        hudSpawner?.RefreshAll();
     }
 
-    private void SetupFormButtons()
+    /// <summary>å¯ç”¨/ç¦ç”¨æ“ä½œé¢æ¿ï¼ˆæ•Œäººå›åˆç¦ç”¨ï¼‰</summary>
+    public void SetActionPanelActive(bool active)
     {
-        if (mainPlayer == null) return;
-        var forms = mainPlayer.availableForms;
-
-        for (int i = 0; i < formButtons.Count; i++)
-        {
-            Button btn = formButtons[i];
-            if (btn == null) continue;
-
-            if (i < forms.Count)
-            {
-                btn.gameObject.SetActive(true);
-                PlayerForm form = forms[i];
-
-                Text btnText = btn.GetComponentInChildren<Text>();
-                if (btnText != null)
-                {
-                    btnText.text = $"{form.formName}\n({form.apCostToSwitch} AP)";
-                }
-
-                // ========================================================
-                // È«×Ô¶¯£ºÎªĞÎÌ¬ÇĞ»»°´Å¥¶¯Ì¬×¢Èë²¢¸üĞÂÌáÊ¾Êı¾İ£¡
-                // ========================================================
-                UITooltipTrigger trigger = btn.GetComponent<UITooltipTrigger>();
-                if (trigger == null) trigger = btn.gameObject.AddComponent<UITooltipTrigger>();
-                // ´«Èë AP Êµ¼ÊÏûºÄ²ÎÊı£¬ÓÃÓÚºì×ÖÅĞ¶Ï [3]
-                trigger.SetTooltipData(form.formName, $"ÏûºÄ: {form.apCostToSwitch} AP", "±äÉíÎª´ËĞÎÌ¬£¬²¢È«×Ô¶¯Ë¢ĞÂÆ¥Åä¸ÃĞÎÌ¬µÄ¼¼ÄÜ¿¨ÅÆ¡£", 0, form.apCostToSwitch);
-
-                int index = i;
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(() =>
-                {
-                    mainPlayer.SwitchForm(index);
-                    RefreshUI();
-                    UpdateAllHUDs();
-                });
-            }
-            else
-            {
-                btn.gameObject.SetActive(false);
-            }
-        }
+        actionPanel?.SetInteractable(active);
     }
 
-    private void SetupSkillButtons()
-    {
-        if (mainPlayer == null || mainPlayer.CurrentForm == null) return;
+    /// <summary>æ˜¾ç¤ºèƒœåˆ©é¢æ¿</summary>
+    public void ShowVictoryPanel(bool _) => resultPanel?.ShowVictory();
 
-        var activeSkills = mainPlayer.CurrentForm.availableSkills;
+    /// <summary>æ˜¾ç¤ºæˆ˜è´¥é¢æ¿</summary>
+    public void ShowDefeatPanel(bool _) => resultPanel?.ShowDefeat();
 
-        for (int i = 0; i < skillButtons.Count; i++)
-        {
-            Button btn = skillButtons[i];
-            if (btn == null) continue;
+    /// <summary>æ˜¾ç¤º Buff æµ®åŠ¨æç¤º</summary>
+    public void ShowTooltipList(List<Buff> activeBuffs) => buffTooltip?.Show(activeBuffs);
 
-            if (i < activeSkills.Count)
-            {
-                btn.gameObject.SetActive(true);
-                Skill skill = activeSkills[i];
+    /// <summary>éšè— Buff æµ®åŠ¨æç¤º</summary>
+    public void HideTooltip() => buffTooltip?.Hide();
 
-                Text btnText = btn.GetComponentInChildren<Text>();
-                if (btnText != null)
-                {
-                    btnText.text = $"{skill.skillName}\n({skill.mpCost} MP / {skill.breakDamage} Ï÷ÈÍ)";
-                }
+    /// <summary>æ˜¾ç¤ºæŠ€èƒ½è¯¦æƒ…æç¤ºï¼ˆå›ºå®šä½ç½®ï¼‰</summary>
+    public void ShowFixedTooltip(string title, string cost, string desc, int reqMp, int reqAp)
+        => fixedTooltip?.Show(title, cost, desc, reqMp, reqAp);
 
-                // ========================================================
-                // È«×Ô¶¯£ºÎªµ±Ç°ĞÎÌ¬ÏÂµÄ¼¼ÄÜ°´Å¥¶¯Ì¬×¢Èë²¢¸üĞÂÌáÊ¾Êı¾İ£¡
-                // ========================================================
-                UITooltipTrigger trigger = btn.GetComponent<UITooltipTrigger>();
-                if (trigger == null) trigger = btn.gameObject.AddComponent<UITooltipTrigger>();
-                // ´«Èë MP Êµ¼ÊÏûºÄ²ÎÊı£¬ÓÃÓÚºì×ÖÅĞ¶Ï [3]
-                trigger.SetTooltipData(skill.skillName, $"ÏûºÄ: {skill.mpCost} MP", $"{skill.baseDamage}µãÍşÁ¦£¬¶ÔÄ¿±êÔì³É {skill.breakDamage}µã°×É«Ï÷ÈÍÉËº¦¡£", skill.mpCost, 0);
+    /// <summary>éšè—æŠ€èƒ½è¯¦æƒ…æç¤º</summary>
+    public void HideFixedTooltip() => fixedTooltip?.Hide();
 
-                btn.onClick.RemoveAllListeners();
-
-                // ========================================================
-                // ºËĞÄĞŞ¸Ä£ºµã»÷ÊÍ·Å¼¼ÄÜÊ±£¬Ä¿±ê¶Ô×¼ÎÒÃÇÔÚ BattleManager ÖĞµã»÷Ñ¡ÖĞµÄ¹ÖÎï£¡
-                // ========================================================
-                btn.onClick.AddListener(() =>
-                {
-                    var target = BattleManager.Instance.selectedEnemy; // ¶¯Ì¬Ñ°ÕÒÑ¡ÖĞµÄ¹Ö£¡ [2]
-                    if (target != null)
-                    {
-                        mainPlayer.CastSkill(skill, target);
-                        RefreshUI();
-                        UpdateAllHUDs();
-                    }
-                    else
-                    {
-                        Debug.LogWarning("[UI ÌáÊ¾] ÇëÓÃÊó±êÏÈµã»÷³¡¾°ÖĞµÄ¹ÖÎï×÷Îª¹¥»÷Ä¿±ê£¡ [2]");
-                    }
-                });
-            }
-            else
-            {
-                btn.gameObject.SetActive(false);
-            }
-        }
-    }
-
-    private void UpdateAllHUDs()
-    {
-        foreach (var hud in spawnedHUDs)
-        {
-            if (hud != null)
-            {
-                EntityHUD script = hud.GetComponent<EntityHUD>();
-                if (script != null) script.RefreshAll();
-            }
-        }
-    }
-
-    private void ClearOldHUDs()
-    {
-        foreach (var hud in spawnedHUDs)
-        {
-            if (hud != null) Destroy(hud);
-        }
-        spawnedHUDs.Clear();
-    }
-
+    /// <summary>å…³é—­æ‰€æœ‰æˆ˜æ–— UI</summary>
     public void CloseUI()
     {
-        ClearOldHUDs();
-        if (battleCanvas != null) battleCanvas.SetActive(false);
-        if(victoryPanel != null) victoryPanel.SetActive(false);
-        if(defeatPanel != null) defeatPanel.SetActive(false);
+        hudSpawner?.ClearAll();
+        resultPanel?.HideAll();
+        if (battlePanel != null) battlePanel.SetActive(false);
     }
-
-    // ========================================================
-    // ºËĞÄÖØ¹¹£ºÊ¹ÓÃ CanvasGroup ´ú¶ÔÕû¸öÃæ°å½øĞĞ¡°ÖÃ»Ò¡¢ËøËÀ½»»¥¡±
-    // ========================================================
-    public void SetActionPanelActive(bool isActive)
-    {
-        if (actionPanelGroup != null)
-        {
-            // ¼¤»îÊ±£º²»Í¸Ã÷¶ÈÎª 1£¬¿ªÆôÊó±êÉäÏß×èµ²£¨¿ÉÕı³£µã»÷£©
-            // ËøËÀÊ±£¨µĞÈË»ØºÏ£©£º°ëÍ¸Ã÷£¨ÖÃ»Ò±íÏÖ£©£¬¹Ø±ÕÊó±êÉäÏß£¬Ê¹ÆäÍêÈ«ÎŞ·¨µã»÷£¡
-            actionPanelGroup.alpha = isActive ? 1.0f : 0.45f;
-            actionPanelGroup.blocksRaycasts = isActive;
-        }
-    }
-
-    private void OnEndTurnClicked()
-    {
-        BattleManager.Instance.EnterEnemyTurn();
-    }
-
-    // ========================================================================
-    // ´¿ Unity Ğ­³Ì»º¶¯ÒıÇæ (Ö§³Ö¼«ËÙÎŞ·ì»¬¶¯ÇĞ»»)
-    // ========================================================================
-
-    /// <summary>
-    /// ºËĞÄÖØ¹¹£ºÕ¹ÏÖ¹Ì¶¨Î»ÖÃµÄÃèÊöÃæ°å£¨Ö§³Ö£ººì×Ö¾¯¸æ¡¢·ÀÒ»¹ØÒ»¿ªË²ÉÁ¡¢¼«ËÙ¶ÔÆë£© [1, 2, 3]
-    /// </summary>
-    /// <summary>
-    /// ºËĞÄÖØ¹¹£ºÕ¹ÏÖ¹Ì¶¨Î»ÖÃµÄÃèÊöÃæ°å£¨ÓÃ activeSelf ´úÌæ alpha ÅĞ¶Ï£¬³¹µ×ÆÆ½âÂß¼­±Õ»·ÏİÚå£© [1, 2, 3]
-    /// </summary>
-    public void ShowFixedTooltip(string title, string cost, string desc, int reqMp, int reqAp)
-    {
-        if (fixedTooltipGroup == null) return;
-
-        // 1. ¼«ÖÂ»¬ÊÖ¸Ğ£ºÈç¹ûÉÏÒ»´ÎµÄ¡°Òş²Ø/µ­³ö¡±Ğ­³ÌÕıÔÚÔËĞĞ£¬ÔÚµÚÒ»Ê±¼ä½«ÆäÁ¢¿ÌÆş¶Ï£¡
-        if (activeFadeRoutine != null)
-        {
-            StopCoroutine(activeFadeRoutine);
-            activeFadeRoutine = null;
-        }
-
-        // ´¦Àí×ÊÔ´²»×ãÊ±µÄºì×Ö¾¯¸æ
-        string finalCostText = cost;
-        bool isMpEnough = BattleManager.Instance.sharedMP >= reqMp;
-        bool isApEnough = BattleManager.Instance.sharedAP >= reqAp;
-
-        if (cost.Contains("Å­Æø") && BattleManager.Instance.sharedUltimateEnergy < BattleManager.Instance.maxSharedUltimateEnergy)
-        {
-            finalCostText = $"<color=red>{cost} (Å­ÆøÎ´Âú£¡)</color>";
-        }
-        else if (!isMpEnough)
-        {
-            finalCostText = $"<color=red>{cost} (·¨Á¦²»×ã£¡)</color>";
-        }
-        else if (!isApEnough)
-        {
-            finalCostText = $"<color=red>{cost} (ĞĞ¶¯µã²»×ã£¡)</color>";
-        }
-
-        // Èç¹ûÊÇµ±Ç°ÕıÔÚÏÔÊ¾µÄ£¬ÇÒ²»Í¸Ã÷¶ÈÊÇÂúµÄ£¬Ö±½Ó·µ»Ø
-        if (currentActiveTitle == title && fixedTooltipGroup.alpha > 0.9f) return;
-
-        // ========================================================
-        // ºËĞÄĞŞ¸´£ºÓÃ activeSelf£¨´óÃæ°åÎïÌåÊÇ·ñÔÚ²ã¼¶Ê÷ÖĞ´¦ÓÚ¼¤»î×´Ì¬£©À´´úÌæ alpha ÅĞ¶¨£¡
-        // ÕâÑù¿ÉÒÔ³¹µ×±ÜÃâ¡°ÒòÎªÌáÇ°Ç¿ĞĞ½« alpha ÉèÎª 1£¬µ¼ÖÂÏµÍ³ÎóÒÔÎªÃæ°åÒÑ¾­ÁÁÆğ£¬
-        // ´Ó¶øÌø¹ıÁË SetActive(true) ¼¤»î²½Öè²¢µ¼ÖÂĞ­³ÌÉÁÍË¡±µÄÖÂÃüÂß¼­ÏİÚå£¡
-        // ========================================================
-        bool isPanelAlreadyActive = fixedTooltipGroup.gameObject.activeSelf;
-
-        if (isPanelAlreadyActive)
-        {
-            // ¡¾·ÖÖ§ A¡¿£ºÈç¹ûÃæ°åÒÑ¾­ÔÚÏÔÊ¾£¨ÓÉÓÚ¿ìËÙ»¬¶¯£¬´ÓÒ»¸ö¼üÉ¨µ½ÁíÒ»¸ö¼ü£©
-            currentActiveTitle = title;
-
-            // ¼ÈÈ»ÊÇÍ¨¹ı¿ìËÙ»¬¶¯ÖØĞÂ»½ĞÑÁËÃæ°å£¬ÎÒÃÇÔÚÕâÀïÇ¿ĞĞ½«Æä²»Í¸Ã÷¶È»Ö¸´µ½ 1.0f Õı³£ÑÕÉ«£¡
-            fixedTooltipGroup.alpha = 1f;
-
-            if (activeTextRoutine != null) StopCoroutine(activeTextRoutine);
-
-            // ¼«ËÙµ­Èëµ­³öÎÄ×Ö
-            activeTextRoutine = StartCoroutine(CrossFadeTextRoutine(title, finalCostText, desc));
-        }
-        else
-        {
-            // ¡¾·ÖÖ§ B¡¿£ºÈç¹ûÊÇµÚÒ»´Î´ÓÎŞµ½ÓĞÁÁÆğ£¨activeSelf Îª false£©
-            currentActiveTitle = title;
-
-            // Ğ´Èë³õÊ¼ÎÄ×Ö
-            if (fixedTitleText != null) fixedTitleText.text = title;
-            if (fixedCostText != null) fixedCostText.text = finalCostText;
-            if (fixedDescText != null) fixedDescText.text = desc;
-            if (tooltipTextGroup != null) tooltipTextGroup.alpha = 1f;
-
-            if (activeScaleRoutine != null) StopCoroutine(activeScaleRoutine);
-
-            // ºËĞÄ£ºÔÚµÚÒ»Ö¡Ê×ÏÈÎïÀí¼¤»î´óÃæ°å£¡
-            fixedTooltipGroup.gameObject.SetActive(true);
-
-            // ¿ªÆôÔ­ÉúĞ­³Ì½¥ÈëÓë»Øµ¯Ëõ·Å¹ı¶É
-            activeFadeRoutine = StartCoroutine(FadeGroupRoutine(fixedTooltipGroup, 1f, 0.15f));
-            activeScaleRoutine = StartCoroutine(ScalePopRoutine(fixedTooltipGroup.transform, 0.18f));
-        }
-    }
-
-    /// <summary>
-    /// ĞÂÔö£ºµ­³öÒş²ØÃèÊö´óÃæ°å£¨´ø°²È«±£»¤£©
-    /// </summary>
-    public void HideFixedTooltip()
-    {
-        if (fixedTooltipGroup == null) return;
-
-        currentActiveTitle = "";
-
-        // ========================================================
-        // ºËĞÄ°²È«ĞŞ¸´£ºÈç¹ûÕû¸ö Canvas ÒÑ¾­±»Òş²Ø£¨ÀıÈçÕ½¶·½áËãÍê±Ï£©£¬
-        // ¾ø¶Ô²»ÔÊĞíÔÚ´Ë¿ÌÆô¶¯ÈÎºÎ StartCoroutine£¨·ñÔò Unity »á±¨ÖÂÃüµÄ activeInHierarchy ÉÁÍË¾¯¸æ£©£¡ [3]
-        // ========================================================
-        if (!gameObject.activeInHierarchy || !enabled)
-        {
-            fixedTooltipGroup.alpha = 0f;
-            fixedTooltipGroup.gameObject.SetActive(false);
-            return;
-        }
-
-        // É±µôËùÓĞ»î¶¯¶¯»­
-        if (activeFadeRoutine != null) StopCoroutine(activeFadeRoutine);
-        if (activeScaleRoutine != null) StopCoroutine(activeScaleRoutine);
-        if (activeTextRoutine != null) StopCoroutine(activeTextRoutine);
-
-        // 0.12ÃëÆ½»¬µ­³ö²¢¹Ø±Õ
-        activeFadeRoutine = StartCoroutine(FadeGroupRoutine(fixedTooltipGroup, 0f, 0.12f, true));
-    }
-
-    private IEnumerator FadeGroupRoutine(CanvasGroup group, float targetAlpha, float duration, bool deactivateOnComplete = false)
-    {
-        float startAlpha = group.alpha;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / duration;
-            group.alpha = Mathf.SmoothStep(startAlpha, targetAlpha, t);
-            yield return null;
-        }
-
-        group.alpha = targetAlpha;
-        if (deactivateOnComplete && targetAlpha <= 0.05f)
-        {
-            group.gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator ScalePopRoutine(Transform t, float duration)
-    {
-        Vector3 startScale = new Vector3(0.85f, 0.85f, 1f);
-        Vector3 targetScale = Vector3.one;
-        t.localScale = startScale;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float p = elapsed / duration;
-
-            float s = 1.70158f;
-            float value = 1f - Mathf.Pow(1f - p, 3f) * (1f - p * (s + 1f) - s);
-
-            t.localScale = Vector3.LerpUnclamped(startScale, targetScale, value);
-            yield return null;
-        }
-
-        t.localScale = targetScale;
-    }
-
-    private IEnumerator CrossFadeTextRoutine(string title, string cost, string desc)
-    {
-        if (tooltipTextGroup == null) yield break;
-
-        // 1. ÎÄ×Ö¼«ËÙµ­³ö (0.08 Ãë)
-        float elapsed = 0f;
-        float duration = 0.08f;
-        float startAlpha = tooltipTextGroup.alpha;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            tooltipTextGroup.alpha = Mathf.Lerp(startAlpha, 0f, elapsed / duration);
-            yield return null;
-        }
-        tooltipTextGroup.alpha = 0f;
-
-        // 2. ¼«ËÙ»»×Ö
-        if (fixedTitleText != null) fixedTitleText.text = title;
-        if (fixedCostText != null) fixedCostText.text = cost;
-        if (fixedDescText != null) fixedDescText.text = desc;
-
-        // 3. ÎÄ×Ö¼«ËÙµ­Èë (0.12 Ãë)
-        elapsed = 0f;
-        duration = 0.12f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            tooltipTextGroup.alpha = Mathf.Lerp(0f, 1f, elapsed / duration);
-            yield return null;
-        }
-        tooltipTextGroup.alpha = 1f;
-    }
-
 }

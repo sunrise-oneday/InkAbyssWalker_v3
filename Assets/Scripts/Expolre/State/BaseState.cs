@@ -1,14 +1,14 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ±ê¼Ç½Ó¿Ú£º´ú±íÕâÊÇÒ»¸ö¡°ËÀÍö×´Ì¬¡±¡£Ò»µ©ÇĞÈë£¬¸Ã×´Ì¬»ú½«ÓÀ¾ÃËø¶¨£¬¾Ü¾øÇĞ»»µ½ÈÎºÎÆäËû×´Ì¬¡£ [2]
+/// æ ‡è®°æ¥å£ï¼šä»£è¡¨è¿™æ˜¯ä¸€ä¸ªâ€œæ­»äº¡çŠ¶æ€â€ã€‚ä¸€æ—¦åˆ‡å…¥ï¼Œè¯¥çŠ¶æ€æœºå°†æ°¸ä¹…é”å®šï¼Œæ‹’ç»åˆ‡æ¢åˆ°ä»»ä½•å…¶ä»–çŠ¶æ€ã€‚ [2]
 /// </summary>
 public interface IDeathState { }
 
 /// <summary>
-/// ×´Ì¬³éÏó»ùÀà
+/// çŠ¶æ€æŠ½è±¡åŸºç±»
 /// </summary>
 public abstract class BaseState<T> where T : class
 {
@@ -19,7 +19,7 @@ public abstract class BaseState<T> where T : class
     protected float stateTimer;
 
     /// <summary>
-    /// ³õÊ¼»¯·½·¨£¬ÔÚ×´Ì¬×¢²áÊ±±»×Ô¶¯µ÷ÓÃ
+    /// åˆå§‹åŒ–æ–¹æ³•ï¼Œåœ¨çŠ¶æ€æ³¨å†Œæ—¶è¢«è‡ªåŠ¨è°ƒç”¨
     /// </summary>
     /// <param name="owner"></param>
     /// <param name="stateMachine"></param>

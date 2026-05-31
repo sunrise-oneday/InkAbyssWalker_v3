@@ -1,10 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("±ß¿ò¸ßÁÁÉèÖÃ (ÍÏÈë×ÓÎïÌå Border)")]
+    [Header("è¾¹æ¡†é«˜äº®è®¾ç½® (æ‹–å…¥å­ç‰©ä½“ Border)")]
     [SerializeField] private CanvasGroup highlightBorderGroup;
 
     private Buff cachedBuff;
@@ -18,32 +19,105 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
+    // å„ Buff ç±»å‹çš„é¢œè‰²æ˜ å°„ï¼ˆç”¨äºç”Ÿæˆåå¤‡å ä½å›¾æ ‡ï¼‰
+    private static readonly Dictionary<string, Color> BuffColors = new Dictionary<string, Color>
+    {
+        { "è™šå¼±", new Color(0.8f, 0.4f, 0.1f) },       // æ©™è‰²
+        { "ç ´ç”²", new Color(0.9f, 0.5f, 0.0f) },       // é‡‘é»„è‰²
+        { "è„†å¼±", new Color(0.9f, 0.3f, 0.5f) },       // ç²‰çº¢
+        { "ä¸­æ¯’", new Color(0.3f, 0.8f, 0.1f) },       // ç»¿è‰²
+        { "è¯…å’’", new Color(0.6f, 0.1f, 0.8f) },       // ç´«è‰²
+        { "é€Ÿåº¦ä¸‹é™", new Color(0.5f, 0.7f, 0.9f) },   // æ·¡è“
+        { "ç«å…ƒç´ é™„ç€", new Color(1.0f, 0.3f, 0.0f) }, // çº¢è‰²
+        { "å†°å…ƒç´ é™„ç€", new Color(0.2f, 0.6f, 1.0f) }, // è“è‰²
+        { "çœ©æ™•", new Color(1.0f, 1.0f, 0.2f) },       // é»„è‰²
+        { "æ˜“ä¼¤", new Color(1.0f, 0.2f, 0.2f) },      // äº®çº¢
+    };
+
+    /// <summary>
+    /// ç”Ÿæˆå½©è‰²åœ†å½¢ä½œä¸ºåå¤‡å›¾æ ‡
+    /// </summary>
+    private static Sprite GenerateFallbackIcon(Color color, string label)
+    {
+        int size = 32;
+        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        tex.filterMode = FilterMode.Bilinear;
+
+        // ç»˜åˆ¶åœ†å½¢
+        Vector2 center = new Vector2(size / 2f, size / 2f);
+        float radius = size / 2f - 1;
+        Color transparent = new Color(0, 0, 0, 0);
+
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                float dx = x + 0.5f - center.x;
+                float dy = y + 0.5f - center.y;
+                float dist = Mathf.Sqrt(dx * dx + dy * dy);
+
+                if (dist <= radius)
+                {
+                    // è¾¹ç¼˜æŸ”åŒ–
+                    float alpha = Mathf.Clamp01((radius - dist + 1f) / 1f);
+                    Color c = color;
+                    c.a = alpha;
+                    tex.SetPixel(x, y, c);
+                }
+                else
+                {
+                    tex.SetPixel(x, y, transparent);
+                }
+            }
+        }
+
+        tex.Apply();
+
+        Rect rect = new Rect(0, 0, size, size);
+        Vector2 pivot = new Vector2(0.5f, 0.5f);
+        return Sprite.Create(tex, rect, pivot, 32f);
+    }
+
     public void Setup(Buff buff)
     {
         this.cachedBuff = buff;
         Image img = GetComponent<Image>();
         if (img != null)
         {
-            img.sprite = buff.icon;
+            if (buff.icon != null)
+            {
+                img.sprite = buff.icon;
+            }
+            else
+            {
+                // æ²¡æœ‰åŠ è½½åˆ°å›¾æ ‡æ–‡ä»¶ â†’ ç”Ÿæˆå½©è‰²å ä½åœ†ç‚¹
+                Color color = Color.gray;
+                if (buff.buffName != null && BuffColors.ContainsKey(buff.buffName))
+                {
+                    color = BuffColors[buff.buffName];
+                }
+                img.sprite = GenerateFallbackIcon(color, buff.buffName);
+                Debug.Log($"[BuffIcon] {buff.buffName} ä½¿ç”¨åå¤‡å½©è‰²å›¾æ ‡");
+            }
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log($"<color=cyan>[Ğü¸¡²âÊÔ] Êó±êÒÆÈëÁË Buff Í¼±ê£¡µ±Ç°½¹µã Buff: {cachedBuff?.buffName ?? "¿Õ"}</color>");
+        Debug.Log($"<color=cyan>[æ‚¬æµ®æµ‹è¯•] é¼ æ ‡ç§»å…¥äº† Buff å›¾æ ‡ï¼å½“å‰ç„¦ç‚¹ Buff: {cachedBuff?.buffName ?? "ç©º"}</color>");
 
-        // 1. Ğü¸¡Î¢·Å´ó±íÏÖ
+        // 1. æ‚¬æµ®å¾®æ”¾å¤§è¡¨ç°
         transform.localScale = new Vector3(1.22f, 1.22f, 1f);
 
-        // 2. ÏÔÊ¾½ğÉ«µÄ¸ßÁÁ±ß¿ò [1]
+        // 2. æ˜¾ç¤ºé‡‘è‰²çš„é«˜äº®è¾¹æ¡† [1]
         if (highlightBorderGroup != null)
         {
             highlightBorderGroup.alpha = 1f;
         }
 
         // ========================================================
-        // 3. ºËĞÄĞŞ¸Ä£º²»ÔÙÖ»´«×Ô¼º£¡Ö±½Ó°ÑÕâ¸öËŞÖ÷ÉíÉÏËùÓĞµÄ Buff ÁĞ±í´ò°ü¶ª¹ıÈ¥£¡
-        // ÕâÑù×ó±ßµÄÌáÊ¾´óºĞ×Ó¾Í»á´ÓÉÏÍùÏÂ×Ô¶¯ÕûÆëÅÅ¶ÓÁĞ³öËùÓĞµÄ Buff ĞÅÏ¢£¡ [1]
+        // 3. æ ¸å¿ƒä¿®æ”¹ï¼šä¸å†åªä¼ è‡ªå·±ï¼ç›´æ¥æŠŠè¿™ä¸ªå®¿ä¸»èº«ä¸Šæ‰€æœ‰çš„ Buff åˆ—è¡¨æ‰“åŒ…ä¸¢è¿‡å»ï¼
+        // è¿™æ ·å·¦è¾¹çš„æç¤ºå¤§ç›’å­å°±ä¼šä»ä¸Šå¾€ä¸‹è‡ªåŠ¨æ•´é½æ’é˜Ÿåˆ—å‡ºæ‰€æœ‰çš„ Buff ä¿¡æ¯ï¼ [1]
         // ========================================================
         if (cachedBuff != null && cachedBuff.owner != null && BattleUIController.Instance != null)
         {
@@ -53,7 +127,7 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("[Ğü¸¡²âÊÔ] Êó±êÒÆ³öÁË Buff Í¼±ê¡£");
+        Debug.Log("[æ‚¬æµ®æµ‹è¯•] é¼ æ ‡ç§»å‡ºäº† Buff å›¾æ ‡ã€‚");
 
         transform.localScale = Vector3.one;
 
@@ -62,7 +136,7 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             highlightBorderGroup.alpha = 0f;
         }
 
-        // Òş²Ø´óÌáÊ¾¿ò
+        // éšè—å¤§æç¤ºæ¡†
         if (BattleUIController.Instance != null)
         {
             BattleUIController.Instance.HideTooltip();

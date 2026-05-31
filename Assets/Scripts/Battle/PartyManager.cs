@@ -1,14 +1,14 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ¶ÓÎé¹ÜÀíÆ÷£¨´¿ C# µ¥ÀıÀà£¬ÎŞ MonoBehaviour ¶îÍâ¿ªÏú£¬²»¹ÒÔØÎïÌå£© [3]
+/// é˜Ÿä¼ç®¡ç†å™¨ï¼ˆçº¯ C# å•ä¾‹ç±»ï¼Œæ—  MonoBehaviour é¢å¤–å¼€é”€ï¼Œä¸æŒ‚è½½ç‰©ä½“ï¼‰ [3]
 /// </summary>
 public class PartyManager
 {
     private static PartyManager instance;
 
-    // Ç¿ÀàĞÍµ¥Àı»ñÈ¡Æ÷
+    // å¼ºç±»å‹å•ä¾‹è·å–å™¨
     public static PartyManager Instance
     {
         get
@@ -21,17 +21,17 @@ public class PartyManager
         }
     }
 
-    // µ±Ç°³öÕ½µÄ¶ÓÓÑÔ¤ÖÆÌå£¨ÔÚÔËĞĞÊ±ÓÉ´óµØÍ¼ÊÕ¼¯Æ·»ò¾çÇé¶¯Ì¬ÔöÉ¾£©
+    // å½“å‰å‡ºæˆ˜çš„é˜Ÿå‹é¢„åˆ¶ä½“ï¼ˆåœ¨è¿è¡Œæ—¶ç”±å¤§åœ°å›¾æ”¶é›†å“æˆ–å‰§æƒ…åŠ¨æ€å¢åˆ ï¼‰
     public List<GameObject> activeCompanionPrefabs { get; private set; }
 
-    // ¹¹Ôìº¯ÊıË½ÓĞ»¯£¬·ÀÖ¹Íâ²¿ new ²úÉú¶àÀı
+    // æ„é€ å‡½æ•°ç§æœ‰åŒ–ï¼Œé˜²æ­¢å¤–éƒ¨ new äº§ç”Ÿå¤šä¾‹
     private PartyManager()
     {
         activeCompanionPrefabs = new List<GameObject>();
     }
 
     /// <summary>
-    /// ÕĞÄ¼ĞÂ¶ÓÓÑÈë¶Ó (Í¨³£ÔÚ¹Ø¿¨ÊÕ¼¯Æ·´¥·¢Ê±£¬ÓÉ´¥·¢Æ÷´«Èë¶ÓÓÑÕ½¶·Ô¤ÖÆÌå)
+    /// æ‹›å‹Ÿæ–°é˜Ÿå‹å…¥é˜Ÿ (é€šå¸¸åœ¨å…³å¡æ”¶é›†å“è§¦å‘æ—¶ï¼Œç”±è§¦å‘å™¨ä¼ å…¥é˜Ÿå‹æˆ˜æ–—é¢„åˆ¶ä½“)
     /// </summary>
     public void AddCompanion(GameObject companionPrefab)
     {
@@ -39,12 +39,12 @@ public class PartyManager
         if (!activeCompanionPrefabs.Contains(companionPrefab))
         {
             activeCompanionPrefabs.Add(companionPrefab);
-            Debug.Log($"[¶ÓÎéÏµÍ³] ´¿ C# ¹ÜÀíÆ÷£ºĞÂ¶ÓÓÑ {companionPrefab.name} ³É¹¦¼ÓÈë³öÕ½¶ÓÎé£¡");
+            Debug.Log($"[é˜Ÿä¼ç³»ç»Ÿ] çº¯ C# ç®¡ç†å™¨ï¼šæ–°é˜Ÿå‹ {companionPrefab.name} æˆåŠŸåŠ å…¥å‡ºæˆ˜é˜Ÿä¼ï¼");
         }
     }
 
     /// <summary>
-    /// ¶ÓÓÑÀë¶Ó
+    /// é˜Ÿå‹ç¦»é˜Ÿ
     /// </summary>
     public void RemoveCompanion(GameObject companionPrefab)
     {
@@ -52,7 +52,7 @@ public class PartyManager
         if (activeCompanionPrefabs.Contains(companionPrefab))
         {
             activeCompanionPrefabs.Remove(companionPrefab);
-            Debug.Log($"[¶ÓÎéÏµÍ³] ´¿ C# ¹ÜÀíÆ÷£º¶ÓÓÑ {companionPrefab.name} ÒÑÀë¿ª¶ÓÎé¡£");
+            Debug.Log($"[é˜Ÿä¼ç³»ç»Ÿ] çº¯ C# ç®¡ç†å™¨ï¼šé˜Ÿå‹ {companionPrefab.name} å·²ç¦»å¼€é˜Ÿä¼ã€‚");
         }
     }
 }

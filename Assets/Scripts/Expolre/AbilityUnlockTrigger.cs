@@ -1,26 +1,26 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ½«´Ë½Å±¾¹ÒÔØÔÚ¹Ø¿¨ÖĞµÄÈÎºÎ±¦Ïä¡¢ÄÜÁ¿Çò»òÒıµ¼Ê¯±®ÉÏ£¨Åö×²ÌåĞè¹´Ñ¡ Is Trigger£©
+/// å°†æ­¤è„šæœ¬æŒ‚è½½åœ¨å…³å¡ä¸­çš„ä»»ä½•å®ç®±ã€èƒ½é‡çƒæˆ–å¼•å¯¼çŸ³ç¢‘ä¸Šï¼ˆç¢°æ’ä½“éœ€å‹¾é€‰ Is Triggerï¼‰
 /// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class AbilityUnlockTrigger : MonoBehaviour
 {
-    [Header("ÅäÖÃÒª½âËøµÄ¼¼ÄÜ")]
+    [Header("é…ç½®è¦è§£é”çš„æŠ€èƒ½")]
     [SerializeField] private ExplorationAbility abilityToUnlock;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Ñ°ÕÒ¸¸ÎïÌå»ò×ÔÉíÉÏµÄ PlayerController£¬È·±£ÎïÀí°²È«
+        // å¯»æ‰¾çˆ¶ç‰©ä½“æˆ–è‡ªèº«ä¸Šçš„ PlayerControllerï¼Œç¡®ä¿ç‰©ç†å®‰å…¨
         PlayerController player = other.GetComponentInParent<PlayerController>();
         if (player != null)
         {
-            // 1. µ÷ÓÃ½âËø²¢×Ô¶¯´æµµ
+            // 1. è°ƒç”¨è§£é”å¹¶è‡ªåŠ¨å­˜æ¡£
             player.UnlockAbility(abilityToUnlock);
 
-            // 2. ÎïÀíĞ§¹û±íÏÖ£º¿ÉÒÔÔÚ´Ë´¦²¥·Å½âËøÌØĞ§¡¢ÒôĞ§£¬ÒÔ¼°¹ã²¥µ¯´° UI
+            // 2. ç‰©ç†æ•ˆæœè¡¨ç°ï¼šå¯ä»¥åœ¨æ­¤å¤„æ’­æ”¾è§£é”ç‰¹æ•ˆã€éŸ³æ•ˆï¼Œä»¥åŠå¹¿æ’­å¼¹çª— UI
 
-            // 3. Ïú»Ù´¥·¢Æ÷×ÔÉí£¬·ÀÖ¹ÖØ¸´³Ô
+            // 3. é”€æ¯è§¦å‘å™¨è‡ªèº«ï¼Œé˜²æ­¢é‡å¤åƒ
             Destroy(gameObject);
         }
     }
