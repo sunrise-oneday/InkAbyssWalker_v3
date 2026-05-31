@@ -1,42 +1,42 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Íæ¼ÒÕ½¶·ÌØÓĞÉÁ±Ü×´Ì¬£¨¼Ì³Ğ×Ô PlayerBattleState£¬ÎŞ·ì·ÀÖØÃû£© [2]
+/// ç©å®¶æˆ˜æ–—ç‰¹æœ‰é—ªé¿çŠ¶æ€ï¼ˆç»§æ‰¿è‡ª PlayerBattleStateï¼Œæ— ç¼é˜²é‡åï¼‰ [2]
 /// </summary>
 public class PlayerBattleDodgeState : PlayerBattleState
 {
-    // ¶ÔÓ¦ Animator ÖĞµÄ Player_BattleDodge ¶¯»­·½¿éÃû×Ö
+    // å¯¹åº” Animator ä¸­çš„ Player_BattleDodge åŠ¨ç”»æ–¹å—åå­—
     protected override int AnimHash => Animator.StringToHash("Player_BattleDodge");
 
-    private float dodgeDuration = 0.25f; // ÉÁ±ÜÎŞµĞÖ¡/¶¯×÷×ÜÊ±³¤
+    private float dodgeDuration = 0.25f; // é—ªé¿æ— æ•Œå¸§/åŠ¨ä½œæ€»æ—¶é•¿
 
     public override void Enter()
     {
-        base.Enter(); // stateTimer ×Ô¶¯ÖØÖÃÎª 0
+        base.Enter(); // stateTimer è‡ªåŠ¨é‡ç½®ä¸º 0
 
-        // 1. Ïû·ÑÉÁ±Ü°´¼üÊäÈë
+        // 1. æ¶ˆè´¹é—ªé¿æŒ‰é”®è¾“å…¥
         // ========================================================
-        // ºËĞÄĞŞ¸´£ºÔÚ´Ë´¦¡¾¾ø¶Ô²»Òª¡¿µ÷ÓÃ owner.UseDodgeInput(); £¡£¡£¡
-        // Èç¹ûÔÚ Enter Àï¾Í°ÑËü Use£¨ÖØÖÃÎª-99£©ÁË£¬µÈ¹ÖÎï´òµ½ÄãÊ±£¬
-        // ÄãµÄÊ±¼ä´Á¾Í»á±ä³É -99£¬Ëã³öÀ´µÄÊ±¼ä²î¾Í»áÊÇ 110000 ºÁÃë£¬µ¼ÖÂÍêÃÀÉÁ±ÜÓÀÔ¶Ê§°Ü£¡
-        // ·ÅĞÄ£¬ÊäÈë»áÔÚ BattleManager µÄ EvaluateParry ÀïÃæ±»ÕıÈ·Ïû·ÑÖØÖÃ£¡ [1, 2]
+        // æ ¸å¿ƒä¿®å¤ï¼šåœ¨æ­¤å¤„ã€ç»å¯¹ä¸è¦ã€‘è°ƒç”¨ owner.UseDodgeInput(); ï¼ï¼ï¼
+        // å¦‚æœåœ¨ Enter é‡Œå°±æŠŠå®ƒ Useï¼ˆé‡ç½®ä¸º-99ï¼‰äº†ï¼Œç­‰æ€ªç‰©æ‰“åˆ°ä½ æ—¶ï¼Œ
+        // ä½ çš„æ—¶é—´æˆ³å°±ä¼šå˜æˆ -99ï¼Œç®—å‡ºæ¥çš„æ—¶é—´å·®å°±ä¼šæ˜¯ 110000 æ¯«ç§’ï¼Œå¯¼è‡´å®Œç¾é—ªé¿æ°¸è¿œå¤±è´¥ï¼
+        // æ”¾å¿ƒï¼Œè¾“å…¥ä¼šåœ¨ BattleManager çš„ EvaluateParry é‡Œé¢è¢«æ­£ç¡®æ¶ˆè´¹é‡ç½®ï¼ [1, 2]
         // ========================================================
-        // owner.UseDodgeInput(); // <--- ³¹µ×É¾³ı»ò×¢ÊÍµôÕâÒ»ĞĞ£¡
+        // owner.UseDodgeInput(); // <--- å½»åº•åˆ é™¤æˆ–æ³¨é‡Šæ‰è¿™ä¸€è¡Œï¼
         owner.SetHorizontalVelocity(0f);
 
-        // 2. ÉÁ±ÜÆÚ¼ä£¬ËøËÀÉíÌå×ªÍ·¿ØÖÆ£¬±£³Ö¶¯×÷Á¬¹á
+        // 2. é—ªé¿æœŸé—´ï¼Œé”æ­»èº«ä½“è½¬å¤´æ§åˆ¶ï¼Œä¿æŒåŠ¨ä½œè¿è´¯
         owner.CanFlip = false;
 
-        Debug.Log("[ÉÁ±Ü¶¯×÷] Íæ¼Ò²È³ö²àÉíÉÁ²½£¡ÉíÌå½øÈëÎŞµĞ½×¶Î¡£");
+        Debug.Log("[é—ªé¿åŠ¨ä½œ] ç©å®¶è¸©å‡ºä¾§èº«é—ªæ­¥ï¼èº«ä½“è¿›å…¥æ— æ•Œé˜¶æ®µã€‚");
     }
 
     public override void Update()
     {
-        base.Update(); // ÀÛ¼Ó stateTimer
+        base.Update(); // ç´¯åŠ  stateTimer
 
-        // 3. ÉÁ±Ü¶¯×÷£¨0.25Ãë£©½áÊø£º
-        // ×Ô¶¯ÍË»Øµ½ PlayerParryState£¨·ÀÊØ¼ÜÊÆ£©ÖĞ£¡
-        // ÕâÑùÈç¹û¹ÖÎïÓĞÏÂÒ»µ¶ÉËº¦£¬Íæ¼Ò»¹¿ÉÒÔ¼ÌĞøÑ¡ÔñÕĞ¼Ü£¨Space£©»òÕßÔÙ´ÎÉÁ±Ü£¨Shift£©£¡
+        // 3. é—ªé¿åŠ¨ä½œï¼ˆ0.25ç§’ï¼‰ç»“æŸï¼š
+        // è‡ªåŠ¨é€€å›åˆ° PlayerParryStateï¼ˆé˜²å®ˆæ¶åŠ¿ï¼‰ä¸­ï¼
+        // è¿™æ ·å¦‚æœæ€ªç‰©æœ‰ä¸‹ä¸€åˆ€ä¼¤å®³ï¼Œç©å®¶è¿˜å¯ä»¥ç»§ç»­é€‰æ‹©æ‹›æ¶ï¼ˆSpaceï¼‰æˆ–è€…å†æ¬¡é—ªé¿ï¼ˆShiftï¼‰ï¼
         if (stateTimer >= dodgeDuration)
         {
             stateMachine.ChangeState<PlayerParryState>();
@@ -46,6 +46,6 @@ public class PlayerBattleDodgeState : PlayerBattleState
     public override void Exit()
     {
         base.Exit();
-        owner.CanFlip = true; // »Ö¸´ÉíÌå×ªÍ·¿ØÖÆ
+        owner.CanFlip = true; // æ¢å¤èº«ä½“è½¬å¤´æ§åˆ¶
     }
 }

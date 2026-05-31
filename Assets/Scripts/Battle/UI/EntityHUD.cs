@@ -1,34 +1,34 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// Õ½¶·ÊôĞÔÓë×´Ì¬Í¼±êÏÔÊ¾Æ÷£¨È«ÊÂ¼şÇı¶¯¡¢×ÔÏìÓ¦Ê½ UI£© [1]
+/// æˆ˜æ–—å±æ€§ä¸çŠ¶æ€å›¾æ ‡æ˜¾ç¤ºå™¨ï¼ˆå…¨äº‹ä»¶é©±åŠ¨ã€è‡ªå“åº”å¼ UIï¼‰ [1]
 /// </summary>
 public class EntityHUD : MonoBehaviour
 {
-    [Header("Êı¾İÔ´°ó¶¨")]
+    [Header("æ•°æ®æºç»‘å®š")]
     [SerializeField] private CharacterStats targetStats;
 
-    [Header("»ù´¡½ø¶ÈÌõ UI")]
+    [Header("åŸºç¡€è¿›åº¦æ¡ UI")]
     [SerializeField] private Slider hpSlider;
-    [SerializeField] private Slider breakSlider; // ÆÆ·ÀÌõ (¿ÉÑ¡)
+    [SerializeField] private Slider breakSlider; // ç ´é˜²æ¡ (å¯é€‰)
 
-    [Header("Buff ×´Ì¬À¸ÅäÖÃ [1]")]
+    [Header("Buff çŠ¶æ€æ é…ç½® [1]")]
     [SerializeField] private Transform buffContainer;
     [SerializeField] private GameObject buffIconPrefab;
 
-    [Header("Ñ¡ÖĞÊÓ¾õ±íÏÖ [¿ÉÑ¡]")]
-    [SerializeField] private GameObject selectionIndicator; // ÍÏÈëÒ»¸ö×÷Îª¡°Ñ¡¶¨ºìÈ¦¡±»ò¡°ÏòÏÂ¼ıÍ·¡±µÄ×ÓÎïÌå
-    private Vector3 defaultWorldScale = new Vector3(0.005f, 0.005f, 1f); // Ä¬ÈÏµÄÊÀ½ç¿Õ¼äËõ·ÅÖµ
+    [Header("é€‰ä¸­è§†è§‰è¡¨ç° [å¯é€‰]")]
+    [SerializeField] private GameObject selectionIndicator; // æ‹–å…¥ä¸€ä¸ªä½œä¸ºâ€œé€‰å®šçº¢åœˆâ€æˆ–â€œå‘ä¸‹ç®­å¤´â€çš„å­ç‰©ä½“
+    private Vector3 defaultWorldScale = new Vector3(0.005f, 0.005f, 1f); // é»˜è®¤çš„ä¸–ç•Œç©ºé—´ç¼©æ”¾å€¼
 
     private void Start()
     {
         // ========================================================
-        // ºËĞÄĞŞ¸´£º±ØĞëÏÈ°²È«»ñÈ¡ Canvas£¬²¢¡¾ÅĞ¶Ï²»Îª¿Õ¡¿²Å½øĞĞ²Ù×÷£¡
-        // ÒòÎªÍæ¼Òµ×²¿µÄ HUD Ãæ°åÊÇ Screen-Space£¨ÆÁÄ»¿Õ¼ä£©£¬ËüµÄ¸ù½ÚµãÉÏÊÇÃ»ÓĞ Canvas ×é¼şµÄ¡£
-        // Èç¹û²»¼ÓÅĞ¶ÏÖ±½Ó GetComponent<Canvas>().worldCamera£¬¾Í»á´¥·¢ MissingComponentException ±¨´í²¢Ö±½Ó¿¨ËÀºóÃæµÄ³õÊ¼»¯£¡
+        // æ ¸å¿ƒä¿®å¤ï¼šå¿…é¡»å…ˆå®‰å…¨è·å– Canvasï¼Œå¹¶ã€åˆ¤æ–­ä¸ä¸ºç©ºã€‘æ‰è¿›è¡Œæ“ä½œï¼
+        // å› ä¸ºç©å®¶åº•éƒ¨çš„ HUD é¢æ¿æ˜¯ Screen-Spaceï¼ˆå±å¹•ç©ºé—´ï¼‰ï¼Œå®ƒçš„æ ¹èŠ‚ç‚¹ä¸Šæ˜¯æ²¡æœ‰ Canvas ç»„ä»¶çš„ã€‚
+        // å¦‚æœä¸åŠ åˆ¤æ–­ç›´æ¥ GetComponent<Canvas>().worldCameraï¼Œå°±ä¼šè§¦å‘ MissingComponentException æŠ¥é”™å¹¶ç›´æ¥å¡æ­»åé¢çš„åˆå§‹åŒ–ï¼
         // ========================================================
         Canvas canvas = GetComponent<Canvas>();
         if (canvas != null)
@@ -37,14 +37,14 @@ public class EntityHUD : MonoBehaviour
             {
                 if (Camera.main != null)
                 {
-                    canvas.worldCamera = Camera.main; // ×Ô¶¯°ó¶¨´óµØÍ¼Ïà»úÎªÊÂ¼şÏà»ú
+                    canvas.worldCamera = Camera.main; // è‡ªåŠ¨ç»‘å®šå¤§åœ°å›¾ç›¸æœºä¸ºäº‹ä»¶ç›¸æœº
                 }
             }
         }
 
         // ========================================================
-        // Ö»ÒªÇ°ÃæµÄÎïÀíÏà»ú°ó¶¨Ã»ÓĞ±¨´í£¬ÕâÀïµÄ³õÊ¼»¯ºÍÊÂ¼ş°ó¶¨¾ÍÄÜ°Ù·ÖÖ®°Ù°²È«Ö´ĞĞ£¡
-        // ÕâÑùÍæ¼Òµ×²¿µÄÑªÌõºÍ¹ÖÎïÍ·¶¥µÄ Buff ÏµÍ³¾Í»áÈ«²¿»Ö¸´Õı³££¡
+        // åªè¦å‰é¢çš„ç‰©ç†ç›¸æœºç»‘å®šæ²¡æœ‰æŠ¥é”™ï¼Œè¿™é‡Œçš„åˆå§‹åŒ–å’Œäº‹ä»¶ç»‘å®šå°±èƒ½ç™¾åˆ†ä¹‹ç™¾å®‰å…¨æ‰§è¡Œï¼
+        // è¿™æ ·ç©å®¶åº•éƒ¨çš„è¡€æ¡å’Œæ€ªç‰©å¤´é¡¶çš„ Buff ç³»ç»Ÿå°±ä¼šå…¨éƒ¨æ¢å¤æ­£å¸¸ï¼
         // ========================================================
         if (targetStats != null)
         {
@@ -54,31 +54,31 @@ public class EntityHUD : MonoBehaviour
     }
 
     /// <summary>
-    /// ºËĞÄĞÂÔö£º±»Íæ¼Òµã»÷Ñ¡ÖĞÊ±µÄÊÓ¾õ¸ßÁÁ·Å´ó±íÏÖ
+    /// æ ¸å¿ƒæ–°å¢ï¼šè¢«ç©å®¶ç‚¹å‡»é€‰ä¸­æ—¶çš„è§†è§‰é«˜äº®æ”¾å¤§è¡¨ç°
     /// </summary>
     public void SetSelected(bool isSelected)
     {
-        // 1. ÏÔÊ¾/Òş²ØÑ¡ÖĞµÄºìÉ«¼ıÍ·/¹âÈ¦
+        // 1. æ˜¾ç¤º/éšè—é€‰ä¸­çš„çº¢è‰²ç®­å¤´/å…‰åœˆ
         if (selectionIndicator != null)
         {
             selectionIndicator.SetActive(isSelected);
         }
 
-        // 2. ¶¯Ì¬·Å´óÍ·¶¥ÑªÌõ 1.25 ±¶£¬¸øÍæ¼Ò¼«ÆäÃ÷ÏÔµÄÊÓ¾õ»ØÀ¡£¡
+        // 2. åŠ¨æ€æ”¾å¤§å¤´é¡¶è¡€æ¡ 1.25 å€ï¼Œç»™ç©å®¶æå…¶æ˜æ˜¾çš„è§†è§‰å›é¦ˆï¼
         transform.localScale = isSelected ? defaultWorldScale * 2.0f : defaultWorldScale;
     }
 
     /// <summary>
-    /// ºËĞÄÖØ¹¹£ºÓÃÓÚÔÚ¿ËÂ¡Éú³Éºó¶¯Ì¬°ó¶¨²»Í¬µÄ³öÕ½½ÇÉ«ÊôĞÔ [1]
+    /// æ ¸å¿ƒé‡æ„ï¼šç”¨äºåœ¨å…‹éš†ç”ŸæˆååŠ¨æ€ç»‘å®šä¸åŒçš„å‡ºæˆ˜è§’è‰²å±æ€§ [1]
     /// </summary>
     public void SetTargetStats(CharacterStats stats)
     {
-        // 1. ·ÀÂ©£ºÏÈ°²È«×¢Ïú¾ÉµÄÊı¾İÔ´ÊÂ¼ş°ó¶¨
+        // 1. é˜²æ¼ï¼šå…ˆå®‰å…¨æ³¨é”€æ—§çš„æ•°æ®æºäº‹ä»¶ç»‘å®š
         UnbindEvents();
 
         targetStats = stats;
 
-        // 2. °ó¶¨ĞÂÊı¾İÔ´µÄÉúÃü¡¢ÆÆ·À¡¢Buff ¸Ä±äÊÂ¼ş£¡ [1, 5]
+        // 2. ç»‘å®šæ–°æ•°æ®æºçš„ç”Ÿå‘½ã€ç ´é˜²ã€Buff æ”¹å˜äº‹ä»¶ï¼ [1, 5]
         BindEvents();
     }
 
@@ -91,9 +91,9 @@ public class EntityHUD : MonoBehaviour
     {
         if (targetStats != null)
         {
-            targetStats.OnHPChanged += RefreshHP;       // ¼àÌıÉúÃüÖµ¸Ä±ä [5]
-            targetStats.OnBreakChanged += RefreshBreak; // ¼àÌıÆÆ·ÀÖµ¸Ä±ä [5]
-            targetStats.OnBuffsChanged += RefreshBuffIcons; // ¼àÌı Buff ¸Ä±ä [1]
+            targetStats.OnHPChanged += RefreshHP;       // ç›‘å¬ç”Ÿå‘½å€¼æ”¹å˜ [5]
+            targetStats.OnBreakChanged += RefreshBreak; // ç›‘å¬ç ´é˜²å€¼æ”¹å˜ [5]
+            targetStats.OnBuffsChanged += RefreshBuffIcons; // ç›‘å¬ Buff æ”¹å˜ [1]
         }
     }
 
@@ -108,7 +108,7 @@ public class EntityHUD : MonoBehaviour
     }
 
     /// <summary>
-    /// Í³Ò»µÄÖ÷¶¯Ë¢ĞÂ£¨Ö»ÔÚ¸Õ½øÈëÕ½³¡³õÊ¼»¯Ê±µ÷ÓÃÒ»´Î£© [5]
+    /// ç»Ÿä¸€çš„ä¸»åŠ¨åˆ·æ–°ï¼ˆåªåœ¨åˆšè¿›å…¥æˆ˜åœºåˆå§‹åŒ–æ—¶è°ƒç”¨ä¸€æ¬¡ï¼‰ [5]
     /// </summary>
     public void RefreshAll()
     {
@@ -118,7 +118,7 @@ public class EntityHUD : MonoBehaviour
     }
 
     // ========================================================
-    // 3. ÊÂ¼şÇı¶¯µÄ·ÖÁ÷Ë¢ĞÂº¯Êı£ºÊı¾İÒ»±ä£¬Ë²¼ä¶¨Ïò×ÔÖØ»­£¬ĞÔÄÜ¼«¼Ñ£¡ [1, 5]
+    // 3. äº‹ä»¶é©±åŠ¨çš„åˆ†æµåˆ·æ–°å‡½æ•°ï¼šæ•°æ®ä¸€å˜ï¼Œç¬é—´å®šå‘è‡ªé‡ç”»ï¼Œæ€§èƒ½æä½³ï¼ [1, 5]
     // ========================================================
 
     private void RefreshHP()
@@ -139,20 +139,20 @@ public class EntityHUD : MonoBehaviour
     {
         if (buffContainer == null || buffIconPrefab == null || targetStats == null) return;
 
-        // Çå¿Õ¾ÉµÄ
+        // æ¸…ç©ºæ—§çš„
         foreach (Transform child in buffContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // ¶¯Ì¬¿ËÂ¡ĞÂµÄ×´Ì¬Í¼±ê£¬Ë®Æ½²¼¾Ö×éÈ«×Ô¶¯¶ÔÆë
+        // åŠ¨æ€å…‹éš†æ–°çš„çŠ¶æ€å›¾æ ‡ï¼Œæ°´å¹³å¸ƒå±€ç»„å…¨è‡ªåŠ¨å¯¹é½
         foreach (Buff buff in targetStats.activeBuffs)
         {
             GameObject iconObj = Instantiate(buffIconPrefab, buffContainer);
 
-            // 1. ÉèÖÃ Buff µÄ¾«ÁéÍ¼Æ¬ [1]
+            // 1. è®¾ç½® Buff çš„ç²¾çµå›¾ç‰‡ [1]
             // ========================================================
-            // ºËĞÄĞŞ¸Ä£º¸ÄÓÃ»ñÈ¡ÎÒÃÇ¸ß¼¶µÄ BuffIcon ½Å±¾²¢Ò»¼ü×¢ÈëÊı¾İ£¡
+            // æ ¸å¿ƒä¿®æ”¹ï¼šæ”¹ç”¨è·å–æˆ‘ä»¬é«˜çº§çš„ BuffIcon è„šæœ¬å¹¶ä¸€é”®æ³¨å…¥æ•°æ®ï¼
             // ========================================================
             BuffIcon iconScript = iconObj.GetComponent<BuffIcon>();
             if (iconScript != null)
@@ -161,12 +161,12 @@ public class EntityHUD : MonoBehaviour
             }
 
             // ========================================================
-            // 2. ºËĞÄĞÂÔö£º×Ô¶¯×¥È¡×ÓÎïÌåÉÏµÄ Text£¬¶¯Ì¬Ë¢Èë¡°Ê£Óà»ØºÏÊı¡±Óë¡°²ãÊı£¨x2£©¡± [1]
+            // 2. æ ¸å¿ƒæ–°å¢ï¼šè‡ªåŠ¨æŠ“å–å­ç‰©ä½“ä¸Šçš„ Textï¼ŒåŠ¨æ€åˆ·å…¥â€œå‰©ä½™å›åˆæ•°â€ä¸â€œå±‚æ•°ï¼ˆx2ï¼‰â€ [1]
             // ========================================================
             Text turnText = iconObj.GetComponentInChildren<Text>();
             if (turnText != null)
             {
-                // Èç¹û²ãÊı´óÓÚ 1£¬ÔòÍ¬Ê±»»ĞĞÏÔÊ¾²ãÊı£¬ÀıÈçÏÔÊ¾ "3 \n x2" (3»ØºÏ£¬2²ã) [1]
+                // å¦‚æœå±‚æ•°å¤§äº 1ï¼Œåˆ™åŒæ—¶æ¢è¡Œæ˜¾ç¤ºå±‚æ•°ï¼Œä¾‹å¦‚æ˜¾ç¤º "3 \n x2" (3å›åˆï¼Œ2å±‚) [1]
                 turnText.text = buff.stacks > 1 ? $"{buff.durationTurns}\n<size=10>x{buff.stacks}</size>" : buff.durationTurns.ToString();
             }
         }

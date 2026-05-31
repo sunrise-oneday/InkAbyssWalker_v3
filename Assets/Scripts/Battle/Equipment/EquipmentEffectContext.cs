@@ -1,4 +1,4 @@
-/// <summary>
+﻿/// <summary>
 /// 装备特殊效果执行上下文（测试：技能1 吸血）。
 /// </summary>
 public readonly struct EquipmentEffectContext

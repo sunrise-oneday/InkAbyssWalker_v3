@@ -2,34 +2,27 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// ÊµÏÖÄú×Ô¶¯Éú³ÉµÄ InputAssets.IUIActions ½Ó¿Ú
-public class UIInputReader : MonoBehaviour, InputAssets.IUIActions
+/// <summary>
+/// UI è¾“å…¥è¯»å–å™¨ - çº¯ C# ç±»ï¼Œç”± InputManager ç»Ÿä¸€ç®¡ç†
+/// </summary>
+public class UIInputReader : InputAssets.IUIActions
 {
-    // ========================================================
-    // 1. ¶ÔÍâ±©Â¶µÄ UI ÊÂ¼ş¹ã²¥Õß£¨¹Û²ìÕßÄ£Ê½£©
-    // ========================================================
+    // UI äº‹ä»¶å¹¿æ’­
     public event Action<Vector2> OnNavigateInput = delegate { };
     public event Action OnSubmitPressed = delegate { };
-    public event Action OnCancelPressed = delegate { }; // ¶ÔÓ¦ ESC ¼ü£¨Cancel ¶¯×÷£©
+    public event Action OnCancelPressed = delegate { };
     public event Action<Vector2> OnPointInput = delegate { };
     public event Action OnClickPressed = delegate { };
     public event Action OnClickReleased = delegate { };
     public event Action<Vector2> OnScrollInput = delegate { };
     public event Action OnMiddleClickPressed = delegate { };
     public event Action OnRightClickPressed = delegate { };
+    public event Action OnNextTabPressed = delegate { };
+    public event Action OnPreviousTabPressed = delegate { };
 
-    private void Start()
-    {
-        if (InputManager.Instance != null && InputManager.Instance.Controls != null)
-        {
-            // ½«×ÔÉí×¢²áÎª UI ¶¯×÷±íµÄ»Øµ÷¼àÌıÕß
-            InputManager.Instance.Controls.UI.SetCallbacks(this);
-        }
-    }
-
-    // ========================================================
-    // 2. ÒÔÏÂ·½·¨ÊÇÊµÏÖ IUIActions ½Ó¿Ú×Ô¶¯Éú³ÉµÄ»Øµ÷·½·¨
-    // ========================================================
+    // ==========================================
+    // IUIActions æ¥å£å®ç°
+    // ==========================================
 
     public void OnNavigate(InputAction.CallbackContext context)
     {
@@ -90,18 +83,23 @@ public class UIInputReader : MonoBehaviour, InputAssets.IUIActions
         }
     }
 
-    public void OnTrackedDevicePosition(InputAction.CallbackContext context)
+    public void OnTrackedDevicePosition(InputAction.CallbackContext context) { }
+    public void OnTrackedDeviceOrientation(InputAction.CallbackContext context) { }
+    public void OnScrollWheel(InputAction.CallbackContext context) { }
+
+    public void OnNextTab(InputAction.CallbackContext context)
     {
-        // Èç¹ûÄúµÄÏîÄ¿ĞèÒªÖ§³Ö VR/XR ÊÖ±ú×ø±ê£¬¿ÉÔÚ´ËÌí¼ÓÏà¹ØÊÂ¼ş
+        if (context.phase == InputActionPhase.Performed)
+        {
+            OnNextTabPressed.Invoke();
+        }
     }
 
-    public void OnTrackedDeviceOrientation(InputAction.CallbackContext context)
+    public void OnPreviousTab(InputAction.CallbackContext context)
     {
-        // Èç¹ûÄúµÄÏîÄ¿ĞèÒªÖ§³Ö VR/XR ÊÖ±ú·½Ïò£¬¿ÉÔÚ´ËÌí¼ÓÏà¹ØÊÂ¼ş
-    }
-
-    public void OnScrollWheel(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
+        if (context.phase == InputActionPhase.Performed)
+        {
+            OnPreviousTabPressed.Invoke();
+        }
     }
 }

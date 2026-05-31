@@ -1,28 +1,28 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class IceAuraBuff : Buff
 {
-    private int defenseReduction = 4; // ¼õ·ÀÊıÖµ
+    private int defenseReduction = 4; // å‡é˜²æ•°å€¼
 
     public IceAuraBuff(int turns)
     {
-        buffName = "±ùÔªËØ¸½×Å";
+        buffName = "å†°å…ƒç´ é™„ç€";
         durationTurns = turns;
-        description = "ÉíÌå±»ÑÏº®¶³½á£¬ÎïÀí·ÀÓùÁ¦½µµÍ 4 µã¡£";
-        element = ElementType.Ice; // ±ê¼ÇÎª±ùÔªËØ
+        description = "èº«ä½“è¢«ä¸¥å¯’å†»ç»“ï¼Œç‰©ç†é˜²å¾¡åŠ›é™ä½ 4 ç‚¹ã€‚";
+        element = ElementType.Ice; // æ ‡è®°ä¸ºå†°å…ƒç´ 
         icon = Resources.Load<Sprite>("UI/Buffs/Icon_Ice");
     }
 
     public override void OnApply()
     {
-        // ¹ÒÔØÊ±£¬½µµÍ½ÇÉ«µÄÎïÀí·ÀÓùÁ¦
+        // æŒ‚è½½æ—¶ï¼Œé™ä½è§’è‰²çš„ç‰©ç†é˜²å¾¡åŠ›
         owner.defense = Mathf.Max(owner.defense - defenseReduction, 0);
-        Debug.Log($"{owner.gameObject.name} ÉíÌå±»¶³½©£¬·ÀÓùÁ¦½µµÍÁË {defenseReduction} µã£¡");
+        Debug.Log($"{owner.gameObject.name} èº«ä½“è¢«å†»åƒµï¼Œé˜²å¾¡åŠ›é™ä½äº† {defenseReduction} ç‚¹ï¼");
     }
 
     public override void OnRemove()
     {
-        // ×´Ì¬ÏûÊ§Ê±£¬±ØĞë½«Ï÷¼õµÄ·ÀÓùÁ¦»¹»ØÈ¥£¡ÕâÒ²ÊÇ OnRemove µÄºËĞÄ×÷ÓÃ
+        // çŠ¶æ€æ¶ˆå¤±æ—¶ï¼Œå¿…é¡»å°†å‰Šå‡çš„é˜²å¾¡åŠ›è¿˜å›å»ï¼è¿™ä¹Ÿæ˜¯ OnRemove çš„æ ¸å¿ƒä½œç”¨
         owner.defense += defenseReduction;
     }
 }

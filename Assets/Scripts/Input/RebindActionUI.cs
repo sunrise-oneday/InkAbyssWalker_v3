@@ -1,23 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using TMPro;
 
 /// <summary>
-/// ¹ÒÔØÔÚµ¥¸ö¸Ä¼ü¿ØÖÆÏî UGUI ÉÏµÄ×é¼ş£¬¸ºÔğµ¥¸ö°´¼üµÄÖØ°óÓëÎÄ±¾äÖÈ¾
+/// å•ä¸ªæŒ‰é”®é‡ç»‘å®š UI ç»„ä»¶ã€‚
+/// è´Ÿè´£ç®¡ç†ä¸€ä¸ªåŠ¨ä½œçš„ç»‘å®šæ˜¾ç¤ºã€äº¤äº’å¼é‡ç»‘å®šæµç¨‹åŠç»“æœæ–‡æœ¬æ¸²æŸ“ã€‚
 /// </summary>
 public class RebindActionUI : MonoBehaviour
 {
-    [Header("°ó¶¨µÄ¶¯×÷ÅäÖÃ")]
-    [SerializeField] private string actionMapName = "GamePlayer"; // Òª¸Ä¼üµÄ¶¯×÷±í£¬Èç "GamePlayer" »ò "Battle"
-    [SerializeField] private string actionName = "Jump";          // ¶ÔÓ¦µÄ¶¯×÷Ãû³Æ£¬Èç "Jump", "Dash", "Parry"
-    [SerializeField] private int bindingIndex = 0;               // °ó¶¨µÄË÷Òı£¨µ¥¼üÒ»°ãÎª 0£¬¸´ºÏ¼ü¿ÉÔö¼Ó£©
+    [Header("ç»‘å®šçš„åŠ¨ä½œé…ç½®")]
+    [SerializeField] private string actionMapName = "GamePlayer"; // è¦ä¿®æ”¹çš„åŠ¨ä½œåœ°å›¾ï¼Œå¦‚ "GamePlayer" æˆ– "Battle"
+    [SerializeField] private string actionName = "Jump";          // å¯¹åº”çš„åŠ¨ä½œåç§°ï¼Œå¦‚ "Jump", "Dash", "Parry"
+    [SerializeField] private int bindingIndex = 0;               // ç»‘å®šçš„ç´¢å¼•ï¼ˆä¸€èˆ¬ä¸º 0ï¼Œå¤åˆé”®éœ€æ·»åŠ ï¼‰
 
-    [Header("UGUI ¹ØÁª×é¼ş")]
-    [SerializeField] private Text actionLabel;               // ¶¯×÷ÃèÊöÎÄ±¾£¨Èç£º¡°ÌøÔ¾¡±¡¢¡°¸ñµ²¡±£©
-    [SerializeField] private Text bindingText;               // ÏÔÊ¾µ±Ç°°´¼ü¼üÃûµÄÎÄ±¾£¨Èç£º¡°SPACE¡±£©
-    [SerializeField] private Button rebindButton;                // µã»÷´¥·¢¼àÌı¸Ä¼üµÄ UGUI °´Å¥
-    [SerializeField] private GameObject listeningOverlay;        // ÕÚÕÖÌáÊ¾£¨µ±¿ªÆô¸Ä¼üÊ±£¬ÏÔÊ¾¡°Çë°´ÏÂÈÎÒâ¼ü...¡±£©
+    [Header("UGUI ç»„ä»¶å¼•ç”¨")]
+    [SerializeField] private Text actionLabel;               // åŠ¨ä½œæ–‡æœ¬ï¼ˆå¦‚ï¼šè·³è·ƒã€å†²åˆºã€æ ¼æŒ¡ï¼‰
+    [SerializeField] private Text bindingText;               // æ˜¾ç¤ºå½“å‰æŒ‰é”®æ–‡æœ¬ï¼ˆå¦‚ï¼šSPACEï¼‰
+    [SerializeField] private Button rebindButton;            // è§¦å‘é‡ç»‘å®šçš„ UGUI æŒ‰é’®
+    [SerializeField] private GameObject listeningOverlay;    // ç›‘å¬çŠ¶æ€é®ç½©ï¼ˆæ˜¾ç¤º"è¯·æŒ‰é”®..."ï¼‰
 
     private InputAction targetAction;
     private InputActionRebindingExtensions.RebindingOperation rebindOperation;
@@ -37,7 +37,7 @@ public class RebindActionUI : MonoBehaviour
         {
             rebindButton.onClick.RemoveListener(StartRebinding);
         }
-        // ·ÀÖ¹Ãæ°å±»¹Ø±ÕÊ±£¬·ÇÕı³£¹ÒÆğµÄÖØ°ó²Ù×÷ÄÚ´æĞ¹Â©
+        // é˜²æ­¢é¢æ¿è¢«å…³é—­æ—¶é‡ç»‘å®šæ“ä½œå¥æŸ„å†…å­˜æ³„æ¼
         rebindOperation?.Dispose();
     }
 
@@ -48,7 +48,7 @@ public class RebindActionUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ³õÊ¼»¯²¢´Ó InputManager µ×²ã×¥È¡¶¯×÷¶ÔÏó
+    /// åˆå§‹åŒ–æ—¶ä» InputManager åº•å±‚æŠ“å–ç›®æ ‡åŠ¨ä½œ
     /// </summary>
     private void InitializeAction()
     {
@@ -62,7 +62,7 @@ public class RebindActionUI : MonoBehaviour
     }
 
     /// <summary>
-    /// »ñÈ¡µ±Ç°°ó¶¨µÄ¼üÃû£¬²¢Ë¢ĞÂ UGUI ÎÄ±¾ÏÔÊ¾
+    /// è¯»å–å½“å‰ç»‘å®šçš„æŒ‰é”®åç§°å¹¶åˆ·æ–° UGUI æ–‡æœ¬æ˜¾ç¤º
     /// </summary>
     public void UpdateUI()
     {
@@ -73,38 +73,38 @@ public class RebindActionUI : MonoBehaviour
 
         if (targetAction != null && bindingText != null)
         {
-            // ÀûÓÃĞÂ°æÊäÈëÏµÍ³ÄÚÖÃ½Ó¿Ú£¬×Ô¶¯×¥È¡¶ÔÈËÀàÓÑºÃµÄ×Ö·û´®£¨Èç "Left Shift"¡¢"Space"£©
+            // æ–°ç‰ˆç»‘å®šç³»ç»Ÿçš„å‹å¥½æ¥å£ï¼Œè‡ªåŠ¨æŠ“å–æ ¼å¼åŒ–å¥½çš„å­—ç¬¦ä¸²ï¼ˆå¦‚ "Left Shift"ã€"Space"ï¼‰
             string displayString = targetAction.GetBindingDisplayString(bindingIndex);
-            bindingText.text = displayString.ToUpper(); // ×ª»¯Îª´óĞ´ÒÔ·ûºÏ¶àÊıÓÎÏ· UI ¹æ·¶
+            bindingText.text = displayString.ToUpper(); // è½¬ä¸ºå¤§å†™ä»¥ç¬¦åˆæ¸¸æˆ UI è§„èŒƒ
         }
 
         if (listeningOverlay != null)
         {
-            listeningOverlay.SetActive(false); // Ä¬ÈÏ¹Ø±ÕÕÚÕÖ
+            listeningOverlay.SetActive(false); // é»˜è®¤å…³é—­é®ç½©
         }
     }
 
     /// <summary>
-    /// µã»÷°´Å¥´¥·¢£ºÆô¶¯½»»¥Ê½¸Ä¼ü¼àÌı
+    /// ç‚¹å‡»æŒ‰é’®åå¯åŠ¨äº¤äº’å¼é‡ç»‘å®šæµç¨‹
     /// </summary>
     private void StartRebinding()
     {
         if (targetAction == null) return;
 
-        // 1. ¸Ä¼üÆÚ¼ä£¬±ØĞëÔİÊ±Í£ÓÃÕû¸ö InputAssets µÄĞÅºÅ·Ö·¢£¬·ÀÖ¹²Ù×÷³åÍ»
+        // 1. é‡ç»‘å®šæœŸé—´ï¼Œæš‚æ—¶åœç”¨æ•´ä¸ª InputAssets ä¿¡å·åˆ†å‘ï¼Œé˜²æ­¢ç©å®¶åŠ¨ä½œå†²çª
         InputManager.Instance.Controls.Disable();
 
-        // 2. ÏÔÊ¾¡°Çë°´ÈÎÒâ¼ü¡±ÕÚÕÖ
+        // 2. æ˜¾ç¤º"è¯·æŒ‰é”®..."é®ç½©
         if (listeningOverlay != null)
         {
             listeningOverlay.SetActive(true);
         }
 
-        // 3. ¹¹½¨¸ß¾«¶È½»»¥Ê½°ó¶¨²Ù×÷
+        // 3. å¯åŠ¨é«˜ç²¾åº¦äº¤äº’å¼ç»‘å®šæ“ä½œ
         rebindOperation = targetAction.PerformInteractiveRebinding(bindingIndex)
-            .WithControlsExcluding("Mouse")               // ÅÅ³ıÊó±ê£¨·ÀÖ¹Îó½«Êó±ê»¬¶¯¡¢µã»÷°ó¶¨Îª°´¼ü£©
-            .WithCancelingThrough("<Keyboard>/escape")    // ÉèÖÃ°´ÏÂ ESC ¼ü¿ÉÒÔÖ±½ÓÍË³ö/È¡Ïû¸Ä¼ü
-            .OnMatchWaitForAnother(0.1f)                  // µÈ´ı 0.1s ·ÀÖ¹°´¼üÎïÀíµ¯ÆğÊ±Òı·¢¶àÖØÅĞ¶¨
+            .WithControlsExcluding("Mouse")               // æ’é™¤é¼ æ ‡ï¼ˆé˜²æ­¢æ»šè½®/æ»‘åŠ¨è¢«å½“ä½œæŒ‰é”®ï¼‰
+            .WithCancelingThrough("<Keyboard>/escape")    // æŒ‰ä¸‹ ESC å¯éšæ—¶é€€å‡º/å–æ¶ˆé‡ç»‘å®š
+            .OnMatchWaitForAnother(0.1f)                  // ç­‰å¾… 0.1s é˜²æ­¢åŒä¸€æ¬¡æŒ‰å‹æ—¶è¯¯åˆ¤å†²çª
             .OnComplete(operation => CleanUpRebind(true))
             .OnCancel(operation => CleanUpRebind(false));
 
@@ -112,35 +112,35 @@ public class RebindActionUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ½áÊø¸Ä¼üºóµÄÇåÀíÓë±£´æÂß¼­
+    /// é‡ç»‘å®šå®Œæˆ/å–æ¶ˆåçš„æ”¶å°¾ä¸ä¿å­˜é€»è¾‘
     /// </summary>
     private void CleanUpRebind(bool success)
     {
-        // 1. Ç¿ÖÆÇåÀíÓëÊÍ·ÅÖØ°ó¾ä±ú
+        // 1. å¼ºåˆ¶ç»“æŸå¹¶é‡Šæ”¾æ“ä½œå¥æŸ„
         rebindOperation?.Dispose();
         rebindOperation = null;
 
-        // 2. Òş²Ø°´ÈÎÒâ¼üµÄÌáÊ¾ÕÚÕÖ
+        // 2. éšè—æŒ‰é”®é®ç½©
         if (listeningOverlay != null)
         {
             listeningOverlay.SetActive(false);
         }
 
-        // 3. »Ö¸´È«¾ÖÊäÈë
-        InputManager.Instance.Controls.Enable();
+        // 3. åªæ¢å¤ UI è¾“å…¥ï¼Œä¸å¯ç”¨ GamePlayer/Battleï¼ˆä¿æŒè®¾ç½®é¢æ¿çŠ¶æ€ï¼‰
+        InputManager.Instance.Controls.UI.Enable();
 
         if (success)
         {
-            // 4. µ÷ÓÃÄúÔÚ InputManager Àï×¼±¸ºÃµÄÊı¾İ³Ö¾Ã»¯½Ó¿Ú£¬Ğ´Èë PlayerPrefs
+            // 4. è°ƒç”¨ InputManager æš´éœ²çš„æ•°æ®æŒä¹…åŒ–æ¥å£ï¼Œå†™å…¥ PlayerPrefs
             InputManager.Instance.SaveBindingOverrides();
-            Debug.Log($"<color=green>[¸Ä¼ü³É¹¦] ¶¯×÷ {actionName} ÒÑ°ó¶¨ĞÂ°´¼ü£¡</color>");
+            Debug.Log($"<color=green>[é‡ç»‘å®šæˆåŠŸ] åŠ¨ä½œ {actionName} å·²æ›´æ–°ç»‘å®šã€‚</color>");
         }
         else
         {
-            Debug.Log($"<color=yellow>[¸Ä¼üÈ¡Ïû] {actionName} ½»»¥Ê½¸Ä¼üÒÑ°²È«È¡Ïû¡£</color>");
+            Debug.Log($"<color=yellow>[é‡ç»‘å®šå–æ¶ˆ] {actionName} çš„äº¤äº’å¼é‡ç»‘å®šå·²å®‰å…¨å–æ¶ˆã€‚</color>");
         }
 
-        // 5. Á¢¼´ÖØ»­×ÔÉí UI 
+        // 5. åˆ·æ–°å½“å‰æŒ‰é’® UI
         UpdateUI();
     }
 }

@@ -1,7 +1,7 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ´óÊÀ½ç¹ÖÎïµÄ´ı»ú×´Ì¬£¨ÔÚ±ßÔµÕ¾×ÅĞª½Å£© [6]
+/// å¤§ä¸–ç•Œæ€ªç‰©çš„å¾…æœºçŠ¶æ€ï¼ˆåœ¨è¾¹ç¼˜ç«™ç€æ­‡è„šï¼‰ [6]
 /// </summary>
 public class EnemyIdleState : OverworldEnemyState
 {
@@ -9,25 +9,25 @@ public class EnemyIdleState : OverworldEnemyState
 
     public override void Enter()
     {
-        base.Enter(); // ×´Ì¬¼ÆÊ±Æ÷ÖØÖÃ£¬²¢²¥·Å´ı»ú¶¯»­
-        owner.SetHorizontalVelocity(0f); // ´ı»úÊ±¾²Ö¹
+        base.Enter(); // çŠ¶æ€è®¡æ—¶å™¨é‡ç½®ï¼Œå¹¶æ’­æ”¾å¾…æœºåŠ¨ç”»
+        owner.SetHorizontalVelocity(0f); // å¾…æœºæ—¶é™æ­¢
     }
 
     public override void Update()
     {
-        base.Update(); // ÀÛ¼Ó stateTimer
+        base.Update(); // ç´¯åŠ  stateTimer
 
-        // 1. ¾¯½ä£º¼´Ê¹ÔÚ´òî§Ë¯£¬Ò»µ©·¢ÏÖÍæ¼Ò£¬Á¢¿Ì×ªÎª×·»÷
+        // 1. è­¦æˆ’ï¼šå³ä½¿åœ¨æ‰“çŒç¡ï¼Œä¸€æ—¦å‘ç°ç©å®¶ï¼Œç«‹åˆ»è½¬ä¸ºè¿½å‡»
         if (owner.IsPlayerInRange())
         {
             stateMachine.ChangeState<EnemyChaseState>();
             return;
         }
 
-        // 2. Ğª½ÅÊ±¼ä½áÊø£ºÔÚÍË³öÇ°£¬×Ô¶¯µ÷ÓÃ Flip ×ªÉí£¬²¢ÇĞ»ØÑ²Âß×´Ì¬
+        // 2. æ­‡è„šæ—¶é—´ç»“æŸï¼šåœ¨é€€å‡ºå‰ï¼Œè‡ªåŠ¨è°ƒç”¨ Flip è½¬èº«ï¼Œå¹¶åˆ‡å›å·¡é€»çŠ¶æ€
         if (stateTimer >= owner.IdleDuration)
         {
-            owner.Flip(); // ×ªÉí£¡
+            owner.Flip(); // è½¬èº«ï¼
             stateMachine.ChangeState<EnemyPatrolState>();
         }
     }

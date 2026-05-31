@@ -1,10 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("±ß¿ò¸ßÁÁÉèÖÃ (ÍÏÈë×ÓÎïÌå Border)")]
+    [Header("è¾¹æ¡†é«˜äº®è®¾ç½® (æ‹–å…¥å­ç‰©ä½“ Border)")]
     [SerializeField] private CanvasGroup highlightBorderGroup;
 
     private Buff cachedBuff;
@@ -30,20 +30,20 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log($"<color=cyan>[Ğü¸¡²âÊÔ] Êó±êÒÆÈëÁË Buff Í¼±ê£¡µ±Ç°½¹µã Buff: {cachedBuff?.buffName ?? "¿Õ"}</color>");
+        Debug.Log($"<color=cyan>[æ‚¬æµ®æµ‹è¯•] é¼ æ ‡ç§»å…¥äº† Buff å›¾æ ‡ï¼å½“å‰ç„¦ç‚¹ Buff: {cachedBuff?.buffName ?? "ç©º"}</color>");
 
-        // 1. Ğü¸¡Î¢·Å´ó±íÏÖ
+        // 1. æ‚¬æµ®å¾®æ”¾å¤§è¡¨ç°
         transform.localScale = new Vector3(1.22f, 1.22f, 1f);
 
-        // 2. ÏÔÊ¾½ğÉ«µÄ¸ßÁÁ±ß¿ò [1]
+        // 2. æ˜¾ç¤ºé‡‘è‰²çš„é«˜äº®è¾¹æ¡† [1]
         if (highlightBorderGroup != null)
         {
             highlightBorderGroup.alpha = 1f;
         }
 
         // ========================================================
-        // 3. ºËĞÄĞŞ¸Ä£º²»ÔÙÖ»´«×Ô¼º£¡Ö±½Ó°ÑÕâ¸öËŞÖ÷ÉíÉÏËùÓĞµÄ Buff ÁĞ±í´ò°ü¶ª¹ıÈ¥£¡
-        // ÕâÑù×ó±ßµÄÌáÊ¾´óºĞ×Ó¾Í»á´ÓÉÏÍùÏÂ×Ô¶¯ÕûÆëÅÅ¶ÓÁĞ³öËùÓĞµÄ Buff ĞÅÏ¢£¡ [1]
+        // 3. æ ¸å¿ƒä¿®æ”¹ï¼šä¸å†åªä¼ è‡ªå·±ï¼ç›´æ¥æŠŠè¿™ä¸ªå®¿ä¸»èº«ä¸Šæ‰€æœ‰çš„ Buff åˆ—è¡¨æ‰“åŒ…ä¸¢è¿‡å»ï¼
+        // è¿™æ ·å·¦è¾¹çš„æç¤ºå¤§ç›’å­å°±ä¼šä»ä¸Šå¾€ä¸‹è‡ªåŠ¨æ•´é½æ’é˜Ÿåˆ—å‡ºæ‰€æœ‰çš„ Buff ä¿¡æ¯ï¼ [1]
         // ========================================================
         if (cachedBuff != null && cachedBuff.owner != null && BattleUIController.Instance != null)
         {
@@ -53,7 +53,7 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("[Ğü¸¡²âÊÔ] Êó±êÒÆ³öÁË Buff Í¼±ê¡£");
+        Debug.Log("[æ‚¬æµ®æµ‹è¯•] é¼ æ ‡ç§»å‡ºäº† Buff å›¾æ ‡ã€‚");
 
         transform.localScale = Vector3.one;
 
@@ -62,7 +62,7 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             highlightBorderGroup.alpha = 0f;
         }
 
-        // Òş²Ø´óÌáÊ¾¿ò
+        // éšè—å¤§æç¤ºæ¡†
         if (BattleUIController.Instance != null)
         {
             BattleUIController.Instance.HideTooltip();

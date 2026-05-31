@@ -20,9 +20,7 @@ public class StoreInventoryInputBridge : MonoBehaviour
 
     InputAssets controls;
     InventoryUI boundInventoryUI;
-    PlayerController boundPlayerController;
     bool exploreInputPausedByBridge;
-    bool cursorUnlockedForUI;
     bool inputBound;
 
     void Awake()
@@ -219,32 +217,12 @@ public class StoreInventoryInputBridge : MonoBehaviour
 
     bool CanUseExploreStoreInput()
     {
-        if (BattleManager.Instance != null &&
-            BattleManager.Instance.currentPhase != BattlePhase.None)
-            return false;
-
-        return true;
+        return InputContextSwitcher.CanUseExploreInput();
     }
 
     void PauseExploreInputForUI()
     {
-        if (controls == null && InputManager.Instance != null)
-            controls = InputManager.Instance.Controls;
-
-        if (controls == null)
-            return;
-
-        if (boundPlayerController == null)
-            boundPlayerController = FindObjectOfType<PlayerController>();
-
-        if (boundPlayerController != null)
-            boundPlayerController.enabled = false;
-
-        controls.GamePlayer.Disable();
-        controls.GamePlayer.OpenInventory.Enable();
-        controls.GamePlayer.OpenShop.Enable();
-
-        UnlockCursorForUi();
+        InputContextSwitcher.PauseExploreInput("OpenInventory", "OpenShop");
         exploreInputPausedByBridge = true;
     }
 
@@ -256,41 +234,8 @@ public class StoreInventoryInputBridge : MonoBehaviour
         if (panel != null && panel.IsAnyOpen)
             return;
 
-        if (controls != null)
-        {
-            controls.GamePlayer.OpenInventory.Disable();
-            controls.GamePlayer.OpenShop.Disable();
-            if (CanUseExploreStoreInput())
-                controls.GamePlayer.Enable();
-        }
-
-        if (boundPlayerController != null)
-        {
-            boundPlayerController.enabled = true;
-            boundPlayerController = null;
-        }
-
-        RelockCursorForExplore();
+        InputContextSwitcher.RestoreExploreInput();
         exploreInputPausedByBridge = false;
     }
 
-    void UnlockCursorForUi()
-    {
-        if (cursorUnlockedForUI)
-            return;
-
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-        cursorUnlockedForUI = true;
-    }
-
-    void RelockCursorForExplore()
-    {
-        if (!cursorUnlockedForUI)
-            return;
-
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        cursorUnlockedForUI = false;
-    }
 }

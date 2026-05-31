@@ -1,14 +1,15 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
+/// <summary>
+/// ä¸»è§’å¤§åœ°å›¾å¾…æœºçŠ¶æ€ï¼ˆå·²é›†æˆå¹³å°ç‰©ç†é”æ­»ï¼‰
+/// </summary>
 public class PlayerIdleState : PlayerGroundedState
 {
-    // Ö»ĞèÉùÃ÷ËüÒª°ó¶¨µÄ¶¯»­£¬½øÈë¸Ã×´Ì¬Ê±¶¯»­»á×Ô¶¯ÎŞ·ì²¥·Å
     protected override int AnimHash => PlayerController.Anim_Idle;
 
     public override void Enter()
     {
-        base.Enter(); // ±ØĞëµ÷ÓÃ£¬´¥·¢¶¯»­²¥·Å
-        owner.SetHorizontalVelocity(0);
+        base.Enter();
     }
 
     public override void Update()
@@ -18,5 +19,18 @@ public class PlayerIdleState : PlayerGroundedState
         {
             stateMachine.ChangeState<PlayerWalkState>();
         }
+    }
+
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
+
+        // 1. è®¾ç½®æ°´å¹³é€Ÿåº¦ä¸å¹³å°å®Œå…¨åŒæ­¥
+        owner.SetHorizontalVelocity(owner.PlatformVelocity.x);
+
+        // ========================================================
+        // 2. æ ¸å¿ƒé”æ­»ï¼šé™æ­¢æ—¶å°†åæ ‡å®Œå…¨é’‰æ­»åœ¨å¹³å°ç›¸å¯¹ä½ç½®ä¸Šï¼Œå½»åº•é˜»æ–­æ¼‚ç§»ï¼
+        // ========================================================
+        owner.LockToPlatform();
     }
 }

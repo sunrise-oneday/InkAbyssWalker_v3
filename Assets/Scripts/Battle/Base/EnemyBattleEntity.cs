@@ -1,34 +1,34 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class EnemyBattleEntity : BattleEntity
 {
-    [Header("µĞÈË¶à¶ÎÁ¬»÷ÅäÖÃ")]
+    [Header("æ•Œäººå¤šæ®µè¿å‡»é…ç½®")]
     [SerializeField] private EnemyAttackSequence attackSequence;
 
     // ========================================================
-    // ºËĞÄÖØ¹¹£ºÉùÃ÷²¢ÔËĞĞÊôÓÚ¹ÖÎï×Ô¼ºµÄ¡¾Õ½¶·×´Ì¬»ú¡¿£¡
+    // æ ¸å¿ƒé‡æ„ï¼šå£°æ˜å¹¶è¿è¡Œå±äºæ€ªç‰©è‡ªå·±çš„ã€æˆ˜æ–—çŠ¶æ€æœºã€‘ï¼
     // ========================================================
     private StateMachine<EnemyBattleEntity> battleStateMachine;
 
     // ========================================================
-    // ºËĞÄÖØ¹¹£ºÒ»´ÎĞÔ»º´æ¹ÖÎïµÄ±äÕĞ Hash [2]
+    // æ ¸å¿ƒé‡æ„ï¼šä¸€æ¬¡æ€§ç¼“å­˜æ€ªç‰©çš„å˜æ‹› Hash [2]
     // ========================================================
     public int[] HitAnimHashes { get; private set; }
 
-    [Header("ËÀÍö¿ÉÑ¡Ïî [5]")]
-    [Tooltip("¹´Ñ¡ºó£¬¹ÖÎïËÀÍö²¥·ÅÍê¶¯»­ 2 Ãëºó»á×Ô¶¯½¥ÒşÏûÊ§£»²»¹´Ñ¡ÔòÓÀÔ¶ÁôÔÚ³¡ÉÏ")]
-    public bool destroyOnDeath = false; // <--- ºËĞÄ²¹Æë£º±ØĞë¼ÓÉÏÕâÒ»ĞĞ£¡
+    [Header("æ­»äº¡å¯é€‰é¡¹ [5]")]
+    [Tooltip("å‹¾é€‰åï¼Œæ€ªç‰©æ­»äº¡æ’­æ”¾å®ŒåŠ¨ç”» 2 ç§’åä¼šè‡ªåŠ¨æ¸éšæ¶ˆå¤±ï¼›ä¸å‹¾é€‰åˆ™æ°¸è¿œç•™åœ¨åœºä¸Š")]
+    public bool destroyOnDeath = false; // <--- æ ¸å¿ƒè¡¥é½ï¼šå¿…é¡»åŠ ä¸Šè¿™ä¸€è¡Œï¼
 
     private void OnEnable()
     {
         // ========================================================
-        // ºËĞÄÖØ¹¹£¨¹Û²ìÕßÄ£Ê½£©£º¼àÌı×Ô¼ºÉíÉÏµÄ Buff ¸Ä±äÊÂ¼ş£¡ [1]
+        // æ ¸å¿ƒé‡æ„ï¼ˆè§‚å¯Ÿè€…æ¨¡å¼ï¼‰ï¼šç›‘å¬è‡ªå·±èº«ä¸Šçš„ Buff æ”¹å˜äº‹ä»¶ï¼ [1]
         // ========================================================
         if (Stats != null)
         {
             Stats.OnBuffsChanged += HandleBuffsChanged;
-            Stats.OnBreakChanged += HandleBreakChanged; // ºËĞÄĞÂÔö£º¼àÌı°×É«ÆÆ·ÀÌõ¸Ä±ä£¡ [5]
+            Stats.OnBreakChanged += HandleBreakChanged; // æ ¸å¿ƒæ–°å¢ï¼šç›‘å¬ç™½è‰²ç ´é˜²æ¡æ”¹å˜ï¼ [5]
         }
     }
 
@@ -42,8 +42,8 @@ public class EnemyBattleEntity : BattleEntity
     }
 
     /// <summary>
-    /// ºËĞÄÖØ¹¹£¨¹Û²ìÕßÄ£Ê½£©£º
-    /// µ±°×É«ÆÆ·ÀÌõ£¨Break Bar£©·¢Éú¸Ä±äÊ±£¬¹ÖÎï×ÔÖ÷µ÷Õû×Ô¼ºµÄ¶¯×÷×´Ì¬£¡ [5]
+    /// æ ¸å¿ƒé‡æ„ï¼ˆè§‚å¯Ÿè€…æ¨¡å¼ï¼‰ï¼š
+    /// å½“ç™½è‰²ç ´é˜²æ¡ï¼ˆBreak Barï¼‰å‘ç”Ÿæ”¹å˜æ—¶ï¼Œæ€ªç‰©è‡ªä¸»è°ƒæ•´è‡ªå·±çš„åŠ¨ä½œçŠ¶æ€ï¼ [5]
     /// </summary>
     private void HandleBreakChanged()
     {
@@ -51,33 +51,33 @@ public class EnemyBattleEntity : BattleEntity
 
         if (Stats.isBroken)
         {
-            // Èç¹û×Ô¼º±»Íæ¼Ò´òÖÁ¡°ÆÆ·À¡±£¨°×É«½ø¶ÈÌõ¹éÁã£©£¬
-            // ÔÚÍæ¼ÒµÄ»ØºÏÄÚ£¬ÉíÌåË²¼äÇĞÈë¡¾Õ½¶·Ñ£ÔÎ×´Ì¬£¨EnemyBattleStunState£©¡¿£¡ [5]
+            // å¦‚æœè‡ªå·±è¢«ç©å®¶æ‰“è‡³â€œç ´é˜²â€ï¼ˆç™½è‰²è¿›åº¦æ¡å½’é›¶ï¼‰ï¼Œ
+            // åœ¨ç©å®¶çš„å›åˆå†…ï¼Œèº«ä½“ç¬é—´åˆ‡å…¥ã€æˆ˜æ–—çœ©æ™•çŠ¶æ€ï¼ˆEnemyBattleStunStateï¼‰ã€‘ï¼ [5]
             if (!(battleStateMachine.currentState is EnemyBattleStunState))
             {
                 battleStateMachine.ChangeState<EnemyBattleStunState>();
-                Debug.Log($"<color=red>[ÎïÀí·´À¡] {gameObject.name} ÆÆ·ÀÌõ±»´ò¿Õ£¡ÉíÌåË²¼ä½øÈëÑ£ÔÎ£¡</color>");
+                Debug.Log($"<color=red>[ç‰©ç†åé¦ˆ] {gameObject.name} ç ´é˜²æ¡è¢«æ‰“ç©ºï¼èº«ä½“ç¬é—´è¿›å…¥çœ©æ™•ï¼</color>");
             }
         }
         else
         {
-            // Èç¹ûÆÆ·À»Ö¸´ÁË£¨Í¨³£ÔÚËüµÄ»ØºÏ½áÊø¡¢RecoverFromBreak ±»µ÷ÓÃÊ±´¥·¢£©
+            // å¦‚æœç ´é˜²æ¢å¤äº†ï¼ˆé€šå¸¸åœ¨å®ƒçš„å›åˆç»“æŸã€RecoverFromBreak è¢«è°ƒç”¨æ—¶è§¦å‘ï¼‰
             if (battleStateMachine.currentState is EnemyBattleStunState)
             {
-                // Ï¸½Ú·À´í£º±ØĞëÈ·±£ÉíÉÏ´ËÊ±Ò²Ã»ÓĞÆäËû¡°Ñ£ÔÎ Buff¡±¹Ò×Å£¬²ÅÔÊĞí»Ö¸´µ½Õı³£µÄÕ½¶·´ı»ú£¡
+                // ç»†èŠ‚é˜²é”™ï¼šå¿…é¡»ç¡®ä¿èº«ä¸Šæ­¤æ—¶ä¹Ÿæ²¡æœ‰å…¶ä»–â€œçœ©æ™• Buffâ€æŒ‚ç€ï¼Œæ‰å…è®¸æ¢å¤åˆ°æ­£å¸¸çš„æˆ˜æ–—å¾…æœºï¼
                 bool hasStun = Stats.activeBuffs.Exists(b => b is StunBuff);
                 if (!hasStun)
                 {
                     battleStateMachine.ChangeState<EnemyBattleIdleState>();
-                    Debug.Log($"[ÎïÀí·´À¡] {gameObject.name} ÆÆ·À»Ö¸´£¬ÖØ»ØÕı³£Õ½¶·´ı»ú¶¯×÷¡£");
+                    Debug.Log($"[ç‰©ç†åé¦ˆ] {gameObject.name} ç ´é˜²æ¢å¤ï¼Œé‡å›æ­£å¸¸æˆ˜æ–—å¾…æœºåŠ¨ä½œã€‚");
                 }
             }
         }
     }
 
     /// <summary>
-    /// ºËĞÄÖØ¹¹£¨¹Û²ìÕßÄ£Ê½£©£º
-    /// µ± Buff ·¢Éú¸Ä±äÊ±£¬¹ÖÎï×ÔÖ÷µ÷Õû×Ô¼ºµÄ¶¯×÷×´Ì¬£¡
+    /// æ ¸å¿ƒé‡æ„ï¼ˆè§‚å¯Ÿè€…æ¨¡å¼ï¼‰ï¼š
+    /// å½“ Buff å‘ç”Ÿæ”¹å˜æ—¶ï¼Œæ€ªç‰©è‡ªä¸»è°ƒæ•´è‡ªå·±çš„åŠ¨ä½œçŠ¶æ€ï¼
     /// </summary>
     private void HandleBuffsChanged()
     {
@@ -87,7 +87,7 @@ public class EnemyBattleEntity : BattleEntity
 
         if (hasStun)
         {
-            // ÖĞÁËÑ£ÔÎ£¬Ë²¼ä½øÈëÑ£ÔÎ±§Í·¶¯×÷
+            // ä¸­äº†çœ©æ™•ï¼Œç¬é—´è¿›å…¥çœ©æ™•æŠ±å¤´åŠ¨ä½œ
             if (!(battleStateMachine.currentState is EnemyBattleStunState))
             {
                 battleStateMachine.ChangeState<EnemyBattleStunState>();
@@ -95,11 +95,11 @@ public class EnemyBattleEntity : BattleEntity
         }
         else
         {
-            // Ñ£ÔÎÊ±¼ä½áÊøÏûÊ§ÁË£º
+            // çœ©æ™•æ—¶é—´ç»“æŸæ¶ˆå¤±äº†ï¼š
             if (battleStateMachine.currentState is EnemyBattleStunState)
             {
-                // Ï¸½Ú·À´í£ºÖ»ÓĞÔÚÉíÉÏ¡¾¼ÈÃ»ÓĞÑ£ÔÎ Buff¡¿£¬¡¾Ò²Ã»ÓĞ´¦ÓÚÆÆ·À×´Ì¬¡¿Ê±£¬²Å»Ö¸´´ı»ú£¡
-                // ÕâÄÜÍêÃÀ±ÜÃâ¡°Ñ£ÔÎ Buff ÏûÊ§ÁË£¬µ«¹ÖÒÀÈ»ÔÚÆÆ·À×´Ì¬ÏÂ£¬½á¹û¹Ö×Ô¶¯Õ¾ÆğÀ´¡±µÄÑÏÖØÂß¼­ Bug£¡ [5]
+                // ç»†èŠ‚é˜²é”™ï¼šåªæœ‰åœ¨èº«ä¸Šã€æ—¢æ²¡æœ‰çœ©æ™• Buffã€‘ï¼Œã€ä¹Ÿæ²¡æœ‰å¤„äºç ´é˜²çŠ¶æ€ã€‘æ—¶ï¼Œæ‰æ¢å¤å¾…æœºï¼
+                // è¿™èƒ½å®Œç¾é¿å…â€œçœ©æ™• Buff æ¶ˆå¤±äº†ï¼Œä½†æ€ªä¾ç„¶åœ¨ç ´é˜²çŠ¶æ€ä¸‹ï¼Œç»“æœæ€ªè‡ªåŠ¨ç«™èµ·æ¥â€çš„ä¸¥é‡é€»è¾‘ Bugï¼ [5]
                 if (!Stats.isBroken)
                 {
                     battleStateMachine.ChangeState<EnemyBattleIdleState>();
@@ -110,19 +110,19 @@ public class EnemyBattleEntity : BattleEntity
 
     protected override void Awake()
     {
-        base.Awake(); // ×Ô¶¯»ñÈ¡ stats, anim, rb
+        base.Awake(); // è‡ªåŠ¨è·å– stats, anim, rb
 
-        // ×¢²á¹ÖÎï×Ô¼ºµÄÕ½¶·×´Ì¬
+        // æ³¨å†Œæ€ªç‰©è‡ªå·±çš„æˆ˜æ–—çŠ¶æ€
         battleStateMachine = new StateMachine<EnemyBattleEntity>(this);
         battleStateMachine.RegisterState(new EnemyBattleIdleState());
         battleStateMachine.RegisterState(new EnemyBattleState());
         battleStateMachine.RegisterState(new EnemyBattleStunState());
-        battleStateMachine.RegisterState(new EnemyBattleDieState());  // ËÀÍö
+        battleStateMachine.RegisterState(new EnemyBattleDieState());  // æ­»äº¡
 
 
-        battleStateMachine.ChangeState<EnemyBattleIdleState>(); // Ä¬ÈÏ´ı»ú
+        battleStateMachine.ChangeState<EnemyBattleIdleState>(); // é»˜è®¤å¾…æœº
 
-        // ÔËĞĞÊ±Ò»´ÎĞÔ½«Ãû×Ö×ª»»Îª Hash »º´æ [2]
+        // è¿è¡Œæ—¶ä¸€æ¬¡æ€§å°†åå­—è½¬æ¢ä¸º Hash ç¼“å­˜ [2]
         if (attackSequence != null && attackSequence.hitAnimations != null)
         {
             HitAnimHashes = new int[attackSequence.hitAnimations.Length];
@@ -134,14 +134,14 @@ public class EnemyBattleEntity : BattleEntity
     }
 
     // ========================================================
-    // ºËĞÄ²¹Æë£º±ØĞëÔÚ Update ºÍ FixedUpdate ÀïÇı¶¯¹ÖÎïµÄÕ½¶·×´Ì¬»ú£¡
-    // Â©µôÕâÁ½¸ö·½·¨£¬¹ÖÎïµÄ×´Ì¬ÇĞ»»ºó¾Í»áÔ­µØ¡°¶Ïµç±ù¶³¡±£¬ÎŞ·¨µ¹¼ÆÊ±ºÍ½áÊø»ØºÏ£¡ [2]
+    // æ ¸å¿ƒè¡¥é½ï¼šå¿…é¡»åœ¨ Update å’Œ FixedUpdate é‡Œé©±åŠ¨æ€ªç‰©çš„æˆ˜æ–—çŠ¶æ€æœºï¼
+    // æ¼æ‰è¿™ä¸¤ä¸ªæ–¹æ³•ï¼Œæ€ªç‰©çš„çŠ¶æ€åˆ‡æ¢åå°±ä¼šåŸåœ°â€œæ–­ç”µå†°å†»â€ï¼Œæ— æ³•å€’è®¡æ—¶å’Œç»“æŸå›åˆï¼ [2]
     // ========================================================
     private void Update()
     {
         if (battleStateMachine != null)
         {
-            battleStateMachine.Update(); // Çı¶¯¹ÖÎï×´Ì¬»ú¹¤×÷£¡ [2]
+            battleStateMachine.Update(); // é©±åŠ¨æ€ªç‰©çŠ¶æ€æœºå·¥ä½œï¼ [2]
         }
     }
 
@@ -153,55 +153,55 @@ public class EnemyBattleEntity : BattleEntity
         }
     }
 
-    // Ìá¹©½Ó¿Ú¹©Íâ²¿ÇĞ»»×´Ì¬
+    // æä¾›æ¥å£ä¾›å¤–éƒ¨åˆ‡æ¢çŠ¶æ€
     public StateMachine<EnemyBattleEntity> GetBattleStateMachine() => battleStateMachine;
     public EnemyAttackSequence GetAttackSequence() => attackSequence;
 
     // ========================================================
-    // ºËĞÄĞÂÔö£º½ÓÊÕ¶¯»­ÊÂ¼ş£¬È«×Ô¶¯Íê³É¹¥»÷±äÕĞÓëÉËº¦Âäµã£¡ [1]
+    // æ ¸å¿ƒæ–°å¢ï¼šæ¥æ”¶åŠ¨ç”»äº‹ä»¶ï¼Œå…¨è‡ªåŠ¨å®Œæˆæ”»å‡»å˜æ‹›ä¸ä¼¤å®³è½ç‚¹ï¼ [1]
     // ========================================================
 
     /// <summary>
-    /// ¶¯»­ÊÂ¼ş£ºµ¶¹âÉËº¦ÂäµãÊ±´¥·¢£¨ÔÚ¶¯»­ timeline ÅĞ¶¨Ö¡ÓÒ¼üÌí¼Ó£© [1]
+    /// åŠ¨ç”»äº‹ä»¶ï¼šåˆ€å…‰ä¼¤å®³è½ç‚¹æ—¶è§¦å‘ï¼ˆåœ¨åŠ¨ç”» timeline åˆ¤å®šå¸§å³é”®æ·»åŠ ï¼‰ [1]
     /// </summary>
     public void TriggerDamage(int hitIndex)
     {
         if (BattleManager.Instance != null)
         {
-            BattleManager.Instance.EvaluateParryAndApplyDamage(hitIndex, attackSequence);
+            BattleCombatResolver.Instance.EvaluateParryAndApplyDamage(hitIndex, attackSequence);
         }
     }
 
     /// <summary>
-    /// ¶¯»­ÊÂ¼ş£ºÕĞÊ½±äÕĞ£¬ÔÚ¶¯×÷¼´½«½áÊøÇ°µÄÒ»Ö¡ÉÏÓÒ¼üÌí¼Ó£¬×Ô¶¯Æ½»¬ÇĞÈëÏÂÒ»Õ¶£¡ [1, 2]
+    /// åŠ¨ç”»äº‹ä»¶ï¼šæ‹›å¼å˜æ‹›ï¼Œåœ¨åŠ¨ä½œå³å°†ç»“æŸå‰çš„ä¸€å¸§ä¸Šå³é”®æ·»åŠ ï¼Œè‡ªåŠ¨å¹³æ»‘åˆ‡å…¥ä¸‹ä¸€æ–©ï¼ [1, 2]
     /// </summary>
-    /// <param name="nextIndex">ÏÂÒ»Õ¶µÄË÷Òı£¨ÀıÈç£ºµÚÒ»Õ¶Ä©Î²ÊÂ¼ş´« 1£¬µÚ¶şÕ¶Ä©Î²ÊÂ¼ş´« 2£©</param>
+    /// <param name="nextIndex">ä¸‹ä¸€æ–©çš„ç´¢å¼•ï¼ˆä¾‹å¦‚ï¼šç¬¬ä¸€æ–©æœ«å°¾äº‹ä»¶ä¼  1ï¼Œç¬¬äºŒæ–©æœ«å°¾äº‹ä»¶ä¼  2ï¼‰</param>
     public void TriggerNextAttack(int nextIndex)
     {
         if (anim != null && HitAnimHashes != null && nextIndex < HitAnimHashes.Length)
         {
-            // Ö±½ÓÒÔ 0.1s ¼«ËÙÈÚ½ÓÏÂÒ»Õ¶£¬¶¯×÷±íÏÖË¿»¬Á÷³©£¡ [2]
+            // ç›´æ¥ä»¥ 0.1s æé€Ÿèæ¥ä¸‹ä¸€æ–©ï¼ŒåŠ¨ä½œè¡¨ç°ä¸æ»‘æµç•…ï¼ [2]
             anim.CrossFade(HitAnimHashes[nextIndex], 0.1f);
-            Debug.Log($"[µĞÈË³öÕĞ] ¶¯»­ÊÂ¼ş´¥·¢£¡±äÕĞÇĞÈëµÚ {nextIndex + 1} »÷: {attackSequence.hitAnimations[nextIndex]}");
+            Debug.Log($"[æ•Œäººå‡ºæ‹›] åŠ¨ç”»äº‹ä»¶è§¦å‘ï¼å˜æ‹›åˆ‡å…¥ç¬¬ {nextIndex + 1} å‡»: {attackSequence.hitAnimations[nextIndex]}");
         }
     }
 
     /// <summary>
-    /// ¶¯»­ÊÂ¼ş£º×îºóÒ»»÷£¨Enemy_Attack_3£©µÄ×îºóÒ»Ö¡´òÉÏ´ËÊÂ¼ş£¬´ú±í´óÕĞÊÕÕĞÍê±Ï [1]
+    /// åŠ¨ç”»äº‹ä»¶ï¼šæœ€åä¸€å‡»ï¼ˆEnemy_Attack_3ï¼‰çš„æœ€åä¸€å¸§æ‰“ä¸Šæ­¤äº‹ä»¶ï¼Œä»£è¡¨å¤§æ‹›æ”¶æ‹›å®Œæ¯• [1]
     /// </summary>
     public void TriggerAttackFinished()
     {
-        // ×Ô¶¯»Øµ½´ı»ú£¬²¢½«¿ØÖÆÈ¨°²È«»¹¸øÍæ¼Ò [3]
+        // è‡ªåŠ¨å›åˆ°å¾…æœºï¼Œå¹¶å°†æ§åˆ¶æƒå®‰å…¨è¿˜ç»™ç©å®¶ [3]
         battleStateMachine.ChangeState<EnemyBattleIdleState>();
 
         if (BattleManager.Instance != null)
         {
-            BattleManager.Instance.OnEnemyTurnFinished();
+            BattleTurnManager.Instance.OnEnemyTurnFinished();
         }
     }
 
     /// <summary>
-    /// ±»Íæ¼Òµã»÷Ñ¡ÖĞÊ±£¬ÃüÁîÍ·¶¥µÄÑªÌõ HUD ½øĞĞ¸ßÁÁºÍ·Å´ó£¡
+    /// è¢«ç©å®¶ç‚¹å‡»é€‰ä¸­æ—¶ï¼Œå‘½ä»¤å¤´é¡¶çš„è¡€æ¡ HUD è¿›è¡Œé«˜äº®å’Œæ”¾å¤§ï¼
     /// </summary>
     public void SetSelected(bool isSelected)
     {
@@ -213,8 +213,8 @@ public class EnemyBattleEntity : BattleEntity
     }
 
     /// <summary>
-    /// ¶¯»­ÊÂ¼ş£º¡¾Ê±»úÉÁºì¾¯¸æ¡¿£¡ÔÚÉËº¦ÂäµãÇ°µÄ 0.2 ~ 0.25 Ãë´¦µÄÖ¡ÉÏ£¬ÓÒ¼üÌí¼Ó¸ÃÊÂ¼ş¡£
-    /// µ÷ÓÃºó£¬¹ÖÎïÉíÉÏ»áÉÁË¸´ÌÑÛµÄºìÉ«¹âÃ¢£¬×÷ÎªÍæ¼Ò°´ÏÂ¿Õ¸ñ¼üµÄ¡°ÊÓ¾õÉÚ±ø¡±£¡
+    /// åŠ¨ç”»äº‹ä»¶ï¼šã€æ—¶æœºé—ªçº¢è­¦å‘Šã€‘ï¼åœ¨ä¼¤å®³è½ç‚¹å‰çš„ 0.2 ~ 0.25 ç§’å¤„çš„å¸§ä¸Šï¼Œå³é”®æ·»åŠ è¯¥äº‹ä»¶ã€‚
+    /// è°ƒç”¨åï¼Œæ€ªç‰©èº«ä¸Šä¼šé—ªçƒåˆºçœ¼çš„çº¢è‰²å…‰èŠ’ï¼Œä½œä¸ºç©å®¶æŒ‰ä¸‹ç©ºæ ¼é”®çš„â€œè§†è§‰å“¨å…µâ€ï¼
     /// </summary>
     public void TriggerParryIndicator()
     {
@@ -222,7 +222,7 @@ public class EnemyBattleEntity : BattleEntity
     }
 
     // ========================================================
-    // ÎïÀí/ÊÓ¾õ±íÏÖÍ¨ÓÃĞ­³Ì
+    // ç‰©ç†/è§†è§‰è¡¨ç°é€šç”¨åç¨‹
     // ========================================================
     private IEnumerator FlashColorRoutine(Color color, float duration)
     {
@@ -230,12 +230,12 @@ public class EnemyBattleEntity : BattleEntity
         {
             sprite.color = color;            
             yield return new WaitForSeconds(duration);
-            sprite.color = Color.white; // »Ö¸´Õı³£°×É«
+            sprite.color = Color.white; // æ¢å¤æ­£å¸¸ç™½è‰²
         }
     }
 
     /// <summary>
-    /// ÖØĞ´ËÀÍö·½·¨£¬Ê¹¹ÖÎïÇĞÈëËÀÍö×´Ì¬²¢½ûÓÃÎïÀíÅö×² [5]
+    /// é‡å†™æ­»äº¡æ–¹æ³•ï¼Œä½¿æ€ªç‰©åˆ‡å…¥æ­»äº¡çŠ¶æ€å¹¶ç¦ç”¨ç‰©ç†ç¢°æ’ [5]
     /// </summary>
     protected override void Die()
     {

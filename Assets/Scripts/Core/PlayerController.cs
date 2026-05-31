@@ -8,7 +8,7 @@ public class PlayerController : EntityBase
     private StateMachine<PlayerController> stateMachine;
 
     [Header("输入通道引用")]
-    [SerializeField] private GameplayInputReader inputReader;
+    private GameplayInputReader inputReader;
 
     [Header("移动参数")]
     public float MoveSpeed = 5f;
@@ -50,17 +50,92 @@ public class PlayerController : EntityBase
     private const float InputBufferTime = 0.15f;
 
     // ========================================================
+    // 禁用的能力（由角色面板 Toggle 控制）
+    // ========================================================
+    private readonly HashSet<ExplorationAbility> disabledAbilities = new HashSet<ExplorationAbility>();
+
+    public void SetAbilityEnabled(ExplorationAbility ability, bool enabled)
+    {
+        if (enabled)
+            disabledAbilities.Remove(ability);
+        else
+            disabledAbilities.Add(ability);
+    }
+
+    public bool IsAbilityEnabled(ExplorationAbility ability)
+    {
+        return !disabledAbilities.Contains(ability);
+    }
+
+    // ========================================================
     // 核心重构：在输入缓存属性中直接植入【技能解锁判定】！
     // 这样在相关能力未解锁时，输入信号会被物理静默拦截，完美锁死跳跃、冲刺、大地图攻击！
     // ========================================================
-    public bool JumpInputBuffered => IsAbilityUnlocked(ExplorationAbility.Jump) && (Time.time - jumpPressTime) < InputBufferTime;
-    public bool AttackInputBuffered => IsAbilityUnlocked(ExplorationAbility.RangedAttack) && (Time.time - attackPressTime) < InputBufferTime;
-    public bool DashInputBuffered => IsAbilityUnlocked(ExplorationAbility.Dash) && (Time.time - dashPressTime) < InputBufferTime;
+    public bool JumpInputBuffered => IsAbilityUnlocked(ExplorationAbility.Jump) && IsAbilityEnabled(ExplorationAbility.Jump) && (Time.time - jumpPressTime) < InputBufferTime;
+    public bool AttackInputBuffered => IsAbilityUnlocked(ExplorationAbility.Attack) && IsAbilityEnabled(ExplorationAbility.Attack) && (Time.time - attackPressTime) < InputBufferTime;
+    public bool DashInputBuffered => IsAbilityUnlocked(ExplorationAbility.Dash) && IsAbilityEnabled(ExplorationAbility.Dash) && (Time.time - dashPressTime) < InputBufferTime;
 
     public void UseJumpInput() => jumpPressTime = -99f;
     public void UseAttackInput() => attackPressTime = -99f;
     public void UseDashInput() => dashPressTime = -99f;
     #endregion
+
+    // ========================================================
+    // 调试与物理硬锁机制（请拖入 PlayerController.cs 中）
+    // ========================================================
+    private MovingPlatform2D currentPlatform;
+    private float platformLocalXOffset; // 缓存玩家相对于平台的相对水平偏移量
+
+    /// <summary>
+    /// 由平台在碰撞时调用，用于记录玩家当前脚下的平台
+    /// </summary>
+    public void SetCurrentPlatform(MovingPlatform2D platform)
+    {
+        currentPlatform = platform;
+        if (platform != null)
+        {
+            // 记录刚踩上去一瞬间的相对位置
+            platformLocalXOffset = transform.position.x - platform.transform.position.x;
+            Debug.Log($"<color=green>[平台锁定] 玩家踏上平台，初始化相对偏移量: {platformLocalXOffset:F4}</color>");
+        }
+        else
+        {
+            Debug.Log("<color=red>[平台锁定] 玩家脱离平台，解除跟随锁。</color>");
+        }
+    }
+
+    /// <summary>
+    /// 当玩家在平台上行走时，每物理帧更新相对偏移，防止停下后对齐到旧位置
+    /// </summary>
+    public void UpdatePlatformOffset()
+    {
+        if (currentPlatform != null)
+        {
+            platformLocalXOffset = transform.position.x - currentPlatform.transform.position.x;
+        }
+    }
+
+    /// <summary>
+    /// 强制物理对齐：在静止时直接对齐到平台 X 坐标，彻底消灭微小的 1 帧时差漂移
+    /// </summary>
+    public void LockToPlatform()
+    {
+        if (currentPlatform != null && rb != null)
+        {
+            float targetX = currentPlatform.transform.position.x + platformLocalXOffset;
+
+            // 直接硬改物理刚体坐标（这是 Unity 物理引擎最安全的硬同步方式，完全不产生红字和抖动）
+            rb.position = new Vector2(targetX, rb.position.y);
+
+            // 若需要精确观察对齐数值，可取消注释下方代码：
+            // Debug.Log($"<color=yellow>[坐标锁死] 强行对齐玩家 X 轴至: {targetX:F4} (偏移量: {platformLocalXOffset:F4})</color>");
+        }
+    }
+
+    /// <summary>
+    /// 向状态机暴露当前平台的速度（若不在平台上则为零）
+    /// </summary>
+    public Vector2 PlatformVelocity => currentPlatform != null ? currentPlatform.CurrentVelocity : Vector2.zero;
 
     public static readonly int Anim_Idle = Animator.StringToHash("Player_Idle");
     public static readonly int Anim_Walk = Animator.StringToHash("Player_Walk");
@@ -85,8 +160,9 @@ public class PlayerController : EntityBase
     {
         get
         {
-            if (!IsAbilityUnlocked(ExplorationAbility.Jump)) return 0;
-            return IsAbilityUnlocked(ExplorationAbility.DoubleJump) ? 2 : 1;
+            if (!IsAbilityUnlocked(ExplorationAbility.Jump) || !IsAbilityEnabled(ExplorationAbility.Jump)) return 0;
+            if (!IsAbilityUnlocked(ExplorationAbility.DoubleJump) || !IsAbilityEnabled(ExplorationAbility.DoubleJump)) return 1;
+            return 2;
         }
     }
 
@@ -103,7 +179,7 @@ public class PlayerController : EntityBase
             Animator.StringToHash("Player_Attack_3")
         };
 
-        inputReader = GetComponent<GameplayInputReader>();
+        inputReader = InputManager.Instance.Gameplay;
 
         stateMachine = new StateMachine<PlayerController>(this);
         stateMachine.RegisterState(new PlayerIdleState());
@@ -198,6 +274,16 @@ public class PlayerController : EntityBase
             if (PlayerPrefs.GetInt(key, 0) == 1)
             {
                 unlockedAbilities.Add(ability);
+            }
+        }
+
+        // 从存档加载技能启用状态
+        disabledAbilities.Clear();
+        foreach (ExplorationAbility ability in System.Enum.GetValues(typeof(ExplorationAbility)))
+        {
+            if (!SaveManager.Instance.LoadAbilityEnabled(ability))
+            {
+                disabledAbilities.Add(ability);
             }
         }
     }

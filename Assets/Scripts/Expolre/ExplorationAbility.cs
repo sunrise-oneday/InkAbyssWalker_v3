@@ -1,14 +1,15 @@
-public enum ExplorationAbility
+﻿public enum ExplorationAbility
 {
     Jump,
-    Dash,           // ���/����
-    DoubleJump,     // ������
-    RangedAttack,   // Զ�̹������������ƽ���ս����
-    WallJump,        // ��ǽ������ʾ����չ�ԣ�
+    Dash,           // 冲刺/闪避
+    Attack,
+    DoubleJump,     // 二段跳
+    RangedAttack,   // 远程攻击（用于先制进入战斗）
+    WallJump,        // 攀墙跳（演示可拓展性）
 
     // ==========================================
-    // ����������ս�����еĽ���Ȩ��ֱ�Ӱ󶨴浵ϵͳ����
+    // 核心新增：战斗大招的解锁权（直接绑定存档系统！）
     // ==========================================
-    Ult_Sword,     // ���н���Ȩ���򽣹���
-    Ult_Ice,        // ���н���Ȩ����˪��ӡ
+    Ult_Sword,     // 大招解锁权：万剑归宗
+    Ult_Ice,        // 大招解锁权：冰霜封印
 }

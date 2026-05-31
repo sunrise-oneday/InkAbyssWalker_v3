@@ -3,50 +3,26 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// ×¨ÃÅ´¦ÀíÕ½¶·ÖĞ¼üÅÌÊäÈëÓë¸Ä¼üµÄÊäÈëÍ¨µÀ×é¼ş
+/// æˆ˜æ–—è¾“å…¥è¯»å–å™¨ - çº¯ C# ç±»ï¼Œç”± InputManager ç»Ÿä¸€ç®¡ç†
 /// </summary>
-public class BattleInputReader : MonoBehaviour, InputAssets.IBattleActions
+public class BattleInputReader : InputAssets.IBattleActions
 {
-    public static BattleInputReader Instance { get; private set; }
-
-    // Õ½¶·ÌØÓĞÊäÈëÊÂ¼ş£¨Ö§³Ö¶¯Ì¬¸Ä¼ü£¡£©
+    // æˆ˜æ–—è¾“å…¥äº‹ä»¶
     public event Action OnParryPressed = delegate { };
     public event Action OnDodgePressed = delegate { };
     public event Action OnAimPressed = delegate { };
     public event Action OnShootPressed = delegate { };
-    public event Action<int> OnQuickFormPressed = delegate { }; // ´«ÈëÒªÇĞ»»µÄĞÎÌ¬Ë÷Òı
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    private void Start()
-    {
-        if (InputManager.Instance != null && InputManager.Instance.Controls != null)
-        {
-            // °ó¶¨ÖÁµ×²ã×Ô¶¯Éú³ÉµÄ Battle ¶¯×÷±í»Øµ÷
-            InputManager.Instance.Controls.Battle.SetCallbacks(this);
-        }
-    }
+    public event Action<int> OnQuickFormPressed = delegate { };
 
     // ==========================================
-    // ÊµÏÖ IBattleActions ½Ó¿Ú×Ô¶¯Éú³ÉµÄ·½·¨
+    // IBattleActions æ¥å£å®ç°
     // ==========================================
 
     public void OnParry(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            OnParryPressed.Invoke(); // ¹ã²¥ÕĞ¼Ü°´ÏÂ
+            OnParryPressed.Invoke();
         }
     }
 
@@ -54,7 +30,7 @@ public class BattleInputReader : MonoBehaviour, InputAssets.IBattleActions
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            OnQuickFormPressed.Invoke(0); // ¿ì½İÇĞ»»ĞÎÌ¬ 1
+            OnQuickFormPressed.Invoke(0);
         }
     }
 
@@ -62,7 +38,7 @@ public class BattleInputReader : MonoBehaviour, InputAssets.IBattleActions
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            OnQuickFormPressed.Invoke(1); // ¿ì½İÇĞ»»ĞÎÌ¬ 2
+            OnQuickFormPressed.Invoke(1);
         }
     }
 
@@ -70,7 +46,7 @@ public class BattleInputReader : MonoBehaviour, InputAssets.IBattleActions
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            OnDodgePressed.Invoke(); 
+            OnDodgePressed.Invoke();
         }
     }
 

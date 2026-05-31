@@ -89,6 +89,24 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenCharacterPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""c3d4e5f6-a7b8-9012-cdef-345678901234"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""f1a2b3c4-d5e6-7890-abcd-ef1234567890"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -355,6 +373,28 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                     ""action"": ""OpenShop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4f5a6b7-c8d9-0123-efab-567890123456"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""OpenCharacterPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -448,6 +488,24 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                     ""type"": ""PassThrough"",
                     ""id"": ""ad024148-d915-42fc-879e-ee11b16bb137"",
                     ""expectedControlType"": ""Quaternion"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NextTab"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PreviousTab"",
+                    ""type"": ""Button"",
+                    ""id"": ""b2c3d4e5-f6a7-8901-bcde-f12345678901"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -871,6 +929,28 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                     ""action"": ""TrackedDeviceOrientation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c4d5e6f7-a8b9-0123-cdef-123456789012"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""NextTab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d5e6f7a8-b9c0-1234-defa-234567890123"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""PreviousTab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1075,6 +1155,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         m_GamePlayer_Dash = m_GamePlayer.FindAction("Dash", throwIfNotFound: true);
         m_GamePlayer_OpenInventory = m_GamePlayer.FindAction("OpenInventory", throwIfNotFound: true);
         m_GamePlayer_OpenShop = m_GamePlayer.FindAction("OpenShop", throwIfNotFound: true);
+        m_GamePlayer_OpenCharacterPanel = m_GamePlayer.FindAction("OpenCharacterPanel", throwIfNotFound: true);
+        m_GamePlayer_Interact = m_GamePlayer.FindAction("Interact", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1087,6 +1169,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
+        m_UI_NextTab = m_UI.FindAction("NextTab", throwIfNotFound: true);
+        m_UI_PreviousTab = m_UI.FindAction("PreviousTab", throwIfNotFound: true);
         // Battle
         m_Battle = asset.FindActionMap("Battle", throwIfNotFound: true);
         m_Battle_Parry = m_Battle.FindAction("Parry", throwIfNotFound: true);
@@ -1163,6 +1247,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
     private readonly InputAction m_GamePlayer_Dash;
     private readonly InputAction m_GamePlayer_OpenInventory;
     private readonly InputAction m_GamePlayer_OpenShop;
+    private readonly InputAction m_GamePlayer_OpenCharacterPanel;
+    private readonly InputAction m_GamePlayer_Interact;
     public struct GamePlayerActions
     {
         private @InputAssets m_Wrapper;
@@ -1174,6 +1260,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_GamePlayer_Dash;
         public InputAction @OpenInventory => m_Wrapper.m_GamePlayer_OpenInventory;
         public InputAction @OpenShop => m_Wrapper.m_GamePlayer_OpenShop;
+        public InputAction @OpenCharacterPanel => m_Wrapper.m_GamePlayer_OpenCharacterPanel;
+        public InputAction @Interact => m_Wrapper.m_GamePlayer_Interact;
         public InputActionMap Get() { return m_Wrapper.m_GamePlayer; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1204,6 +1292,12 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
             @OpenShop.started += instance.OnOpenShop;
             @OpenShop.performed += instance.OnOpenShop;
             @OpenShop.canceled += instance.OnOpenShop;
+            @OpenCharacterPanel.started += instance.OnOpenCharacterPanel;
+            @OpenCharacterPanel.performed += instance.OnOpenCharacterPanel;
+            @OpenCharacterPanel.canceled += instance.OnOpenCharacterPanel;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         private void UnregisterCallbacks(IGamePlayerActions instance)
@@ -1229,6 +1323,12 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
             @OpenShop.started -= instance.OnOpenShop;
             @OpenShop.performed -= instance.OnOpenShop;
             @OpenShop.canceled -= instance.OnOpenShop;
+            @OpenCharacterPanel.started -= instance.OnOpenCharacterPanel;
+            @OpenCharacterPanel.performed -= instance.OnOpenCharacterPanel;
+            @OpenCharacterPanel.canceled -= instance.OnOpenCharacterPanel;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         public void RemoveCallbacks(IGamePlayerActions instance)
@@ -1260,6 +1360,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_RightClick;
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
+    private readonly InputAction m_UI_NextTab;
+    private readonly InputAction m_UI_PreviousTab;
     public struct UIActions
     {
         private @InputAssets m_Wrapper;
@@ -1274,6 +1376,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
         public InputAction @TrackedDevicePosition => m_Wrapper.m_UI_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
+        public InputAction @NextTab => m_Wrapper.m_UI_NextTab;
+        public InputAction @PreviousTab => m_Wrapper.m_UI_PreviousTab;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1313,6 +1417,12 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
             @TrackedDeviceOrientation.started += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled += instance.OnTrackedDeviceOrientation;
+            @NextTab.started += instance.OnNextTab;
+            @NextTab.performed += instance.OnNextTab;
+            @NextTab.canceled += instance.OnNextTab;
+            @PreviousTab.started += instance.OnPreviousTab;
+            @PreviousTab.performed += instance.OnPreviousTab;
+            @PreviousTab.canceled += instance.OnPreviousTab;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1347,6 +1457,12 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
             @TrackedDeviceOrientation.started -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled -= instance.OnTrackedDeviceOrientation;
+            @NextTab.started -= instance.OnNextTab;
+            @NextTab.performed -= instance.OnNextTab;
+            @NextTab.canceled -= instance.OnNextTab;
+            @PreviousTab.started -= instance.OnPreviousTab;
+            @PreviousTab.performed -= instance.OnPreviousTab;
+            @PreviousTab.canceled -= instance.OnPreviousTab;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1504,6 +1620,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnOpenInventory(InputAction.CallbackContext context);
         void OnOpenShop(InputAction.CallbackContext context);
+        void OnOpenCharacterPanel(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
@@ -1517,6 +1635,8 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
+        void OnNextTab(InputAction.CallbackContext context);
+        void OnPreviousTab(InputAction.CallbackContext context);
     }
     public interface IBattleActions
     {
