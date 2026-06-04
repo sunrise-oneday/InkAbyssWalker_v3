@@ -66,21 +66,21 @@ public class RebindActionUI : MonoBehaviour
     /// </summary>
     public void UpdateUI()
     {
-        if (targetAction == null)
-        {
-            InitializeAction();
-        }
+        // 每次都重新查找 action，确保获取最新的绑定覆盖
+        InitializeAction();
 
         if (targetAction != null && bindingText != null)
         {
-            // 新版绑定系统的友好接口，自动抓取格式化好的字符串（如 "Left Shift"、"Space"）
-            string displayString = targetAction.GetBindingDisplayString(bindingIndex);
-            bindingText.text = displayString.ToUpper(); // 转为大写以符合游戏 UI 规范
+            // 使用 InputBinding 路径直接获取显示文本，绕过缓存
+            var binding = targetAction.bindings[bindingIndex];
+            string effectivePath = !string.IsNullOrEmpty(binding.overridePath) ? binding.overridePath : binding.path;
+            string displayString = InputControlPath.ToHumanReadableString(effectivePath, InputControlPath.HumanReadableStringOptions.OmitDevice);
+            bindingText.text = displayString.ToUpper();
         }
 
         if (listeningOverlay != null)
         {
-            listeningOverlay.SetActive(false); // 默认关闭遮罩
+            listeningOverlay.SetActive(false);
         }
     }
 
@@ -102,7 +102,6 @@ public class RebindActionUI : MonoBehaviour
 
         // 3. 启动高精度交互式绑定操作
         rebindOperation = targetAction.PerformInteractiveRebinding(bindingIndex)
-            .WithControlsExcluding("Mouse")               // 排除鼠标（防止滚轮/滑动被当作按键）
             .WithCancelingThrough("<Keyboard>/escape")    // 按下 ESC 可随时退出/取消重绑定
             .OnMatchWaitForAnother(0.1f)                  // 等待 0.1s 防止同一次按压时误判冲突
             .OnComplete(operation => CleanUpRebind(true))

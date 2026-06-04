@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="30.0.4">
+  <diagram name="符文装备流程">
+    <mxGraphModel dx="1422" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 标题 -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size:20px&quot;&gt;符文装备交互流程&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="500" y="10" width="400" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 流程一：装备符文 -->
+        <mxCell id="flow1Title" value="&lt;b&gt;流程一：装备符文&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#4488FF;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s1" value="空闲状态" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="60" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="点击符文槽&#xa;槽位蓝色高亮" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="250" y="110" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="点击背包物品&#xa;显示详情+装备按钮" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="470" y="110" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" value="点击 [装备]&#xa;TryEquipFromBag()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="720" y="110" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s5" value="装备完成&#xa;槽位显示图标&#xa;属性面板刷新" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="970" y="100" width="150" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s1" target="s2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s2" target="s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e34" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s3" target="s4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e45" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s4" target="s5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="label1" value="选中槽位" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="85" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="label2" value="选中物品" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="530" y="85" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="label3" value="确认" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="790" y="85" width="50" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 流程二：卸下符文 -->
+        <mxCell id="flow2Title" value="&lt;b&gt;流程二：卸下符文&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#b85450;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="250" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u1" value="点击已装备槽位&#xa;显示符文详情" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="300" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="u2" value="点击 [卸下]&#xa;TryUnequip()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="300" y="300" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="u3" value="卸下完成&#xa;符文返回背包&#xa;槽位清空" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="540" y="300" width="150" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eu12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="u1" target="u2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eu23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="u2" target="u3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 流程三：使用消耗品 -->
+        <mxCell id="flow3Title" value="&lt;b&gt;流程三：使用消耗品&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#82b366;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="430" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c1" value="点击背包消耗品&#xa;显示药水详情" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="480" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="点击 [使用]&#xa;TryConsumeAt()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="310" y="480" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="执行即时效果&#xa;HP/MP/护盾恢复&#xa;数量 -1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="550" y="480" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ec12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c1" target="c2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c2" target="c3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 状态说明 -->
+        <mxCell id="legend" value="&lt;div style=&quot;text-align:left;font-size:12px;line-height:1.8&quot;&gt;&lt;span style=&quot;background:#d5e8d4;padding:2px 8px;border:1px solid #82b366&quot;&gt;绿色&lt;/span&gt; = 成功/完成状态&lt;br&gt;&lt;span style=&quot;background:#dae8fc;padding:2px 8px;border:1px solid #6c8ebf&quot;&gt;蓝色&lt;/span&gt; = 用户操作&lt;br&gt;&lt;span style=&quot;background:#fff2cc;padding:2px 8px;border:1px solid #d6b656&quot;&gt;黄色&lt;/span&gt; = 系统调用&lt;br&gt;&lt;span style=&quot;background:#f8cecc;padding:2px 8px;border:1px solid #b85450&quot;&gt;红色&lt;/span&gt; = 卸下操作&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#333366;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="320" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

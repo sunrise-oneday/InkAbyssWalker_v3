@@ -75,26 +75,26 @@ public class CharacterStats : MonoBehaviour
 
     /// <summary>
     /// 带护盾的伤害计算（护盾优先抵挡伤害）
+    /// 简化版：技能打多少就多少，只有 Buff 才会修改伤害（参考杀戮尖塔）
     /// </summary>
     public int TakeDamageWithShield(int rawDamage, int breakDamage)
     {
-        // 1. 调用所有活跃 Buff 的伤害拦截器
+        // 1. 调用所有活跃 Buff 的伤害拦截器（易伤、破甲等）
         int processedDamage = rawDamage;
         for (int i = activeBuffs.Count - 1; i >= 0; i--)
         {
             processedDamage = activeBuffs[i].OnBeforeTakeDamage(processedDamage);
         }
 
-        float finalMultiplier = isBroken ? breakDamageMultiplier : 1.0f;
-        int damageAfterDefense = Mathf.Max(Mathf.RoundToInt((processedDamage - defense) * finalMultiplier), 1);
+        // 简化：不再减防御、不乘破防倍率，技能打多少就多少
+        int finalDamage = Mathf.Max(processedDamage, 0);
 
         // 2. 护盾优先抵挡伤害
-        int damageToShield = Mathf.Min(damageAfterDefense, shield);
+        int damageToShield = Mathf.Min(finalDamage, shield);
         shield -= damageToShield;
-        int remainingDamage = damageAfterDefense - damageToShield;
+        int remainingDamage = finalDamage - damageToShield;
 
         // 3. 剩余伤害扣血
-        int finalDamage = remainingDamage;
         if (remainingDamage > 0)
         {
             currentHP = Mathf.Max(currentHP - remainingDamage, 0);
@@ -124,7 +124,7 @@ public class CharacterStats : MonoBehaviour
             }
         }
 
-        return finalDamage;
+        return remainingDamage;
     }
 
     /// <summary>
@@ -138,18 +138,21 @@ public class CharacterStats : MonoBehaviour
         OnHPChanged?.Invoke();
     }
 
-    /// <summary>返回本次实际扣血 finalDamage（供装备吸血等）。</summary>
+    /// <summary>
+    /// 返回本次实际扣血 finalDamage（供装备吸血等）。
+    /// 简化版：技能打多少就多少，只有 Buff 才会修改伤害（参考杀戮尖塔）
+    /// </summary>
     public int TakeDamage(int rawDamage, int breakDamage)
     {
-        // 1. 调用所有活跃 Buff 的伤害拦截器 [1, 5]
+        // 1. 调用所有活跃 Buff 的伤害拦截器（易伤、破甲等）
         int processedDamage = rawDamage;
         for (int i = activeBuffs.Count - 1; i >= 0; i--)
         {
             processedDamage = activeBuffs[i].OnBeforeTakeDamage(processedDamage);
         }
 
-        float finalMultiplier = isBroken ? breakDamageMultiplier : 1.0f;
-        int finalDamage = Mathf.Max(Mathf.RoundToInt((processedDamage - defense) * finalMultiplier), 1);
+        // 简化：不再减防御、不乘破防倍率，技能打多少就多少
+        int finalDamage = Mathf.Max(processedDamage, 0);
         currentHP = Mathf.Max(currentHP - finalDamage, 0);
 
         OnHPChanged?.Invoke();
@@ -293,38 +296,56 @@ public class CharacterStats : MonoBehaviour
     }
 
     /// <summary>
-    /// 反应结算器：层数越高，威力越强！ [3]
+    /// 反应结算器：参考明日方舟终末地，消耗附着层数触发效果，恢复终结技能量
+    /// 注意：只有元素反应才回复终结技能量，普通技能不回复
     /// </summary>
     private void TriggerReaction(Buff activeBuff, ElementType incomingElement)
     {
         ElementType activeElement = activeBuff.element;
-        int stacks = activeBuff.stacks; // 提取被引爆状态的当前叠层数！
+        int stacks = activeBuff.stacks; // 提取被引爆状态的当前叠层数
 
-        // 反应：火 + 冰 = 融化
-        if ((activeElement == ElementType.Fire && incomingElement == ElementType.Ice) ||
-            (activeElement == ElementType.Ice && incomingElement == ElementType.Fire))
+        // 火 + 水 = 燃烧（消耗火附着，造成持续伤害）
+        if (activeElement == ElementType.Fire && incomingElement == ElementType.Water)
         {
-            // ========================================================
-            // 核心修改（数值跃升）：反应伤害与破防值，直接乘以被引爆的元素层数！
-            // 层数越高，反应威力越恐怖！ (1层=30破防, 3层=90破防直接干碎！) [5, 6]
-            // ========================================================
-            int finalBreakDamage = 30 * stacks;
-            int rawDamage = 15 * stacks;
-
-            Debug.Log($"<color=orange>★★ [元素反应：融化！] 叠层 x{stacks} 爆发！对 {gameObject.name} 造成 {rawDamage} 伤害和 {finalBreakDamage} 破防！ ★★</color>");
-            TakeDamage(rawDamage, finalBreakDamage);
-
-            // 附带的易伤倍率也随层数递增 [1, 5]
-            AddBuff(new VulnerabilityBuff(2, 1.2f + (0.1f * stacks)));
+            int burnDamage = 8 * stacks;
+            AddBuff(new BurnBuff(3, stacks));
+            BattleResourceManager.Instance?.ChargeUltimate(15);
+            Debug.Log($"<color=orange>★★ [元素反应：燃烧！] {stacks}层火附着被消耗，造成燃烧效果，每回合{burnDamage}伤害，终结技能量+15 ★★</color>");
         }
-
-        // 反应：水 + 火 = 蒸发
-        if ((activeElement == ElementType.Water && incomingElement == ElementType.Fire) ||
-            (activeElement == ElementType.Fire && incomingElement == ElementType.Water))
+        // 火 + 冰 = 融化（消耗火附着，爆发伤害）
+        else if (activeElement == ElementType.Fire && incomingElement == ElementType.Ice)
         {
-            int rawDamage = 40 * stacks;
-            Debug.Log($"<color=blue>★★ [元素反应：蒸发！] 叠层 x{stacks} 爆发！对 {gameObject.name} 造成 {rawDamage} 点无视防御伤害！ ★★</color>");
-            TakeDamage(rawDamage, 5);
+            int meltDamage = 12 * stacks;
+            TakeDamage(meltDamage, 20);
+            // 移除 VulnerabilityBuff，融化只造成爆发伤害
+            BattleResourceManager.Instance?.ChargeUltimate(20);
+            Debug.Log($"<color=orange>★★ [元素反应：融化！] {stacks}层火附着被消耗，{meltDamage}爆发伤害，终结技能量+20 ★★</color>");
+        }
+        // 冰 + 水 = 冻结（消耗冰附着，眩晕 + 伤害）
+        else if (activeElement == ElementType.Ice && incomingElement == ElementType.Water)
+        {
+            int freezeDamage = 5 * stacks;
+            AddBuff(new FreezeBuff(1, stacks));
+            TakeDamage(freezeDamage, 10);
+            BattleResourceManager.Instance?.ChargeUltimate(15);
+            Debug.Log($"<color=cyan>★★ [元素反应：冻结！] {stacks}层冰附着被消耗，眩晕1回合，{freezeDamage}伤害，终结技能量+15 ★★</color>");
+        }
+        // 水 + 火 = 蒸发（消耗水附着，爆发伤害）
+        else if (activeElement == ElementType.Water && incomingElement == ElementType.Fire)
+        {
+            int vaporizeDamage = 15 * stacks;
+            TakeDamage(vaporizeDamage, 15);
+            BattleResourceManager.Instance?.ChargeUltimate(25);
+            Debug.Log($"<color=blue>★★ [元素反应：蒸发！] {stacks}层水附着被消耗，{vaporizeDamage}爆发伤害，终结技能量+25 ★★</color>");
+        }
+        // 冰 + 火 = 融化（反向触发）
+        else if (activeElement == ElementType.Ice && incomingElement == ElementType.Fire)
+        {
+            int meltDamage = 12 * stacks;
+            TakeDamage(meltDamage, 20);
+            // 移除 VulnerabilityBuff，融化只造成爆发伤害
+            BattleResourceManager.Instance?.ChargeUltimate(20);
+            Debug.Log($"<color=orange>★★ [元素反应：融化！] {stacks}层冰附着被消耗，{meltDamage}爆发伤害，终结技能量+20 ★★</color>");
         }
     }
 

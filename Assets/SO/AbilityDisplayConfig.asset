@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 919e983f0036b604e8a4b46b72365fc5, type: 3}
+  m_Name: AbilityDisplayConfig
+  m_EditorClassIdentifier: 
+  entries:
+  - ability: 0
+    displayName: "\u57FA\u7840\u8DF3\u8DC3"
+    description: "\u6309\u4E0B\u7A7A\u683C\u952E\u8FDB\u884C\u8DF3\u8DC3"
+    icon: {fileID: 21300000, guid: 70ed08053d82e8b4880ca12dfc9f5f5f, type: 3}
+  - ability: 1
+    displayName: "\u51B2\u523A\u95EA\u907F"
+    description: "\u6309\u4E0BShift\u952E\u8FDB\u884C\u77ED\u8DDD\u79BB\u51B2\u523A\u95EA\u907F"
+    icon: {fileID: 21300000, guid: 7ab2866b2faa07d4aa6b08dc3caab66e, type: 3}
+  - ability: 2
+    displayName: "\u8FD1\u6218\u653B\u51FB"
+    description: "\u6309\u4E0B\u9F20\u6807\u5DE6\u952E\u8FDB\u884C\u8FD1\u6218\u8FDE\u51FB"
+    icon: {fileID: 21300000, guid: 2151d7236b1f1214e8e37bda2c68ea3c, type: 3}
+  - ability: 3
+    displayName: "\u4E8C\u6BB5\u8DF3"
+    description: "\u5728\u7A7A\u4E2D\u518D\u6B21\u6309\u4E0B\u7A7A\u683C\u8FDB\u884C\u7B2C\u4E8C\u6B21\u8DF3\u8DC3"
+    icon: {fileID: 21300000, guid: 9bce5a71170441249941b906ab319bf1, type: 3}
+  - ability: 3
+    displayName: "\u8FDC\u7A0B\u653B\u51FB"
+    description: "\u6309\u4E0B\u9F20\u6807\u53F3\u952E\u8FDB\u884C\u8FDC\u7A0B\u5C04\u51FB"
+    icon: {fileID: 21300000, guid: 548ff68e1bd34824f8dfbf6a69842d4d, type: 3}
+  - ability: 5
+    displayName: "\u6500\u5899\u8DF3"
+    description: "\u8D34\u5899\u65F6\u6309\u4E0B\u7A7A\u683C\u8FDB\u884C\u5899\u9762\u8DF3\u8DC3"
+    icon: {fileID: 21300000, guid: 700d3a1d962f24349a65fcef3af85a9a, type: 3}

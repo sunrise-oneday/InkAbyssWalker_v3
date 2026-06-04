@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded3b494b2aab0c4a94d07dbc46bad67, type: 3}
+  m_Name: "cons_mp_potion_l_\u6CD5\u529B\u79D8\u836F"
+  m_EditorClassIdentifier: 
+  idSuffix: mp_potion_l
+  id: cons_mp_potion_l
+  Name: "\u6CD5\u529B\u79D8\u836F"
+  description: "\u6062\u590D40MP"
+  icon: {fileID: 0}
+  rarity: 1
+  basePrice: 60
+  currencyId: 0
+  canSell: 1
+  maxStack: 20
+  shopTag: 2
+  useEffects:
+  - {fileID: 11400000, guid: 8bcc5af276db7344a98cf5c8b75c8739, type: 2}
+  consumeOnUse: 1
+  useContext: 2

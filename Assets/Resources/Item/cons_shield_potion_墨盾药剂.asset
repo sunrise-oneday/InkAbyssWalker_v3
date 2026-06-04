@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded3b494b2aab0c4a94d07dbc46bad67, type: 3}
+  m_Name: "cons_shield_potion_\u58A8\u76FE\u836F\u5242"
+  m_EditorClassIdentifier: 
+  idSuffix: shield_potion
+  id: cons_shield_potion
+  Name: "\u58A8\u76FE\u836F\u5242"
+  description: "\u83B7\u5F9725\u62A4\u76FE\uFF0C\u6301\u7EED\u6574\u573A\u6218\u6597"
+  icon: {fileID: 0}
+  rarity: 1
+  basePrice: 70
+  currencyId: 0
+  canSell: 1
+  maxStack: 20
+  shopTag: 32
+  useEffects:
+  - {fileID: 11400000, guid: 73c59a44b30e64547bc1860971a8c9c7, type: 2}
+  consumeOnUse: 1
+  useContext: 2

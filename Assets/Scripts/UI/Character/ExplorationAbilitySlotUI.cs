@@ -124,15 +124,15 @@ public class ExplorationAbilitySlotUI : MonoBehaviour
     /// </summary>
     private void ApplyVisual()
     {
-        if (emptyFrame != null)
-        {
-            if (isSelected)
-                emptyFrame.color = selectedColor;
-            else if (isUnlocked)
-                emptyFrame.color = unlockedFrameColor;
-            else
-                emptyFrame.color = lockedFrameColor;
-        }
+        //if (emptyFrame != null)
+        //{
+        //    if (isSelected)
+        //        emptyFrame.color = selectedColor;
+        //    else if (isUnlocked)
+        //        emptyFrame.color = unlockedFrameColor;
+        //    else
+        //        emptyFrame.color = lockedFrameColor;
+        //}
 
         if (selectedHighlight != null)
             selectedHighlight.SetActive(isSelected);

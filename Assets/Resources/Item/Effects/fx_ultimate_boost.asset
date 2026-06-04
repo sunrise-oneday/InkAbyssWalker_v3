@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfe306f4314177647b31c7b89032e79c, type: 3}
+  m_Name: fx_ultimate_boost
+  m_EditorClassIdentifier: 
+  effectId: ultimate_boost
+  effectTag: 
+  displayNameKey: "\u4E07\u5251\u7B26\u6587"
+  descriptionKey: "\u5927\u62DB\u4F24+25%"
+  targetSkillId: 
+  lifestealPercent: 0
+  critRateBonus: 0
+  critDamageBonus: 0
+  damageReductionPercent: 0
+  fireDamageBonusPercent: 0
+  iceDamageBonusPercent: 0
+  waterDamageBonusPercent: 0
+  instantHealHp: 0
+  instantHealMp: 0
+  instantShield: 0
+  instantUltCharge: 0
+  tempAttackBonus: 0
+  tempDefenseBonus: 0
+  tempBuffDuration: 0
+  ultimateDamageBonusPercent: 0.25
+  shieldBonusPercent: 0

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 虚弱Debuff - 降低目标攻击力
+/// 虚弱Debuff - 降低角色出战伤害（通过拦截器链，不直接修改属性）
 /// </summary>
 public class WeakenBuff : Buff
 {
@@ -17,21 +17,11 @@ public class WeakenBuff : Buff
         icon = Resources.Load<Sprite>("UI/Buffs/Icon_Weaken");
     }
 
-    public override void OnApply()
+    /// <summary>
+    /// 出战伤害拦截器：降低角色对外造成的伤害
+    /// </summary>
+    public override int OnBeforeDealDamage(int rawDamage)
     {
-        if (owner != null)
-        {
-            owner.attack = Mathf.Max(owner.attack - attackReduction, 0);
-            Debug.Log($"[虚弱] {owner.gameObject.name} 攻击力降低 {attackReduction}，当前攻击: {owner.attack}");
-        }
-    }
-
-    public override void OnRemove()
-    {
-        if (owner != null)
-        {
-            owner.attack += attackReduction;
-            Debug.Log($"[虚弱] {owner.gameObject.name} 攻击力恢复 {attackReduction}，当前攻击: {owner.attack}");
-        }
+        return Mathf.Max(rawDamage - attackReduction, 0);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using StoreAndInventory;
 
 /// <summary>
 /// 操作按钮面板：技能按钮、形态切换按钮、结束回合按钮
@@ -14,6 +15,10 @@ public class BattleActionPanel : BasePanel
     [SerializeField] private Button endTurnButton;
     [SerializeField] private List<Button> skillButtons;
     [SerializeField] private List<Button> formButtons;
+
+    [Header("技能图标")]
+    [SerializeField] private List<Image> skillIcons;           // 4 个技能图标 Image
+    [SerializeField] private Sprite[] skillSprites;            // 12 个技能图标（按 SkillRuneSlotConfig 顺序）
 
     private PlayerBattleEntity mainPlayer;
 
@@ -56,6 +61,8 @@ public class BattleActionPanel : BasePanel
         if (mainPlayer == null) return;
         var forms = mainPlayer.availableForms;
 
+        Debug.Log($"[BattleActionPanel] SetupFormButtons: 形态数量={forms?.Count ?? 0}");
+
         for (int i = 0; i < formButtons.Count; i++)
         {
             Button btn = formButtons[i];
@@ -73,8 +80,14 @@ public class BattleActionPanel : BasePanel
 
                 var trigger = btn.GetComponent<UITooltipTrigger>();
                 if (trigger == null) trigger = btn.gameObject.AddComponent<UITooltipTrigger>();
+                // 使用形态的描述，如果没有则使用默认描述
+                string formDesc = !string.IsNullOrEmpty(form.description)
+                    ? form.description
+                    : "切换为该形态后，将全自动刷新匹配该形态的技能控件。";
                 trigger.SetTooltipData(form.formName, $"消耗: {form.apCostToSwitch} AP",
-                    "切换为该形态后，将全自动刷新匹配该形态的技能控件。", 0, form.apCostToSwitch);
+                    formDesc, 0, form.apCostToSwitch);
+
+                Debug.Log($"[BattleActionPanel] 形态按钮 {i}: {form.formName}, 描述长度={formDesc.Length}");
 
                 int index = i;
                 btn.onClick.RemoveAllListeners();
@@ -98,6 +111,8 @@ public class BattleActionPanel : BasePanel
 
         var activeSkills = mainPlayer.CurrentForm.availableSkills;
 
+        Debug.Log($"[BattleActionPanel] SetupSkillButtons: 当前形态={mainPlayer.CurrentForm.formName}, 技能数量={activeSkills?.Count ?? 0}");
+
         for (int i = 0; i < skillButtons.Count; i++)
         {
             Button btn = skillButtons[i];
@@ -113,10 +128,35 @@ public class BattleActionPanel : BasePanel
                 if (btnText != null)
                     btnText.text = $"{skill.skillName}\n({skill.mpCost} MP / {skill.breakDamage} 削韧)";
 
+                // 设置技能图标
+                if (skillIcons != null && i < skillIcons.Count && skillIcons[i] != null)
+                {
+                    var sprite = GetSkillSprite(skill.skillName);
+                    skillIcons[i].sprite = sprite;
+                    skillIcons[i].enabled = sprite != null;
+                }
+
                 var trigger = btn.GetComponent<UITooltipTrigger>();
                 if (trigger == null) trigger = btn.gameObject.AddComponent<UITooltipTrigger>();
-                trigger.SetSkillData(skill.skillName, $"消耗: {skill.mpCost} MP",
-                    $"{skill.baseDamage}点伤害，削韧 {skill.breakDamage}", skill, skill.mpCost, 0);
+                // 使用技能的描述，如果没有则使用默认描述
+                string skillDesc = !string.IsNullOrEmpty(skill.description)
+                    ? skill.description
+                    : $"{skill.baseDamage}点伤害，削韧 {skill.breakDamage}";
+
+                // 护盾技能使用 SetBlockData 显示护盾预览
+                int shieldValue = GetSkillShieldValue(skill.skillName);
+                if (shieldValue > 0)
+                {
+                    trigger.SetBlockData(skill.skillName, $"消耗: {skill.mpCost} MP",
+                        $"获得 {shieldValue} 护盾", shieldValue, skill.mpCost, 0);
+                }
+                else
+                {
+                    trigger.SetSkillData(skill.skillName, $"消耗: {skill.mpCost} MP",
+                        skillDesc, skill, skill.mpCost, 0, skill.skillName);
+                }
+
+                Debug.Log($"[BattleActionPanel] 技能按钮 {i}: {skill.skillName}, 描述长度={skillDesc.Length}");
 
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(() =>
@@ -137,7 +177,35 @@ public class BattleActionPanel : BasePanel
             else
             {
                 btn.gameObject.SetActive(false);
+                // 隐藏对应的图标
+                if (skillIcons != null && i < skillIcons.Count && skillIcons[i] != null)
+                    skillIcons[i].enabled = false;
             }
         }
+    }
+
+    /// <summary>根据技能名称获取护盾值（无护盾返回 0）。</summary>
+    private int GetSkillShieldValue(string skillName)
+    {
+        return skillName switch
+        {
+            "墨壁" => 15,
+            "墨甲" => 10,
+            _ => 0
+        };
+    }
+
+    /// <summary>根据技能名称获取对应的图标。</summary>
+    private Sprite GetSkillSprite(string skillName)
+    {
+        if (string.IsNullOrEmpty(skillName) || skillSprites == null) return null;
+
+        var allSlotIds = SkillRuneSlotConfig.AllSlotIds;
+        for (var i = 0; i < allSlotIds.Length; i++)
+        {
+            if (allSlotIds[i] == skillName && i < skillSprites.Length)
+                return skillSprites[i];
+        }
+        return null;
     }
 }

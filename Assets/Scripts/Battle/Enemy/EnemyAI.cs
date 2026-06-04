@@ -215,13 +215,42 @@ namespace Battle.Enemy
             heal.healthWeightModifier = 3f;
             actions.Add(heal);
 
-            // 默认Debuff行动
-            var debuffs = new EnemyDebuffConfig[]
+            // 默认Debuff行动 —— 多种负面效果随机触发
+
+            // 虚弱：降低攻击力
+            var weaken = EnemyAction.CreateDebuff("虚弱打击", new EnemyDebuffConfig[]
             {
                 new EnemyDebuffConfig { buffTypeName = "WeakenBuff", duration = 2, value = 3 }
-            };
-            var debuff = EnemyAction.CreateDebuff("虚弱打击", debuffs, debuffIcon, 2f);
-            actions.Add(debuff);
+            }, debuffIcon, 2f);
+            actions.Add(weaken);
+
+            // 脆弱：降低护盾获取量
+            var frail = EnemyAction.CreateDebuff("脆弱打击", new EnemyDebuffConfig[]
+            {
+                new EnemyDebuffConfig { buffTypeName = "FrailBuff", duration = 2, value = 25 }
+            }, debuffIcon, 2f);
+            actions.Add(frail);
+
+            // 中毒：每回合递增伤害
+            var poison = EnemyAction.CreateDebuff("剧毒之触", new EnemyDebuffConfig[]
+            {
+                new EnemyDebuffConfig { buffTypeName = "PoisonBuff", duration = 3, value = 5 }
+            }, debuffIcon, 2f);
+            actions.Add(poison);
+
+            // 诅咒：每回合固定伤害
+            var curse = EnemyAction.CreateDebuff("暗影诅咒", new EnemyDebuffConfig[]
+            {
+                new EnemyDebuffConfig { buffTypeName = "CurseBuff", duration = 3, value = 6 }
+            }, debuffIcon, 2f);
+            actions.Add(curse);
+
+            // 灼烧：火元素附着（可与冰触发融化反应）
+            var fireAura = EnemyAction.CreateDebuff("烈焰吐息", new EnemyDebuffConfig[]
+            {
+                new EnemyDebuffConfig { buffTypeName = "FireAuraBuff", duration = 3, value = 0 }
+            }, debuffIcon, 1.5f);
+            actions.Add(fireAura);
 
             possibleActions = actions.ToArray();
             Debug.Log($"[EnemyAI] 自动初始化了 {actions.Count} 个默认行动");

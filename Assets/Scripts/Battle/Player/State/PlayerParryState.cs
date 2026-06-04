@@ -8,6 +8,8 @@ public class PlayerParryState : PlayerBattleState
     // 彻底废弃原本写死单动作的写法，改为在 Enter() 中根据形态动态交叉淡入！
     protected override int AnimHash => 0;
 
+    private bool hasPlayedParryAnim; // 防止每帧重复触发举盾动画
+
     public override void Enter()
     {
         base.Enter(); // 自动调用 BaseState 的进入逻辑（因为上方的 AnimHash 为 0，所以不会自动播动画）
@@ -16,19 +18,20 @@ public class PlayerParryState : PlayerBattleState
         owner.UseParryInput();
         owner.UseDodgeInput();
         owner.SetHorizontalVelocity(0f);
+        hasPlayedParryAnim = false;
 
         // ========================================================
         // 核心新增（动作分流）：根据玩家当前的形态，自动切换不同的防守准备姿势！
         // ========================================================
         if (owner.currentFormIndex == 2)
         {
-            // 如果是格挡形态 (2)，播放威严的举盾防守待机动作
-            owner.anim.CrossFade(Animator.StringToHash("Player_Parry_Loop"), 0.1f);
-            Debug.Log("[招架时机] 玩家处于【格挡形态】，已架起重盾！请在被劈中前按下【空格键】格挡！");
+            // 格挡形态：先进战斗待机，等待玩家按下 E 键后才切换到举盾动画
+            owner.anim.CrossFade(Animator.StringToHash("Player_BattleIdle"), 0.1f);
+            Debug.Log("[招架时机] 玩家处于【格挡形态】，请在被劈中前按下【E 键】格挡！");
         }
         else if (owner.currentFormIndex == 1)
         {
-            // 如果是闪避形态 (1)，播放轻盈的侧身闪步准备动作
+            // 闪避形态：播放轻盈的侧身闪步准备动作
             owner.anim.CrossFade(Animator.StringToHash("Player_Dodge_Prep"), 0.1f);
             Debug.Log("[招架时机] 玩家处于【闪避形态】，已屈膝准备！请在被劈中前按下【左 Shift 键】闪避！");
         }
@@ -52,20 +55,30 @@ public class PlayerParryState : PlayerBattleState
             {
                 // 如果当前不是闪避形态，直接清空输入并拦截（防止将输入残留带到下一帧）
                 owner.UseDodgeInput();
-                Debug.LogWarning("[防守限制] 当前处于非【闪避形态】下，无法使用闪避按键！");
+                Debug.LogWarning($"<color=orange>[按键拦截] 当前处于【格挡形态】，左Shift闪避无效！请按【E 键】格挡！</color>");
             }
         }
 
         // ========================================================
-        // 核心新增 2：招架按键防御性清空（只允许【格挡形态 2】进行招架） [2]
-        // 由于招架是动画事件触发的，如果玩家在非格挡形态下按了空格，我们需要在 Update 中将其清空，防止残留到落地
+        // 核心新增 2：格挡按键处理 [2]
+        // 格挡形态下按 E → 播放举盾动画；非格挡形态下按 E → 丢弃输入
         // ========================================================
         if (owner.ParryInputBuffered)
         {
-            if (owner.currentFormIndex != 2)
+            if (owner.currentFormIndex == 2)
             {
-                owner.UseParryInput(); // 强行丢弃非格挡形态下的空格输入
-                Debug.LogWarning("[防守限制] 当前处于非【格挡形态】下，无法使用招架按键！");
+                // 格挡形态：首次检测到 E 键按下时切换到举盾动画
+                if (!hasPlayedParryAnim)
+                {
+                    owner.anim.CrossFade(Animator.StringToHash("Player_Parry_Loop"), 0.1f);
+                    hasPlayedParryAnim = true;
+                    Debug.Log("[招架时机] 检测到格挡按键，举起重盾！");
+                }
+            }
+            else
+            {
+                owner.UseParryInput(); // 强行丢弃非格挡形态下的 E 键输入
+                Debug.LogWarning($"<color=orange>[按键拦截] 当前处于【闪避形态】，E 键格挡无效！请按【左Shift键】闪避！</color>");
             }
         }
 

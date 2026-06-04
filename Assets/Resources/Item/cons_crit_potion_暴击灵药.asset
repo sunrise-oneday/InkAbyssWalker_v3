@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded3b494b2aab0c4a94d07dbc46bad67, type: 3}
+  m_Name: "cons_crit_potion_\u66B4\u51FB\u7075\u836F"
+  m_EditorClassIdentifier: 
+  idSuffix: crit_potion
+  id: cons_crit_potion
+  Name: "\u66B4\u51FB\u7075\u836F"
+  description: "\u672C\u573A\u6218\u6597\u66B4\u51FB\u7387+15%"
+  icon: {fileID: 0}
+  rarity: 2
+  basePrice: 80
+  currencyId: 0
+  canSell: 1
+  maxStack: 20
+  shopTag: 16
+  useEffects:
+  - {fileID: 11400000, guid: b7a05838c8c8ead4493d0734ff9cfef3, type: 2}
+  consumeOnUse: 1
+  useContext: 1
