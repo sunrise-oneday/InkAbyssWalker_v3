@@ -10208,7 +10208,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!95 &998474207
 Animator:
   serializedVersion: 5
@@ -10271,12 +10271,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2009195212, guid: 9d33a9bb06e67a744aa8858025596f9e, type: 3}
+  m_Sprite: {fileID: 701546743, guid: ebe4b627757d4af4abdd1b3f0218cc1e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.64, y: 7.2}
+  m_Size: {x: 1.9393939, y: 6.5454545}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -10291,7 +10291,7 @@ Transform:
   m_GameObject: {fileID: 998474206}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -2.6, y: 0.16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16844,7 +16844,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1624423720, guid: cbf849370d3a3bb459ee98f182f4e641, type: 3}
+  m_Sprite: {fileID: -1858759446, guid: dbff40337b1eb0e48a304f8f69af16d9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -16908,16 +16908,16 @@ MonoBehaviour:
   CanFlip: 1
   MoveSpeed: 5
   jumpForce: 10
-  dashSpeed: 16
-  dashDuration: 0.18
+  dashSpeed: 12
+  dashDuration: 0.25
   DashCooldown: 1
-  MaxComboCount: 1
+  MaxComboCount: 2
   ComboWindowTime: 1
   CurrentComboIndex: 0
   LastAttackTime: 0
   AttackDurations:
-  - 1.125
-  - 0.8
+  - 1
+  - 1
   - 1.167
   overworldAttackHitTime: 0.8
   overworldAttackRange: 1.2
@@ -16986,8 +16986,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.012861848, y: 0}
-  m_Size: {x: 0.7597213, y: 2.0625}
+  m_Offset: {x: -0.012861848, y: -0.0733906}
+  m_Size: {x: 0.7597213, y: 2.2092812}
   m_Direction: 0
 --- !u!114 &1781732342
 MonoBehaviour:
@@ -17160,7 +17160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 686ea8b9e6b432c41b4dcd7b1d061348, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
+  maxHP: 10
   currentHP: 0
   maxMP: 100
   currentMP: 0
@@ -20980,7 +20980,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
@@ -21049,9 +21049,9 @@ SceneRoots:
   - {fileID: 1170614629}
   - {fileID: 1062184089}
   - {fileID: 1050511051}
-  - {fileID: 998474209}
   - {fileID: 1848642191}
   - {fileID: 54417789}
   - {fileID: 881041496}
   - {fileID: 798861427}
   - {fileID: 829463630}
+  - {fileID: 998474209}
