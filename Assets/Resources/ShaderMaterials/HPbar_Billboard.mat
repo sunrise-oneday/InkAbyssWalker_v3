@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: HPbar_Billboard
+  m_Shader: {fileID: 4800000, guid: bdf8c5d7e736f1b4e9f9d9a3e6f64548, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BorderTex:
+        m_Texture: {fileID: 2800000, guid: 757407d742ad78441aea5e8961793beb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HPNoiseTex:
+        m_Texture: {fileID: 2800000, guid: 0fd912086edd15942b9d78fc8944bc3f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _CurrentHP: 1
+    - _DelayHP: 1
+    - _FlashSpeed: 5
+    - _HighlightPower: 10
+    - _HighlightWidth: 0.1
+    - _NoiseIntensity: 0.76
+    - _VerticalBillboarding: 1
+    m_Colors:
+    - _CurrentHPColor: {r: 1, g: 0, b: 0, a: 1}
+    - _DelayColor: {r: 1, g: 1, b: 0, a: 1}
+    - _FillRangeX: {r: 0.1, g: 0.89, b: 0, a: 0}
+    - _FillRangeY: {r: 0.36, g: 0.67, b: 0, a: 0}
+    - _HighlightColor: {r: 1.5, g: 1.5, b: 1.5, a: 1}
+  m_BuildTextureStacks: []

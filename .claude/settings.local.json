@@ -1,3 +1,10 @@
 {
-  "model": "opencode-openai/deepseek-v4-pro"
+  "permissions": {
+    "allow": [
+      "PowerShell(Copy-Item:*)",
+      "PowerShell(New-Item:*)",
+      "Bash(git clone:*)"
+    ]
+  },
+  "model": "opencode-openai/deepseek-v4-flash"
 }

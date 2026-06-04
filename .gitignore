@@ -40,3 +40,10 @@ Desktop.ini
 *.dll
 *.pdb
 *.mdb
+
+# ---- 私有本地配置 ----
+.claude/
+
+# ---- Locus 插件 ----
+Locus/
+Packages/com.farlocus.locus/
