@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PlayerHPbar
+  m_Shader: {fileID: 4800000, guid: bdf8c5d7e736f1b4e9f9d9a3e6f64548, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BorderTex:
+        m_Texture: {fileID: 2800000, guid: cde20d92c5bc8d64bbc5318a41aec6c2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HPNoiseTex:
+        m_Texture: {fileID: 2800000, guid: 0fd912086edd15942b9d78fc8944bc3f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _CurrentHP: 0.7
+    - _DelayHP: 0.65
+    - _EnableExternalAlpha: 0
+    - _FlashSpeed: 5
+    - _HighlightPower: 3
+    - _HighlightWidth: 0.02
+    - _NoiseIntensity: 0.74
+    - _VerticalBillboarding: 1
+    - _WobbleDensity: 3.14
+    - _WobbleSpeed: 4
+    - _WobbleStrength: 0.009
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CurrentHPColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DelayColor: {r: 1, g: 1, b: 0, a: 1}
+    - _FillRangeX: {r: 0.1, g: 0.85, b: 0, a: 0}
+    - _FillRangeY: {r: 0.49, g: 0.55, b: 0, a: 0}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _HighlightColor: {r: 2.0026178, g: 2.0026178, b: 2.0026178, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []

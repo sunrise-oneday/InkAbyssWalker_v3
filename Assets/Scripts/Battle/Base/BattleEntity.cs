@@ -6,11 +6,14 @@ public abstract class BattleEntity : EntityBase
 {
     public CharacterStats Stats { get; private set; }
 
+    private ShaderEffectController _effectController;
+
     protected override void Awake()
     {
         base.Awake();
 
         Stats = GetComponent<CharacterStats>();
+        _effectController = sprite?.GetComponent<ShaderEffectController>();
     }
 
     public virtual int ReceiveAttack(int damage, int breakDamage)
@@ -18,13 +21,12 @@ public abstract class BattleEntity : EntityBase
         int finalDamage = Stats.TakeDamage(damage, breakDamage);
         if (Stats.currentHP <= 0)
         {
-            Die();
+            // å…ˆæ’­æ­»äº¡è§†è§‰åºåˆ—ï¼ˆé—ª + æ¶ˆèï¼‰ï¼Œæ¶ˆèç»“æŸåå†æ‰§è¡Œ Die()
+            PlayDeathFlashThenDie();
         }
         else
         {
-            // ========================================================
-            // ºËĞÄÖØ¹¹£ºÖ»ÒªÊÜÉËÇÒÎ´Õ½°Ü£¬È«×Ô¶¯¡¢ÎŞ·ì²¥·Å¡¾ÉÁºì + ¾Ö²¿ÊÜ»÷¶¶¶¯¡¿·´À¡£¡ [2, 5]
-            // ========================================================
+            // åªè¦å°šæœªæˆ˜æ­»ï¼Œå…¨è‡ªåŠ¨æ— ç¼æ’­æ”¾ æŠ–åŠ¨ + çº¢é—ª [2, 5]
             PlayHitFeedback();
         }
 
@@ -32,22 +34,57 @@ public abstract class BattleEntity : EntityBase
     }
 
     /// <summary>
-    /// ²¥·ÅÍ¨ÓÃµÄÊÜ»÷·´À¡±íÏÖ [2]
+    /// é€šç”¨çš„å—å‡»åé¦ˆæ¥å£ [2]
     /// </summary>
     public void PlayHitFeedback()
     {
-        // 1. ¾«Áé¾Ö²¿×ø±ê¶¶¶¯ 0.15 Ãë£¨·ù¶È 0.12£¬²»Ó°Ïì¸¸ÎïÌåµÄ×ø±ê£© [2]
         StartCoroutine(ShakeSpriteRoutine(0.15f, 0.12f));
-        // 2. ¾«ÁéÉÁË¸ºì¹â 0.12 Ãë [2]
-        StartCoroutine(FlashColorRoutine(Color.red, 0.12f));
+
+        if (_effectController != null)
+        {
+            _effectController.PlayHitFlash(0.15f);
+        }
+        else
+        {
+            // é™çº§ï¼šæ²¡æœ‰ ShaderEffectController æ—¶èµ°æ—§ sprite.color çº¢é—ª
+            StartCoroutine(FlashColorRoutine(Color.red, 0.12f));
+        }
     }
 
     /// <summary>
-    /// Í¨ÓÃ±äÉ«½Ó¿Ú£ºÏòÍâ±©Â¶£¨¹©ÍêÃÀÕĞ¼Ü³É¹¦Ê±ÉÁË¸Çà¹â¡¢±»»÷ÖĞÉÁºì¹âµÈµ÷ÓÃ£©
+    /// æ­»äº¡åºåˆ—ï¼šå—ä¼¤é—ª â†’ ç«‹å³ Die()ï¼Œç”±å­ç±»çŠ¶æ€æœºæ§åˆ¶åç»­æ­»äº¡åŠ¨ç”»å’Œæ¶ˆè
+    /// </summary>
+    protected void PlayDeathFlashThenDie()
+    {
+        StartCoroutine(ShakeSpriteRoutine(0.15f, 0.12f));
+
+        if (_effectController != null)
+        {
+            _effectController.PlayHitFlash(0.15f);
+        }
+        else
+        {
+            // é™çº§ï¼šæ²¡æœ‰ Controller æ—¶èµ°æ—§é€»è¾‘
+            StartCoroutine(FlashColorRoutine(Color.red, 0.12f));
+        }
+
+        // ç«‹å³è¿›å…¥æ­»äº¡çŠ¶æ€ï¼Œæ¶ˆèç”±å­ç±»çŠ¶æ€æœºåœ¨æ­»äº¡åŠ¨ç”»ç»“æŸåè§¦å‘
+        Die();
+    }
+
+    /// <summary>
+    /// é€šç”¨å˜è‰²æ¥å£ï¼Œæš´éœ²ç»™å¤–éƒ¨ä¾›æ ¼æŒ¡æˆåŠŸæ—¶é—ªå…‰ã€å—ä¼¤é—ªçƒç­‰åŠŸèƒ½è°ƒç”¨
     /// </summary>
     public void FlashColor(Color color, float duration)
     {
-        StartCoroutine(FlashColorRoutine(color, duration));
+        if (_effectController != null)
+        {
+            _effectController.PlayHitFlash(duration, color);
+        }
+        else
+        {
+            StartCoroutine(FlashColorRoutine(color, duration));
+        }
     }
 
     private IEnumerator FlashColorRoutine(Color color, float duration)
@@ -56,7 +93,7 @@ public abstract class BattleEntity : EntityBase
         {
             sprite.color = color;
             yield return new WaitForSeconds(duration);
-            sprite.color = Color.white; // ×Ô¶¯¸´Ô­ÎªÕı³£°×É«
+            sprite.color = Color.white;
         }
     }
 
@@ -69,22 +106,20 @@ public abstract class BattleEntity : EntityBase
 
         while (elapsed < duration)
         {
-            // ¼ÆËãËæ»ú¶¶¶¯Æ«ÒÆÁ¿
             float x = Random.Range(-1f, 1f) * magnitude;
             float y = Random.Range(-1f, 1f) * magnitude;
 
             sprite.transform.localPosition = originalLocalPos + new Vector3(x, y, 0f);
             elapsed += Time.deltaTime;
 
-            yield return null; // µÈ´ıÒ»Ö¡
+            yield return null;
         }
 
-        sprite.transform.localPosition = originalLocalPos; // ¶¶¶¯½áÊø£¬ÎïÀí¹éÎ»
+        sprite.transform.localPosition = originalLocalPos;
     }
 
     protected virtual void Die()
     {
-        Debug.Log($"{gameObject.name} Õ½°ÜÁË£¡");
+        Debug.Log($"{gameObject.name} æˆ˜æ­»äº†ã€‚");
     }
-
 }
