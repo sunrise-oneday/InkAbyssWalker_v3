@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b340259f1df4b14c9ad80d708f0a7a9, type: 3}
-  m_Name: equip_test_blood_rune
+  m_Name: "equip_test_blood_\u6D4B\u8BD5\xB7\u55DC\u8840\u7B26\u6587"
   m_EditorClassIdentifier: 
   idSuffix: test_blood
   id: equip_test_blood
-  Name: "\u6D4B\u8BD5\u00B7\u55DC\u8840\u7B26\u6587"
+  Name: "\u6D4B\u8BD5\xB7\u55DC\u8840\u7B26\u6587"
   description: "\u6280\u80FD1\u547D\u4E2D\u540E\u5438\u8840\uFF08\u5B9E\u9645\u4F24\u5BB310%\uFF09\uFF0C\u4EC5\u6D4B\u8BD5\u7528"
   icon: {fileID: 0}
   rarity: 0
