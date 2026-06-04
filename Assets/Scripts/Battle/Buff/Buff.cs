@@ -54,4 +54,10 @@ public abstract class Buff
     /// 可用于实现”脆弱”(Frail)等降低护盾获取量的效果。
     /// </summary>
     public virtual int OnBeforeGainShield(int baseShield) => baseShield;
+
+    /// <summary>
+    /// 出战伤害拦截器。在角色对外造成伤害前调用，
+    /// 可用于实现”虚弱”(Weaken)等降低出战伤害的效果。
+    /// </summary>
+    public virtual int OnBeforeDealDamage(int rawDamage) => rawDamage;
 }

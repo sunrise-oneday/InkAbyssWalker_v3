@@ -340,8 +340,20 @@ public class EnemyBattleEntity : BattleEntity
     }
 
     /// <summary>
+    /// 设置当前是否为行动中的敌人（显示/隐藏向下箭头▼指示器）
+    /// </summary>
+    public void SetCurrentAttacker(bool isAttacking)
+    {
+        EntityHUD hud = GetComponentInChildren<EntityHUD>();
+        if (hud != null)
+        {
+            hud.SetCurrentAttacker(isAttacking);
+        }
+    }
+
+    /// <summary>
     /// 动画事件：【时机闪红警告】！在伤害落点前的 0.2 ~ 0.25 秒处的帧上，右键添加该事件。
-    /// 调用后，怪物身上会闪烁刺眼的红色光芒，作为玩家按下空格键的“视觉哨兵”！
+    /// 调用后，怪物身上会闪烁刺眼的红色光芒，作为玩家按下空格键的”视觉哨兵”！
     /// </summary>
     public void TriggerParryIndicator()
     {

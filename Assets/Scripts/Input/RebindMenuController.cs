@@ -1,29 +1,26 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// ¹ÒÔØÔÚ¸Ä¼üÉèÖÃ²Ëµ¥Ö÷Ãæ°åÉÏ£¬¸ºÔğÃæ°åÄÚËùÓĞ°´¼üµÄºê¹ÛÖØÖÃÓëµ÷¶È
+/// æŒ‰é”®é‡ç»‘å®šèœå•æ§åˆ¶å™¨
 /// </summary>
 public class RebindMenuController : MonoBehaviour
 {
-    [Header("¸Ä¼ü×ÓÏîÁĞ±í")]
-    [SerializeField] private RebindActionUI[] rebindUIs; // ÍÏÈë¹ÒÔØÁË RebindActionUI µÄ×ÓÎïÌåÁĞ±í
+    [Header("é‡ç»‘å®š UI åˆ—è¡¨")]
+    [SerializeField] private RebindActionUI[] rebindUIs;
 
-    [Header("ÉèÖÃ½»»¥°´Å¥")]
-    [SerializeField] private Button defaultResetButton;  // ¡°»Ö¸´Ä¬ÈÏÉèÖÃ¡± UGUI °´Å¥
-    [SerializeField] private Button closePanelButton;    // ¡°¹Ø±Õ¸Ä¼üÉèÖÃ¡± UGUI °´Å¥
+    [Header("æ§åˆ¶æŒ‰é’®")]
+    [SerializeField] private Button defaultResetButton;
+    [SerializeField] private Button closePanelButton;
 
     private void OnEnable()
     {
         if (defaultResetButton != null)
-        {
             defaultResetButton.onClick.AddListener(ResetAllToDefault);
-        }
 
         if (closePanelButton != null)
-        {
             closePanelButton.onClick.AddListener(CloseMenu);
-        }
 
         RefreshAllUIs();
     }
@@ -31,54 +28,42 @@ public class RebindMenuController : MonoBehaviour
     private void OnDisable()
     {
         if (defaultResetButton != null)
-        {
             defaultResetButton.onClick.RemoveListener(ResetAllToDefault);
-        }
 
         if (closePanelButton != null)
-        {
             closePanelButton.onClick.RemoveListener(CloseMenu);
-        }
     }
 
-    /// <summary>
-    /// Ë¢ĞÂÃæ°åÏÂËùÓĞ°´¼üµÄ×´Ì¬ÏÔÊ¾
-    /// </summary>
     public void RefreshAllUIs()
     {
         if (rebindUIs == null || rebindUIs.Length == 0)
-        {
             rebindUIs = GetComponentsInChildren<RebindActionUI>(true);
-        }
 
         foreach (var ui in rebindUIs)
         {
             if (ui != null)
-            {
                 ui.UpdateUI();
-            }
         }
     }
 
-    /// <summary>
-    /// µ÷ÓÃÈ«¾ÖÖØÖÃ£ºÇå³ıËùÓĞÍæ¼Ò¸Ä¼ü»º´æ£¬»¹Ô­Îª×î³õµÄÅäÖÃ
-    /// </summary>
     private void ResetAllToDefault()
     {
         if (InputManager.Instance != null)
         {
-            // µ÷ÓÃ InputManager ÀïµÄ ResetBindings Çå³ıËùÓĞ¸²¸ÇÎÄ¼ş
             InputManager.Instance.ResetBindings();
-
-            // ÖØĞÂË¢ĞÂÕû¸ö½çÃæµÄÎÄ±¾
-            RefreshAllUIs();
-            Debug.Log("<color=cyan>[¸Ä¼üÏµÍ³] ÒÑ»¹Ô­ÎªÏµÍ³Ä¬ÈÏ°´¼ü²¼¾Ö¡£</color>");
+            Debug.Log("[æŒ‰é”®ç³»ç»Ÿ] å·²è¿˜åŸä¸ºé»˜è®¤æŒ‰é”®ç»‘å®š");
         }
+
+        // å»¶è¿Ÿä¸€å¸§åˆ·æ–°ï¼Œç¡®ä¿ç»‘å®šé‡ç½®å®Œæˆåå†æ›´æ–° UI æ–‡æœ¬
+        StartCoroutine(RefreshNextFrame());
     }
 
-    /// <summary>
-    /// ¹Ø±Õ¸Ã UGUI ½çÃæ
-    /// </summary>
+    private IEnumerator RefreshNextFrame()
+    {
+        yield return null;
+        RefreshAllUIs();
+    }
+
     private void CloseMenu()
     {
         gameObject.SetActive(false);

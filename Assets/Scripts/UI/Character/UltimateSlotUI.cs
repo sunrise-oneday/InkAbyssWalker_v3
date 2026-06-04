@@ -59,7 +59,10 @@ public class UltimateSlotUI : MonoBehaviour
             damageLabel.text = skill != null ? $"伤害: {skill.baseDamage} / 削韧: {skill.breakDamage}" : "";
 
         if (icon != null)
-            icon.enabled = skill != null;
+        {
+            icon.sprite = skill != null ? skill.icon : null;
+            icon.enabled = skill != null && skill.icon != null;
+        }
 
         ApplyVisual();
     }

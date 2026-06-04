@@ -11,7 +11,6 @@ public class SkillDetailPanel : MonoBehaviour
     [Header("UI 引用")]
     [SerializeField] private Text titleText;
     [SerializeField] private Text descriptionText;
-    [SerializeField] private Text statsText;
     [SerializeField] private Image previewIcon;
     [SerializeField] private Button equipButton;
     [SerializeField] private GameObject equipButtonRoot;
@@ -61,9 +60,6 @@ public class SkillDetailPanel : MonoBehaviour
         if (descriptionText != null)
             descriptionText.text = unlocked ? desc : "技能尚未解锁";
 
-        if (statsText != null)
-            statsText.text = "";
-
         if (previewIcon != null)
         {
             previewIcon.sprite = icon;
@@ -83,19 +79,23 @@ public class SkillDetailPanel : MonoBehaviour
         if (titleText != null)
             titleText.text = skill != null ? skill.ultimateName : "";
 
-        if (descriptionText != null)
-            descriptionText.text = skill != null ? skill.description : "";
-
-        if (statsText != null && skill != null)
+        if (descriptionText != null && skill != null)
         {
             string typeName = GetUltimateTypeName(skill.ultimateType);
-            statsText.text = $"类型: {typeName}\n伤害: {skill.baseDamage}\n削韧: {skill.breakDamage}";
+            string stats = $"类型: {typeName}\n伤害: {skill.baseDamage}\n削韧: {skill.breakDamage}";
             if (skill.ultimateType == UltimateSkill.UltimateType.Control)
-                statsText.text += $"\n眩晕: {skill.stunTurns} 回合";
+                stats += $"\n眩晕: {skill.stunTurns} 回合";
+
+            descriptionText.text = string.IsNullOrEmpty(skill.description)
+                ? stats
+                : $"{skill.description}\n\n{stats}";
         }
 
         if (previewIcon != null)
-            previewIcon.enabled = false;
+        {
+            previewIcon.sprite = skill != null ? skill.icon : null;
+            previewIcon.enabled = skill != null && skill.icon != null;
+        }
 
         // 显示装备按钮（只在未装备时显示）
         if (equipButtonRoot != null)
@@ -114,9 +114,6 @@ public class SkillDetailPanel : MonoBehaviour
 
         if (descriptionText != null)
             descriptionText.text = "";
-
-        if (statsText != null)
-            statsText.text = "";
 
         if (previewIcon != null)
             previewIcon.enabled = false;

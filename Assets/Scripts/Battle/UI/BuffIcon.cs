@@ -32,6 +32,9 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         { "冰元素附着", new Color(0.2f, 0.6f, 1.0f) }, // 蓝色
         { "眩晕", new Color(1.0f, 1.0f, 0.2f) },       // 黄色
         { "易伤", new Color(1.0f, 0.2f, 0.2f) },      // 亮红
+        { "燃烧", new Color(1.0f, 0.4f, 0.1f) },       // 火焰橙
+        { "冻结", new Color(0.4f, 0.7f, 1.0f) },       // 冰晶蓝
+        { "水附着", new Color(0.2f, 0.5f, 0.9f) },     // 水蓝
     };
 
     /// <summary>

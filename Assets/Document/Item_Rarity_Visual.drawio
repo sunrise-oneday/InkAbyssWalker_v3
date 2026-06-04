@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="30.0.4">
+  <diagram name="物品稀有度视觉规范">
+    <mxGraphModel dx="1422" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 标题 -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size:20px&quot;&gt;物品稀有度视觉规范&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="450" y="10" width="400" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Common -->
+        <mxCell id="commonLabel" value="&lt;b&gt;Common&lt;/b&gt; - 普通" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#999999;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="70" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="commonSlot" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:32px&quot;&gt;&#x1F6E1;&#xFE0F;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px&quot;&gt;铁壁符文&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a2a2a;strokeColor=#999999;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="commonDesc" value="&lt;div style=&quot;text-align:left;font-size:12px;line-height:1.6&quot;&gt;&#x2022; 边框: 灰色 #999999&lt;br&gt;&#x2022; 背景: 深灰 #2a2a2a&lt;br&gt;&#x2022; 光晕: 无&lt;br&gt;&#x2022; 粒子: 无&lt;br&gt;&#x2022; 边框宽度: 2px&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#aaaaaa;" vertex="1" parent="1">
+          <mxGeometry x="180" y="110" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Rare -->
+        <mxCell id="rareLabel" value="&lt;b&gt;Rare&lt;/b&gt; - 稀有" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#4488FF;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="260" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="rareSlot" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:32px&quot;&gt;&#x1F525;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px&quot;&gt;炎灵符文&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#4488FF;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="rareGlow" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#4488FF;strokeWidth=1;opacity=30;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="290" width="140" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="rareDesc" value="&lt;div style=&quot;text-align:left;font-size:12px;line-height:1.6&quot;&gt;&#x2022; 边框: 蓝色 #4488FF&lt;br&gt;&#x2022; 背景: 深蓝 #1a2744&lt;br&gt;&#x2022; 光晕: 蓝色外发光 (2px模糊)&lt;br&gt;&#x2022; 粒子: 微弱蓝色光点&lt;br&gt;&#x2022; 边框宽度: 2px + 阴影&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#aaaaaa;" vertex="1" parent="1">
+          <mxGeometry x="180" y="300" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Epic -->
+        <mxCell id="epicLabel" value="&lt;b&gt;Epic&lt;/b&gt; - 史诗" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#AA44FF;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="450" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="epicSlot" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:32px&quot;&gt;&#x1F3AF;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px&quot;&gt;暴击符文&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a1a3a;strokeColor=#AA44FF;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="490" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="epicGlow" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#AA44FF;strokeWidth=2;opacity=40;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="25" y="475" width="150" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="epicDesc" value="&lt;div style=&quot;text-align:left;font-size:12px;line-height:1.6&quot;&gt;&#x2022; 边框: 紫色 #AA44FF&lt;br&gt;&#x2022; 背景: 深紫 #2a1a3a&lt;br&gt;&#x2022; 光晕: 紫色双层外发光&lt;br&gt;&#x2022; 粒子: 紫色旋转光点&lt;br&gt;&#x2022; 边框宽度: 3px + 强阴影&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#aaaaaa;" vertex="1" parent="1">
+          <mxGeometry x="180" y="490" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Legendary -->
+        <mxCell id="legLabel" value="&lt;b&gt;Legendary&lt;/b&gt; - 传说" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#FFD700;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="640" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="legSlot" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:32px&quot;&gt;&#x2694;&#xFE0F;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px&quot;&gt;万剑符文&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3a2a10;strokeColor=#FFD700;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="680" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legGlow1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFD700;strokeWidth=2;opacity=50;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="660" width="160" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="legGlow2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFD700;strokeWidth=1;opacity=20;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="650" width="180" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="legDesc" value="&lt;div style=&quot;text-align:left;font-size:12px;line-height:1.6&quot;&gt;&#x2022; 边框: 金色 #FFD700&lt;br&gt;&#x2022; 背景: 深金 #3a2a10&lt;br&gt;&#x2022; 光晕: 金色三层外发光 + 脉冲动画&lt;br&gt;&#x2022; 粒子: 金色旋转粒子 + 星光闪烁&lt;br&gt;&#x2022; 边框宽度: 3px + 金色阴影&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#aaaaaa;" vertex="1" parent="1">
+          <mxGeometry x="180" y="680" width="250" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- 右侧：物品槽组件分解 -->
+        <mxCell id="compTitle" value="&lt;b style=&quot;font-size:16px&quot;&gt;物品槽组件分解&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="70" width="250" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 组件分解图 -->
+        <mxCell id="layer1" value="&#x2460; 背景板 (Image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#333366;strokeWidth=1;fontSize=11;fontColor=#888888;" vertex="1" parent="1">
+          <mxGeometry x="600" y="120" width="160" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="layer2" value="&#x2461; 边框 (Image)&#xa;颜色随稀有度变化" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#AA44FF;strokeWidth=3;dashed=0;fontSize=11;fontColor=#AA44FF;" vertex="1" parent="1">
+          <mxGeometry x="610" y="130" width="140" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="layer3" value="&#x2462; 物品图标 (Image)&#xa;居中显示" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a1a3a;strokeColor=none;fontSize=11;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="630" y="145" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="layer4" value="&#x2463; 数量标签 (Text)&#xa;右上角: x5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=none;fontSize=10;fontColor=#ffffff;opacity=70;" vertex="1" parent="1">
+          <mxGeometry x="700" y="125" width="55" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="layer5" value="&#x2464; 货币图标 (Image)&#xa;底部左侧" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#333333;strokeColor=none;fontSize=10;fontColor=#ffcc00;" vertex="1" parent="1">
+          <mxGeometry x="620" y="220" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="layer6" value="&#x2465; 价格文本 (Text)&#xa;底部右侧: 180灵" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#333333;strokeColor=none;fontSize=10;fontColor=#66ccff;" vertex="1" parent="1">
+          <mxGeometry x="675" y="220" width="80" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 右侧：选中态说明 -->
+        <mxCell id="selectedTitle" value="&lt;b style=&quot;font-size:16px&quot;&gt;交互状态&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="310" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stateNormal" value="普通态&#xa;边框 50% 透明度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#4488FF;strokeWidth=1;opacity=80;" vertex="1" parent="1">
+          <mxGeometry x="600" y="350" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="stateHover" value="悬停态&#xa;边框高亮" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#4488FF;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="740" y="350" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="stateSelected" value="选中态&#xa;蓝色外发光" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a5c;strokeColor=#4488FF;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="350" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- 稀有度标签 -->
+        <mxCell id="tagTitle" value="&lt;b style=&quot;font-size:16px&quot;&gt;稀有度标签&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="470" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tagCommon" value="Common" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=#999999;fontColor=#ffffff;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="600" y="510" width="80" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="tagRare" value="Rare" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#224488;strokeColor=#4488FF;fontColor=#ffffff;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="690" y="510" width="80" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="tagEpic" value="Epic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#553388;strokeColor=#AA44FF;fontColor=#ffffff;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="780" y="510" width="80" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="tagLegend" value="Legendary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#886600;strokeColor=#FFD700;fontColor=#ffffff;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="870" y="510" width="90" height="28" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

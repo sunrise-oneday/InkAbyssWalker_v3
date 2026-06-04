@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="30.0.4">
+  <diagram name="背包面板布局">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 顶部栏 -->
+        <mxCell id="topBar" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#333366;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1600" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="topTitle" value="&lt;b&gt;背包&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#ffffff;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="30" y="10" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="shopBtn" value="商店 [F]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2d5a3d;strokeColor=#4a8a5a;fontColor=#ffffff;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="10" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="closeBtn" value="X" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5a2d2d;strokeColor=#8a4a4a;fontColor=#ffffff;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="10" width="50" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 左半：物品列表区 -->
+        <mxCell id="leftPanel" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#16213e;strokeColor=#1a3a5c;" vertex="1" parent="1">
+          <mxGeometry x="10" y="70" width="480" height="820" as="geometry" />
+        </mxCell>
+        <mxCell id="leftTitle" value="&lt;b&gt;物品列表&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#aaccff;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 物品槽示例 -->
+        <mxCell id="itemSlot1" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:12px&quot;&gt;&#x2764;&#xFE0F;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px&quot;&gt;生命药水 x20&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#ffcc00&quot;&gt;30墨&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#4488FF;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="120" width="100" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="itemSlot2" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:12px&quot;&gt;&#x1F535;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px&quot;&gt;法力药水 x20&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#ffcc00&quot;&gt;30墨&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#4488FF;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="120" width="100" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="itemSlot3" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:12px&quot;&gt;&#x1F525;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px&quot;&gt;炎灵符文&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#66ccff&quot;&gt;180灵&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#AA44FF;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="120" width="100" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="itemSlot4" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:12px&quot;&gt;&#x1F6E1;&#xFE0F;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px&quot;&gt;铁壁符文&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#66ccff&quot;&gt;100灵&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#999999;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="120" width="100" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="itemSlot5" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:12px&quot;&gt;&#x1F4DC;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px&quot;&gt;古老徽章&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#66ccff&quot;&gt;200灵&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#FFD700;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="260" width="100" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="&lt;div style=&quot;text-align:left;font-size:11px&quot;&gt;&lt;span style=&quot;color:#999999&quot;&gt;&#x25A0;&lt;/span&gt; Common&lt;br&gt;&lt;span style=&quot;color:#4488FF&quot;&gt;&#x25A0;&lt;/span&gt; Rare&lt;br&gt;&lt;span style=&quot;color:#AA44FF&quot;&gt;&#x25A0;&lt;/span&gt; Epic&lt;br&gt;&lt;span style=&quot;color:#FFD700&quot;&gt;&#x25A0;&lt;/span&gt; Legendary&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#888888;" vertex="1" parent="1">
+          <mxGeometry x="30" y="810" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- 右半上：属性面板 -->
+        <mxCell id="statPanel" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#16213e;strokeColor=#1a3a5c;" vertex="1" parent="1">
+          <mxGeometry x="500" y="70" width="590" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="statTitle" value="&lt;b&gt;角色属性&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#aaccff;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="520" y="80" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="statContent" value="&lt;div style=&quot;text-align:left;font-size:13px;line-height:1.8&quot;&gt;&lt;b style=&quot;color:#ffcc00&quot;&gt;基础属性&lt;/b&gt;&lt;br&gt;&#x2694;&#xFE0F; 攻击: &lt;b&gt;15&lt;/b&gt; (&lt;span style=&quot;color:#44ff44&quot;&gt;+8&lt;/span&gt;)&#x3000;&#x2764;&#xFE0F; 生命: &lt;b&gt;100&lt;/b&gt; (&lt;span style=&quot;color:#44ff44&quot;&gt;+50&lt;/span&gt;)&lt;br&gt;&#x1F6E1;&#xFE0F; 防御: &lt;b&gt;5&lt;/b&gt; (&lt;span style=&quot;color:#44ff44&quot;&gt;+5&lt;/span&gt;)&#x3000;&#x1F4A7; 法力: &lt;b&gt;50&lt;/b&gt; (&lt;span style=&quot;color:#44ff44&quot;&gt;+30&lt;/span&gt;)&lt;br&gt;&#x1F4A5; 破防上限: &lt;b&gt;50&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#ffcc00&quot;&gt;战斗扩展属性&lt;/b&gt;&lt;br&gt;&#x1F3AF; 暴击率: &lt;b&gt;8%&lt;/b&gt;&#x3000;&#x1F4A3; 暴击伤害: &lt;b&gt;+25%&lt;/b&gt;&lt;br&gt;&#x1F6E1;&#xFE0F; 减伤: &lt;b&gt;5%&lt;/b&gt;&#x3000;&#x1F525; 火伤: &lt;b&gt;+10%&lt;/b&gt;&#x3000;&#x2744;&#xFE0F; 冰伤: &lt;b&gt;+10%&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="520" y="110" width="560" height="290" as="geometry" />
+        </mxCell>
+
+        <!-- 右半中：符文槽区 -->
+        <mxCell id="runePanel" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#16213e;strokeColor=#1a3a5c;" vertex="1" parent="1">
+          <mxGeometry x="500" y="430" width="590" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="runeTitle" value="&lt;b&gt;符文装备槽&lt;/b&gt;  &#x24D8; 先选槽位 &#x2192; 再点物品" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#aaccff;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="520" y="440" width="350" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="runeSlot1" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:24px&quot;&gt;&#x1F525;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px&quot;&gt;炎灵&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a1a3a;strokeColor=#AA44FF;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="540" y="480" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="runeSlot2" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:24px&quot;&gt;&#x1FA78;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px&quot;&gt;吸血&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a1a3a;strokeColor=#4488FF;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="660" y="480" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="runeSlot3" value="&lt;div style=&quot;text-align:center;font-size:10px;color:#666&quot;&gt;(空槽位)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#444466;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="480" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="equipHint" value="&#x2190; 已装备 2/3" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#888888;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="900" y="510" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 右半下：详情面板 -->
+        <mxCell id="detailPanel" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#16213e;strokeColor=#1a3a5c;" vertex="1" parent="1">
+          <mxGeometry x="500" y="590" width="590" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="detailContent" value="&lt;div style=&quot;text-align:left;line-height:1.6&quot;&gt;&lt;span style=&quot;font-size:18px;font-weight:bold&quot;&gt;炎灵符文&lt;/span&gt; &lt;span style=&quot;background:#AA44FF;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px&quot;&gt;Epic&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px&quot;&gt;&#x2694;&#xFE0F; 攻击 +8&lt;br&gt;&#x1F525; 火元素技能伤害 +15%&lt;br&gt;&#x1F525; 火伤加成 +10%&lt;br&gt;&lt;br&gt;&#x1F4CB; 影响技能: &lt;b&gt;[初临形态] 炎墨&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="520" y="600" width="380" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="btnEquip" value="&#x2694;&#xFE0F; 装备" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2d5a3d;strokeColor=#4a8a5a;fontColor=#ffffff;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="620" width="140" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="btnDiscard" value="&#x1F5D1;&#xFE0F; 丢弃" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5a2d2d;strokeColor=#8a4a4a;fontColor=#ffffff;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="920" y="680" width="140" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- 最右侧：大招区 -->
+        <mxCell id="ultPanel" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#16213e;strokeColor=#1a3a5c;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="70" width="490" height="820" as="geometry" />
+        </mxCell>
+        <mxCell id="ultTitle" value="&lt;b&gt;大招装备&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#aaccff;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="80" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ultSlot" value="&lt;div style=&quot;text-align:center&quot;&gt;&lt;span style=&quot;font-size:32px&quot;&gt;&#x2694;&#xFE0F;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px&quot;&gt;万剑归宗&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#888&quot;&gt;SingleTarget&#x3000;120伤害&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a1a3a;strokeColor=#FFD700;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="120" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ultAvail" value="&lt;div style=&quot;text-align:left;font-size:12px&quot;&gt;&lt;b&gt;可选大招&lt;/b&gt;&lt;br&gt;&#x25CB; 万剑归宗 (单体120伤)&lt;br&gt;&#x25CB; 冰霜封印 (控制+眩晕)&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#aaaaaa;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="260" width="250" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

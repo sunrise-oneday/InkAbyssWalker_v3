@@ -8,12 +8,14 @@ public class FrailBuff : Buff
 {
     private float shieldMultiplier; // 护盾获取倍率（默认0.75 = 减少25%）
 
-    public FrailBuff(int duration, float multiplier = 0.75f)
+    /// <param name="duration">持续回合数</param>
+    /// <param name="percentReduction">护盾减少百分比，如 25 表示减少 25%（默认 25）</param>
+    public FrailBuff(int duration, int percentReduction = 25)
     {
         buffName = "脆弱";
         durationTurns = duration;
-        shieldMultiplier = multiplier;
-        description = $"获得的护盾降低至 {Mathf.RoundToInt(multiplier * 100)}%";
+        shieldMultiplier = 1f - percentReduction / 100f;
+        description = $"获得的护盾降低至 {Mathf.RoundToInt(shieldMultiplier * 100)}%";
         element = ElementType.None;
         icon = Resources.Load<Sprite>("UI/Buffs/Icon_Frail");
     }

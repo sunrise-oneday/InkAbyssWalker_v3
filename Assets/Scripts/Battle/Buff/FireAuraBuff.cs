@@ -1,22 +1,19 @@
-﻿using UnityEngine;
+using UnityEngine;
 
+/// <summary>
+/// 火元素附着（纯标记，不造成伤害）
+/// 最多 4 层，由特定技能施加，被反应时消耗层数触发效果
+/// </summary>
 public class FireAuraBuff : Buff
 {
-    private int burnDamage = 8; // 每回合燃烧伤害
-
-    public FireAuraBuff(int turns)
+    public FireAuraBuff(int turns, int initialStacks = 1)
     {
-        buffName = "火元素附着";
+        buffName = "火附着";
         durationTurns = turns;
-        description = "每回合开始时受到 8 点火焰灼烧伤害。";
-        element = ElementType.Fire; // 标记为火元素
-        icon = Resources.Load<Sprite>("UI/Buffs/Icon_Fire"); // 读取你的图标
-    }
-
-    public override void OnTurnStart()
-    {
-        // 回合开始时，自动执行灼烧扣血（不扣除破防值） [5]
-        owner.TakeDamage(burnDamage, 0);
-        Debug.Log($"{owner.gameObject.name} 受到火元素灼烧，损失了 {burnDamage} 点生命！");
+        element = ElementType.Fire;
+        stacks = Mathf.Clamp(initialStacks, 1, 4); // 最多4层
+        maxStacks = 4;
+        description = $"火元素附着，当前{stacks}层。被反应时消耗层数触发效果。";
+        icon = Resources.Load<Sprite>("UI/Buffs/Icon_Fire");
     }
 }

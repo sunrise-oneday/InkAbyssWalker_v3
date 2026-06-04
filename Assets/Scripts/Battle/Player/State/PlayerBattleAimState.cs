@@ -75,7 +75,7 @@ public class PlayerBattleAimState : PlayerBattleState
                 EnemyBattleEntity clickedEnemy = hit.collider.GetComponentInParent<EnemyBattleEntity>();
                 if (clickedEnemy != null)
                 {
-                    // 2. 核心：判断点击的怪，是不是已经是当前“已锁定”的怪？ [1, 2]
+                    // 2. 核心：判断点击的怪，是不是已经是当前"已锁定"的怪？ [1, 2]
                     if (clickedEnemy == BattleTurnManager.Instance.selectedEnemy)
                     {
                         // 判定 A：如果是同一个怪，执行【开枪点射】！

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b340259f1df4b14c9ad80d708f0a7a9, type: 3}
+  m_Name: "equip_mana_flow_\u6CC9\u6D8C\u7B26\u6587"
+  m_EditorClassIdentifier: 
+  idSuffix: mana_flow
+  id: equip_mana_flow
+  Name: "\u6CC9\u6D8C\u7B26\u6587"
+  description: "\u6E90\u6E90\u4E0D\u65AD\u7684\u6CD5\u529B\u4E4B\u6CC9"
+  icon: {fileID: 0}
+  rarity: 0
+  basePrice: 100
+  currencyId: 1
+  canSell: 1
+  maxStack: 1
+  shopTag: 0
+  statMods:
+  - stat: 3
+    flat: 25
+    percent: 0
+  skillMods: []
+  extraEffects: []

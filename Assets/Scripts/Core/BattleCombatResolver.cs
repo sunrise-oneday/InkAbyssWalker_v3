@@ -113,14 +113,14 @@ public class BattleCombatResolver : MonoBehaviour
         }
         else if (timeDiff <= PerfectWindow)
         {
-            Debug.Log($"{debugHeader}<color=green>【完美格挡成功】你提前 {rawDiffMs:F0} 毫秒按下了空格</color>");
+            Debug.Log($"{debugHeader}<color=green>【完美格挡成功】你提前 {rawDiffMs:F0} 毫秒按下了 E 键</color>");
             ApplyDamageFeedback(defender, 0, 0, isPerfect: true, isNormal: false);
         }
         else if (timeDiff <= NormalWindow)
         {
             turn.allPerfectParriesInCurrentAttack = false;
             int reducedDamage = Mathf.RoundToInt(rawDamage * 0.3f);
-            Debug.Log($"{debugHeader}<color=yellow>[普通格挡] 你提前 {rawDiffMs:F0} 毫秒按下了空格</color>");
+            Debug.Log($"{debugHeader}<color=yellow>[普通格挡] 你提前 {rawDiffMs:F0} 毫秒按下了 E 键</color>");
             ApplyDamageFeedback(defender, reducedDamage, 0, isPerfect: false, isNormal: true);
         }
         else
@@ -130,6 +130,8 @@ public class BattleCombatResolver : MonoBehaviour
             ApplyDamageFeedback(defender, rawDamage, breakDamage, isPerfect: false, isNormal: false);
         }
 
+        // 每次判定后消费格挡按键，防止残留时间戳影响后续多段攻击判定
+        defender.UseParryInput();
         CheckBattleOver();
     }
 

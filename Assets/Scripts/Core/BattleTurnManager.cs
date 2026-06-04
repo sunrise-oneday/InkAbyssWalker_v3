@@ -33,11 +33,16 @@ public class BattleTurnManager : MonoBehaviour
     {
         if (_instance != null && _instance != this)
         {
+            Debug.Log($"[BattleTurnManager] Awake - 已存在实例，销毁自身");
             Destroy(gameObject);
             return;
         }
         _instance = this;
         DontDestroyOnLoad(gameObject);
+
+        // 强制重置状态，防止编辑器中残留上次运行的状态
+        currentPhase = BattlePhase.None;
+        Debug.Log($"[BattleTurnManager] Awake - 初始化完成，currentPhase={currentPhase}");
     }
 
     // ============================================
@@ -65,6 +70,9 @@ public class BattleTurnManager : MonoBehaviour
     public bool allPerfectParriesInCurrentAttack { get; set; } = true;
     public bool hasRestoredDodgeApThisRound { get; set; } = false;
 
+    [Header("当前行动指示器")]
+    [SerializeField] private float attackerIndicatorAdvance = 1f; // 箭头提前于攻击的显示秒数
+
     /// <summary>当前行动的敌人</summary>
     public EnemyBattleEntity CurrentAttacker
     {
@@ -76,10 +84,10 @@ public class BattleTurnManager : MonoBehaviour
         }
     }
 
-    /// <summary>重置回合状态到战斗初始值</summary>
+    /// <summary>重置回合状态到非战斗状态</summary>
     public void Reset()
     {
-        currentPhase = BattlePhase.Setup;
+        currentPhase = BattlePhase.None; // 重置为 None，允许进入新战斗
         currentTurn = 1;
         currentEnemyTurnIndex = 0;
         selectedEnemy = null;
@@ -106,6 +114,16 @@ public class BattleTurnManager : MonoBehaviour
     private void HandleTargetSelection()
     {
         if (!Input.GetMouseButtonDown(0)) return;
+
+        // 瞄准状态期间跳过：AimState 有自己的射线检测和目标切换/射击判定逻辑，
+        // 如果此处抢先更新 selectedEnemy，会导致 AimState 中 clickedEnemy == selectedEnemy 恒为 true，
+        // 出现"点谁都打"的 bug。
+        if (playerParty?.Count > 0 && playerParty[0] != null)
+        {
+            var fsm = playerParty[0].GetBattleStateMachine();
+            if (fsm != null && fsm.currentState is PlayerBattleAimState)
+                return;
+        }
 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
@@ -167,17 +185,23 @@ public class BattleTurnManager : MonoBehaviour
         currentPhase = BattlePhase.PlayerTurn;
         hasRestoredDodgeApThisRound = false;
 
+        // 防御性清理：确保进入玩家回合时所有敌人的行动箭头都已隐藏
+        if (activeEnemies != null)
+        {
+            foreach (var enemy in activeEnemies)
+                enemy?.SetCurrentAttacker(false);
+        }
+
         // 补充公共资源
         var res = BattleResourceManager.Instance;
         res.sharedAP = Mathf.Min(res.sharedAP + 2, res.maxSharedAP);
         res.sharedMP = Mathf.Min(res.sharedMP + 10, res.maxSharedMP);
 
-        // 各队员回合开始：触发回合开始效果（燃烧/中毒跳伤害），但不扣减回合数
+        // 各队员回合开始：补充 AP，Buff 效果统一到回合结束时结算
         foreach (var member in playerParty)
         {
             if (member == null) continue;
             member.currentAP = Mathf.Min(member.currentAP + 2, member.maxAP);
-            member.Stats.ProcTurnStartBuffs();
             Debug.Log($"[回合循环] 队员 {member.gameObject.name} 回合开始，当前 AP: {member.currentAP}");
         }
 
@@ -246,10 +270,17 @@ public class BattleTurnManager : MonoBehaviour
     /// <summary>进入敌人回合</summary>
     public void EnterEnemyTurn()
     {
-        // 玩家回合结束时，扣减玩家身上的 Buff 持续时间（效果已在回合开始时触发过）
+        // 玩家回合结束时，统一结算 Buff（先触发效果再扣减回合数）
         foreach (var member in playerParty)
         {
-            if (member != null) member.Stats.TickBuffDurations();
+            if (member != null) member.Stats.TickBuffs();
+        }
+
+        // 检查 debuff 伤害（中毒/诅咒等）是否导致玩家死亡
+        if (BattleCombatResolver.Instance != null)
+        {
+            BattleCombatResolver.Instance.CheckBattleOver();
+            if (currentPhase == BattlePhase.Lose) return;
         }
 
         // 如果是第一回合且没有决策过意图，先为所有敌人决策意图
@@ -282,17 +313,26 @@ public class BattleTurnManager : MonoBehaviour
         BattleUIController.Instance?.SetActionPanelActive(false);
         allPerfectParriesInCurrentAttack = true;
 
-        yield return new WaitForSeconds(2f);
+        // 阶段一：等待一小段后提前显示箭头，让玩家知道下一个行动的敌人是谁
+        float showDelay = Mathf.Max(0f, 2f - attackerIndicatorAdvance);
+        yield return new WaitForSeconds(showDelay);
 
         if (currentEnemyTurnIndex < 0 || currentEnemyTurnIndex >= activeEnemies.Count)
             yield break;
 
         EnemyBattleEntity attacker = activeEnemies[currentEnemyTurnIndex];
 
+        // 显示当前行动敌人的向下箭头▼指示器
+        attacker?.SetCurrentAttacker(true);
+
+        // 阶段二：箭头显示后等待剩余时间，给玩家反应窗口
+        yield return new WaitForSeconds(attackerIndicatorAdvance);
+
         // 已死亡则跳过
         if (attacker == null || attacker.Stats.currentHP <= 0)
         {
             Debug.Log($"[状态判定] 敌方 {attacker?.gameObject.name} 已经阵亡，放弃其行动权");
+            allPerfectParriesInCurrentAttack = false; // 没有实际攻击发生，禁止触发反击
             OnEnemyTurnFinished();
             yield break;
         }
@@ -302,6 +342,7 @@ public class BattleTurnManager : MonoBehaviour
         if (attacker.Stats.isBroken || isStunned)
         {
             Debug.Log($"<color=yellow>[行动跳过] {attacker.gameObject.name} 正处于眩晕/破防状态中，本回合无法行动</color>");
+            allPerfectParriesInCurrentAttack = false; // 没有实际攻击发生，禁止触发反击
             yield return new WaitForSeconds(1.5f);
             OnEnemyTurnFinished();
             yield break;
@@ -349,10 +390,28 @@ public class BattleTurnManager : MonoBehaviour
     /// <summary>怪物攻击动画结束回调，处理反击/回合推进</summary>
     public void OnEnemyTurnFinished()
     {
-        Debug.Log($"[回合循环] 敌方 {activeEnemies[currentEnemyTurnIndex].gameObject.name} 行动结束。");
+        // 安全检查：如果战斗已结束，不再处理
+        if (currentPhase == BattlePhase.Win || currentPhase == BattlePhase.Lose)
+        {
+            Debug.Log("[回合循环] 战斗已结束，跳过敌方回合处理");
+            return;
+        }
+
+        // 边界检查：防止敌人死亡从列表中移除后 currentEnemyTurnIndex 越界
+        if (activeEnemies == null || activeEnemies.Count == 0 || currentEnemyTurnIndex < 0 || currentEnemyTurnIndex >= activeEnemies.Count)
+        {
+            Debug.LogWarning($"[回合循环] currentEnemyTurnIndex({currentEnemyTurnIndex}) 越界或敌人列表为空！activeEnemies.Count={activeEnemies?.Count ?? 0}，检查战斗是否应结束");
+            BattleCombatResolver.Instance?.CheckBattleOver();
+            return;
+        }
+
+        var currentEnemy = activeEnemies[currentEnemyTurnIndex];
+        Debug.Log($"[回合循环] 敌方 {currentEnemy.gameObject.name} 行动结束。");
+
+        // 隐藏当前行动敌人的向下箭头▼指示器
+        currentEnemy?.SetCurrentAttacker(false);
 
         // 怪物存活时恢复破防值并推进 Buff
-        var currentEnemy = activeEnemies[currentEnemyTurnIndex];
         if (currentEnemy != null && currentEnemy.Stats.currentHP > 0)
         {
             currentEnemy.Stats.RecoverFromBreak();
@@ -361,15 +420,20 @@ public class BattleTurnManager : MonoBehaviour
 
         // 只有攻击类意图的完美格挡才触发反击，非攻击行动直接推进回合
         bool isAttackIntent = false;
-        var activeAttacker = activeEnemies[currentEnemyTurnIndex];
+        var activeAttacker = currentEnemy;
         if (activeAttacker != null)
         {
             var intent = activeAttacker.GetCurrentIntent();
             if (intent != null)
             {
-                isAttackIntent = intent.type == EnemyIntentType.Attack
-                    || intent.type == EnemyIntentType.MultiAttack
-                    || intent.type == EnemyIntentType.SpecialAttack;
+                // 使用解析后的实际意图类型（处理 Unknown 意图包装的攻击行动）
+                EnemyIntentType resolvedType = intent.type;
+                if (intent.type == EnemyIntentType.Unknown && intent.action != null)
+                    resolvedType = intent.action.intentType;
+
+                isAttackIntent = resolvedType == EnemyIntentType.Attack
+                    || resolvedType == EnemyIntentType.MultiAttack
+                    || resolvedType == EnemyIntentType.SpecialAttack;
             }
         }
 
@@ -388,6 +452,20 @@ public class BattleTurnManager : MonoBehaviour
     /// <summary>推进敌人回合队列：下一只怪物或进入玩家回合</summary>
     public void ProceedEnemyTurn()
     {
+        // 安全检查：如果战斗已结束或敌人列表为空，不再推进回合
+        if (currentPhase == BattlePhase.Win || currentPhase == BattlePhase.Lose)
+        {
+            Debug.Log("[回合循环] 战斗已结束，不再推进回合");
+            return;
+        }
+
+        if (activeEnemies == null || activeEnemies.Count == 0)
+        {
+            Debug.LogWarning("[回合循环] 敌人列表为空，检查战斗是否应结束");
+            BattleCombatResolver.Instance?.CheckBattleOver();
+            return;
+        }
+
         currentEnemyTurnIndex++;
 
         if (currentEnemyTurnIndex < activeEnemies.Count)

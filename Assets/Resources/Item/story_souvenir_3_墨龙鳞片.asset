@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83d3a65f970da0f4296628b01b135614, type: 3}
+  m_Name: "story_souvenir_3_\u58A8\u9F99\u9CDE\u7247"
+  m_EditorClassIdentifier: 
+  idSuffix: souvenir_3
+  id: story_souvenir_3
+  Name: "\u58A8\u9F99\u9CDE\u7247"
+  description: "\u4F20\u8BF4\u4E2D\u58A8\u9F99\u892A\u4E0B\u7684\u9CDE\u7247\uFF0C\u6563\u53D1\u7740\u6DF1\u9083\u7684\u58A8\u6C14"
+  icon: {fileID: 0}
+  rarity: 0
+  basePrice: 300
+  currencyId: 1
+  canSell: 0
+  maxStack: 1
+  shopTag: 0
+  questFlagId: 
+  extraStoryText: 

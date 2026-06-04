@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83d3a65f970da0f4296628b01b135614, type: 3}
+  m_Name: "story_souvenir_5_\u7075\u58A8\u7ED3\u6676"
+  m_EditorClassIdentifier: 
+  idSuffix: souvenir_5
+  id: story_souvenir_5
+  Name: "\u7075\u58A8\u7ED3\u6676"
+  description: "\u7531\u7EAF\u7CB9\u58A8\u6C14\u51DD\u805A\u800C\u6210\u7684\u7ED3\u6676\u4F53"
+  icon: {fileID: 0}
+  rarity: 0
+  basePrice: 400
+  currencyId: 1
+  canSell: 0
+  maxStack: 1
+  shopTag: 0
+  questFlagId: 
+  extraStoryText: 
