@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,6 +42,9 @@ public class BattleManager : MonoBehaviour
     private Vector3 savedExplorePosition;
     private Camera exploreCamera;
 
+    // 转场控制器引用（由 Start 自动查找）
+    private BattleTransitionController battleTransition;
+
     private void Awake()
     {
         if (Instance == null)
@@ -64,10 +68,30 @@ public class BattleManager : MonoBehaviour
     // ============================================
 
     /// <summary>开始战斗（仅在大地图探索状态下允许，防止重复开战）</summary>
-    public void StartBattle(int groupIndex, bool isPreemptive)
+    /// <param name="onTransitionComplete">转场效果完成后、开始加载战斗场景前的回调（用于延迟销毁大地图敌人等）</param>
+    public void StartBattle(int groupIndex, bool isPreemptive, System.Action onTransitionComplete = null)
     {
-        if (BattleTurnManager.Instance.currentPhase == BattlePhase.None)
+        if (BattleTurnManager.Instance.currentPhase != BattlePhase.None) return;
+
+        // 延迟查找：首次 StartBattle 时或场景重建后自动获取最新引用
+        if (battleTransition == null)
+            battleTransition = FindObjectOfType<BattleTransitionController>();
+
+        if (battleTransition != null)
+        {
+            // 先播转场效果，完成后再初始化战斗场景
+            battleTransition.TriggerEncounter(() =>
+            {
+                onTransitionComplete?.Invoke();
+                StartCoroutine(StartBattleRoutine(groupIndex, isPreemptive));
+            });
+        }
+        else
+        {
+            // 没有转场控制器时直接进入战斗（编辑器测试等场景）
+            onTransitionComplete?.Invoke();
             StartCoroutine(StartBattleRoutine(groupIndex, isPreemptive));
+        }
     }
 
     private IEnumerator StartBattleRoutine(int groupIndex, bool isPreemptive)
@@ -77,6 +101,11 @@ public class BattleManager : MonoBehaviour
         turn.currentPhase = BattlePhase.Setup;
 
         Debug.Log("[战斗系统] 检测到敌人，开始初始化战斗场景...");
+
+        // 转场进度重置为0（转场效果在探索场景中由 BattleTransitionController 驱动完毕，
+        // 进入战斗场景后确保恢复正常画面，防止后处理残留）
+        if (battleTransition != null)
+            battleTransition.ResetTransition();
 
         // 1. 显示鼠标光标
         Cursor.visible = true;
@@ -206,6 +235,9 @@ public class BattleManager : MonoBehaviour
         }
 
         Debug.Log("[战斗系统] 敌我双方实体生成完毕，战斗准备完成！");
+
+        // 恢复时间流速（转场效果和战斗加载全程完成后才恢复正常速度）
+        Time.timeScale = 1f;
 
         // 16. 根据先制攻击决定先手
         if (isPreemptive)

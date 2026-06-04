@@ -101,12 +101,16 @@ public class OverworldEnemy : EntityBase
 
     public void OnHitByOverworldAttack(bool isPreemptive)
     {
-        BattleManager.Instance.StartBattle(enemyGroupIndex, isPreemptive);
+        // 冻结状态机防止转场期间敌人移动，捕获 GameObject 避免引用失效
+        var obj = gameObject;
+        enabled = false;
+        BattleManager.Instance.StartBattle(enemyGroupIndex, isPreemptive,
+            onTransitionComplete: () => { if (obj) Destroy(obj); });
+
         if (isPreemptive)
         {
             Debug.Log("<color=green>[先制偷袭！] 玩家大地图远程偷袭怪成功！</color>");
         }
-        Destroy(gameObject);
     }
 
     // ========================================================
