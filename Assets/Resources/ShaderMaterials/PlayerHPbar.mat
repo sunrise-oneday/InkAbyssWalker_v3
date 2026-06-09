@@ -8,10 +8,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PlayerHPbar
-  m_Shader: {fileID: 4800000, guid: bdf8c5d7e736f1b4e9f9d9a3e6f64548, type: 3}
+  m_Shader: {fileID: 4800000, guid: c2d721ac35710b14ab7b148b3af64984, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _HP_MODE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -47,21 +48,30 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _TailTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Billboarding: 0
     - _CurrentHP: 0.7
     - _DelayHP: 0.65
     - _EnableExternalAlpha: 0
     - _FlashSpeed: 5
+    - _HPMode: 1
     - _HighlightPower: 3
     - _HighlightWidth: 0.02
     - _NoiseIntensity: 0.74
+    - _TailLength: 0.15
     - _VerticalBillboarding: 1
     - _WobbleDensity: 3.14
     - _WobbleSpeed: 4
     - _WobbleStrength: 0.009
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorLeft: {r: 0, g: 0.8, b: 1, a: 1}
+    - _ColorRight: {r: 0, g: 0.2, b: 0.8, a: 1}
     - _CurrentHPColor: {r: 1, g: 1, b: 1, a: 1}
     - _DelayColor: {r: 1, g: 1, b: 0, a: 1}
     - _FillRangeX: {r: 0.1, g: 0.85, b: 0, a: 0}

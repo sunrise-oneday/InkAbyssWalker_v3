@@ -7,12 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HPbar_Billboard
+  m_Name: MPbar_BrushTail
   m_Shader: {fileID: 4800000, guid: c2d721ac35710b14ab7b148b3af64984, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _HP_MODE
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -25,11 +24,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BorderTex:
-        m_Texture: {fileID: 2800000, guid: 757407d742ad78441aea5e8961793beb, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1ed67dc610c007d40b55529848ccda2b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _HPNoiseTex:
-        m_Texture: {fileID: 2800000, guid: 0fd912086edd15942b9d78fc8944bc3f, type: 3}
+        m_Texture: {fileID: 2800000, guid: d83fd3f204af7cd45909c0bc77cca0ef, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -46,21 +45,21 @@ Material:
     - _CurrentHP: 1
     - _DelayHP: 1
     - _FlashSpeed: 5
-    - _HPMode: 1
-    - _HighlightPower: 10
-    - _HighlightWidth: 0.1
-    - _NoiseIntensity: 0.76
+    - _HPMode: 0
+    - _HighlightPower: 3
+    - _HighlightWidth: 0.02
+    - _NoiseIntensity: 0.328
     - _TailLength: 0.15
     - _VerticalBillboarding: 1
     - _WobbleDensity: 3.14
-    - _WobbleSpeed: 0.8
-    - _WobbleStrength: 0.001
+    - _WobbleSpeed: 15
+    - _WobbleStrength: 0.03
     m_Colors:
-    - _ColorLeft: {r: 0, g: 0.8, b: 1, a: 1}
-    - _ColorRight: {r: 0, g: 0.2, b: 0.8, a: 1}
-    - _CurrentHPColor: {r: 1, g: 0, b: 0, a: 1}
-    - _DelayColor: {r: 1, g: 1, b: 0, a: 1}
-    - _FillRangeX: {r: 0.1, g: 0.89, b: 0, a: 0}
-    - _FillRangeY: {r: 0.36, g: 0.67, b: 0, a: 0}
+    - _ColorLeft: {r: 0, g: 0.32181984, b: 0.97735846, a: 1}
+    - _ColorRight: {r: 0.028301716, g: 0.81942874, b: 1, a: 1}
+    - _CurrentHPColor: {r: 0.29837662, g: 0.58311284, b: 0.86415094, a: 1}
+    - _DelayColor: {r: 0.29333568, g: 0.31907302, b: 0.3509434, a: 1}
+    - _FillRangeX: {r: 0.07, g: 0.84, b: 0, a: 0}
+    - _FillRangeY: {r: 0.45, g: 0.58, b: 0, a: 0}
     - _HighlightColor: {r: 1.5, g: 1.5, b: 1.5, a: 1}
   m_BuildTextureStacks: []
