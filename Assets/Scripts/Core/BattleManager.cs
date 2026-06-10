@@ -172,6 +172,22 @@ public class BattleManager : MonoBehaviour
             member.currentAP = 3;
         }
 
+        // ★ 新增：确保玩家身上有 ShaderEffectController（挂到 sprite 子物体上）
+        if (playerParty.Count > 0 && playerParty[0] != null)
+        {
+            // 战斗中的 ShaderEffectController 订阅 ParryEvents 事件，
+            // 如果玩家出场时身上没有此组件，防御者发光效果无法触发。
+            if (playerParty[0].sprite != null)
+            {
+                var spriteGO = playerParty[0].sprite.gameObject;
+                if (spriteGO.GetComponent<ShaderEffectController>() == null)
+                {
+                    spriteGO.AddComponent<ShaderEffectController>();
+                    Debug.Log("[ShaderEffectController] 已动态添加到玩家 sprite 子物体");
+                }
+            }
+        }
+
         // 10. 克隆队友
         if (PartyManager.Instance != null)
         {
@@ -270,6 +286,7 @@ public class BattleManager : MonoBehaviour
             Debug.Log("[战斗结算] 胜利！正在执行胜利结算流程...");
 
             BattleUIController.Instance?.ShowVictoryPanel(true);
+            BattleSFXHandler.Instance?.PlaySFX(SFXKey.Victory);
             yield return new WaitForSeconds(3.0f);
             BattleUIController.Instance?.CloseUI();
 
@@ -323,6 +340,7 @@ public class BattleManager : MonoBehaviour
             Debug.Log("[战斗结算] 战败！正在执行战败结算...");
 
             BattleUIController.Instance?.ShowDefeatPanel(true);
+            BattleSFXHandler.Instance?.PlaySFX(SFXKey.Defeat);
             yield return new WaitForSeconds(3.0f);
             BattleUIController.Instance?.CloseUI();
 

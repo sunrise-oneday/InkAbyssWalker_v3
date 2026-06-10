@@ -235,6 +235,7 @@ public class EnemyBattleEntity : BattleEntity
     /// </summary>
     protected override void Die()
     {
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.EnemyDeath, transform.position);
         battleStateMachine.ChangeState<EnemyBattleDieState>();
     }
 }
