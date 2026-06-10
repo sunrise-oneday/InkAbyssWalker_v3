@@ -39,7 +39,7 @@ Shader "2DGames/URP/BattleTransition"
                 float2 uv = input.uv;
                 float2 centerUV = uv - 0.5;
                 //采样破碎纹理
-                half maskValue = saturate(SAMPLE_TEXTURE2D(_CrackMask, sampler_CrackMask, uv).r);
+                half maskValue = saturate(SAMPLE_TEXTURE2D(_CrackMask, sampler_CrackMask, uv).r) ;
 
                 // 让裂缝在转场前期爆闪发光，随着转场进度(0->1)呈现正弦波式的亮起又消散
                 float crackIntensity = maskValue * sin(_Progress * 3.14159);
@@ -79,18 +79,25 @@ Shader "2DGames/URP/BattleTransition"
                     half g = GetSource(sampleUV).g;
                     half b = GetSource(bUV).b;
 
-                    finalColor = half3(r, g, b)/safeSamples;
+                    finalColor += half3(r, g, b);
                 }
+                finalColor /= safeSamples;
+
+                float jumpyProgress = floor(pow(_Progress,2.0) * 3.0) /3.0;
 
                 // 裂隙从屏幕中心向外蔓延：dist 0=中心, dist越大越靠边缘
-                float dist = length(uv - 0.5) * 2.0; // 归一化到 0(中心) ~ 1.4(角落)
-                float spreadEdge = _Progress * 1.5;  // 蔓延半径随进度扩大
+                float dist = length(centerUV) * 2.0; // 归一化到 0(中心) ~ 1.4(角落)
+                float spreadEdge = jumpyProgress  * 1.5;  // 蔓延半径随进度扩大
+
+                float jaggedDistance = dist - maskValue *0.14;
+                float spreadMask = step(jaggedDistance, spreadEdge);
+
+
                 // 在蔓延边缘处形成脉冲波纹（仅边缘发光，内部已裂开、外部未到达）
                 float edgeDist = abs(dist - spreadEdge);
+                float pulseWave = sin(edgeDist * 20.0 - _Time.y * 15.0);
                 float pulse = saturate(sin(edgeDist * _PulseDensity - _Time.y * _PulseSpeed));
                 float edgeFade = 1.0 - smoothstep(0.0, 0.15, edgeDist); // 只在边缘附近可见
-                // 蔓延内部区域：dist < spreadEdge 时裂隙可见
-                float spreadMask = 1.0 - smoothstep(0.0, 0.1, dist - spreadEdge);
                 // 裂隙 = 贴图采样值 × 蔓延遮罩 + 脉冲边缘光
                 float crackVis = maskValue * spreadMask + pulse * edgeFade * 0.3;
                 finalColor += crackGlow * crackVis;
@@ -99,7 +106,7 @@ Shader "2DGames/URP/BattleTransition"
                 // 崩铁转场最后屏幕会炸开一片白光，掩盖新场景加载
                 // 当进度 > 0.7 时，快速向纯白色过渡
                 float flashBite = smoothstep(0.6, 1.0, _Progress);
-                finalColor = lerp(finalColor, half3(1.0, 1.0, 1.0), flashBite * 0.06);
+                finalColor = lerp(finalColor, half3(1.0, 1.0, 1.0), flashBite * 0.5);
 
                 return half4(finalColor, 1.0);
             }

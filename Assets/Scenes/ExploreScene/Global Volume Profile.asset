@@ -32,7 +32,7 @@ MonoBehaviour:
     m_Value: 0
   crackMask:
     m_OverrideState: 1
-    m_Value: {fileID: 2800000, guid: 1ad2eb7d845d8a94badd820e6b1be464, type: 3}
+    m_Value: {fileID: 2800000, guid: a091c17c52fa2f546b52fcdf5c63dbbb, type: 3}
     dimension: 1
   maxZoom:
     m_OverrideState: 1
