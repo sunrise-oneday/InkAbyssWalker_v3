@@ -64,6 +64,16 @@ public class BattleCombatResolver : MonoBehaviour
 
         string debugHeader = $"[攻防判定] 第 {hitIndex + 1} 次攻击   ———————————————\n";
 
+        // ★ 新增：构建事件数据（在判定分支之前，一次性构建）
+        var attacker = BattleTurnManager.Instance.CurrentAttacker;
+        var eventData = new ParryEventData(
+            defender:  defender,
+            attacker:  attacker,
+            hitPoint:  attacker != null ? attacker.transform.position : defender.transform.position,
+            hitIndex:  hitIndex,
+            rawDamage: rawDamage
+        );
+
         // ---- 阶段 1：闪避判定 ----
         if (defender.GetBattleStateMachine().currentState is PlayerBattleDodgeState)
         {
@@ -83,17 +93,20 @@ public class BattleCombatResolver : MonoBehaviour
             turn.allPerfectParriesInCurrentAttack = false;
             Debug.Log($"{debugHeader}<color=red>警告：未检测到任何按键，直接全吃伤害！</color>");
             ApplyDamageFeedback(defender, rawDamage, breakDamage, isPerfect: false, isNormal: false);
+            ParryEvents.FireParryFailed(eventData);
         }
         else if (timeDiff < 0f)
         {
             turn.allPerfectParriesInCurrentAttack = false;
             Debug.Log($"{debugHeader}<color=red>格挡失败！你按晚了 {Mathf.Abs(rawDiffMs):F0} 毫秒！</color>");
             ApplyDamageFeedback(defender, rawDamage, breakDamage, isPerfect: false, isNormal: false);
+            ParryEvents.FireParryFailed(eventData);
         }
         else if (timeDiff <= PerfectWindow)
         {
             Debug.Log($"{debugHeader}<color=green>【完美格挡成功】你提前 {rawDiffMs:F0} 毫秒按下了空格</color>");
             ApplyDamageFeedback(defender, 0, 0, isPerfect: true, isNormal: false);
+            ParryEvents.FirePerfectParry(eventData);
         }
         else if (timeDiff <= NormalWindow)
         {
@@ -101,12 +114,14 @@ public class BattleCombatResolver : MonoBehaviour
             int reducedDamage = Mathf.RoundToInt(rawDamage * 0.3f);
             Debug.Log($"{debugHeader}<color=yellow>[普通格挡] 你提前 {rawDiffMs:F0} 毫秒按下了空格</color>");
             ApplyDamageFeedback(defender, reducedDamage, 0, isPerfect: false, isNormal: true);
+            ParryEvents.FireNormalParry(eventData);
         }
         else
         {
             turn.allPerfectParriesInCurrentAttack = false;
             Debug.Log($"{debugHeader}<color=red>格挡失败！你按太早了，提前了 {rawDiffMs:F0} 毫秒！</color>");
             ApplyDamageFeedback(defender, rawDamage, breakDamage, isPerfect: false, isNormal: false);
+            ParryEvents.FireParryFailed(eventData);
         }
 
         CheckBattleOver();

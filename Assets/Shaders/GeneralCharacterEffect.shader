@@ -10,16 +10,21 @@ Shader "2DGames/URP/GeneralCharacterEffect"
         [Header(DeathDissolve)]
         _DissolveTex ("死亡时的消融纹理", 2D) = "white" {}
         _DissolveProgress ("消融进度", Range(0, 1)) = 0 // 代替复杂的 _Time.y 逻辑，更推荐用 C# 直接控制此值
-
         _LineWidth ("消融线宽", Range(0, 0.6)) = 0.1
         _DissolveSpeed ("消融速度", Range(0, 1)) = 0.5
         [HDR]_DissolveInternalColor ("消融内部颜色", Color) = (0, 0, 0, 1)
         [HDR]_DissolveExternalColor ("消融外部颜色", Color) = (1, 1, 1, 1)
+        
+        [Header(Perfect Parry)]
+        [HDR]_ParryGlowColor ("完美防御发光颜色 (建议高亮蓝色)", Color) = (0, 0.5, 1, 1)
+        _ParryGlowWidth ("发光边缘宽度", Range(0, 5)) = 2.0
+        /*[Toggle(_PARRY_ATTACKER_ON)]_ParryAttackerKeyword ("攻击者受挫/色散残影", Float) = 0
+        _ParryGhostOffset ("残影偏移量", Range(0, 0.1)) = 0.02*/
 
         [Header(Keywords)]
         [Toggle(_DEATH_ON)]_DeathKeyword ("触发死亡消融的关键字", Float) = 0
         [Toggle(_INJURED_ON)]_InjuredKeyword ("触发受伤闪光的关键字", Float) = 0
-
+        [Toggle(_PARRY_DEFENDER_ON)] _ParryDefenderKeyword ("防御者发光效果", Float) = 0
 
     }
 
@@ -42,6 +47,7 @@ Shader "2DGames/URP/GeneralCharacterEffect"
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
+                float4 _MainTex_TexelSize;
                 float4 _FlashColor;
                 float  _FlashIntensity;
 
@@ -51,6 +57,12 @@ Shader "2DGames/URP/GeneralCharacterEffect"
                 float  _DissolveSpeed;
                 float4 _DissolveInternalColor;
                 float4 _DissolveExternalColor;
+                float  _ParryDefenderKeyword;
+                float4 _ParryGlowColor;
+                float  _ParryGlowWidth;
+                // float  _ParryAttackerKeyword;
+                // float  _ParryGhostOffset;
+                
             CBUFFER_END
 
             TEXTURE2D(_MainTex);
@@ -70,6 +82,7 @@ Shader "2DGames/URP/GeneralCharacterEffect"
 
             #pragma shader_feature_local _INJURED_ON
             #pragma shader_feature_local _DEATH_ON
+            #pragma shader_feature_local _PARRY_DEFENDER_ON
 
             struct VertexInput
             {
@@ -106,6 +119,23 @@ Shader "2DGames/URP/GeneralCharacterEffect"
             {
                 // 采样 Sprite 基础图并应用顶点颜色（包含透明度）
                 float4 spriteColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv_MainTex) * input.color;
+                
+                #ifdef _PARRY_DEFENDER_ON //精准防御逻辑
+                    float2 offset = _MainTex_TexelSize.xy * _ParryGlowWidth;
+                    float alphaUp = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv_MainTex + float2(0,offset.y)).a;
+                    float alphaDown = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv_MainTex - float2(0,offset.y)).a;
+                    float alphaLeft = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv_MainTex - float2(offset.x, 0)).a;
+                    float alphaRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv_MainTex + float2(offset.x, 0)).a;
+
+                    float avgAlpha = 0.25 * (alphaUp + alphaDown + alphaLeft + alphaRight);
+                    float innerGlowFactor = spriteColor.a - avgAlpha;
+                    float StrengthAlpha = saturate(innerGlowFactor * 4.0);
+
+                    // 将高亮颜色叠加到边缘，并提升整体角色的明度
+                    spriteColor.rgb = lerp(spriteColor.rgb, _ParryGlowColor.rgb, innerGlowFactor);
+                    spriteColor.rgb += _ParryGlowColor.rgb * 0.3 * spriteColor.a; // 全局淡淡的荧光覆盖
+                #endif
+                
 
                 // 1. 死亡消融逻辑
                 #ifdef _DEATH_ON
@@ -137,6 +167,7 @@ Shader "2DGames/URP/GeneralCharacterEffect"
                     // 修复：只对 .rgb 通道插值，绝不污染原图的 .a 通道，避免方形色块
                     spriteColor.rgb = lerp(spriteColor.rgb, _FlashColor.rgb, _FlashIntensity);
                 #endif
+
 
                 return spriteColor;
             }

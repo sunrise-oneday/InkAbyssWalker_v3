@@ -21,15 +21,33 @@ public class ShaderEffectController : MonoBehaviour
 
     private const string KW_INJURED = "_INJURED_ON";
     private const string KW_DEATH = "_DEATH_ON";
+    private const string KW_PARRY_DEFENDER = "_PARRY_DEFENDER_ON";
+    private const float ParryGlowDuration = 0.3f;
 
     // ---- 运行时状态 ----
     private Coroutine _activeEffect; // 防止重叠调用
+    // 独立协程句柄，与现有 _activeEffect（受伤闪光/死亡消融）互不干扰
+    private Coroutine _activeParryGlow;
 
     private void Awake()
     {
         _sprite = GetComponent<SpriteRenderer>();
         // 首次访问 .material 会自动为这个 renderer 创建材质实例副本
         _materialInstance = _sprite.material;
+    }
+
+    // ========== P0 生命周期管理（格挡发光事件订阅）==========
+
+    private void OnEnable()
+    {
+        ParryEvents.OnPerfectParry += HandleParryGlow;
+        ParryEvents.OnNormalParry  += HandleParryGlow;
+    }
+
+    private void OnDisable()
+    {
+        ParryEvents.OnPerfectParry -= HandleParryGlow;
+        ParryEvents.OnNormalParry  -= HandleParryGlow;
     }
 
     private void SetMaterialVector(int propertyID, Vector4 value)
@@ -74,6 +92,14 @@ public class ShaderEffectController : MonoBehaviour
         _materialInstance.DisableKeyword(KW_DEATH);
         _materialInstance.SetFloat(ID_DissolveProgress, 0f);
         _materialInstance.SetFloat(ID_FlashIntensity, 0f);
+
+        // ★ 新增：清理精准防御发光
+        _materialInstance.DisableKeyword(KW_PARRY_DEFENDER);
+        if (_activeParryGlow != null)
+        {
+            StopCoroutine(_activeParryGlow);
+            _activeParryGlow = null;
+        }
     }
 
     private void OnDestroy()
@@ -86,6 +112,37 @@ public class ShaderEffectController : MonoBehaviour
     // ============================================================
     // 协程
     // ============================================================
+
+    // ========== 格挡发光（新增）==========
+
+    /// <summary>事件响应：精准防御/普通防御共用同一个发光 handler</summary>
+    private void HandleParryGlow(ParryEventData data)
+    {
+        // 安全校验：确认这个 ShaderEffectController 属于防御方实体
+        var myEntity = GetComponentInParent<PlayerBattleEntity>();
+        if (myEntity == null || myEntity != data.Defender) return;
+
+        PlayParryDefenderGlow();
+    }
+
+    /// <summary>启用精准防御发光，0.3s 真实时间后自动关闭</summary>
+    public void PlayParryDefenderGlow()
+    {
+        if (_activeParryGlow != null) StopCoroutine(_activeParryGlow);
+
+        _activeParryGlow = StartCoroutine(ParryGlowRoutine());
+    }
+
+    private IEnumerator ParryGlowRoutine()
+    {
+        _materialInstance.EnableKeyword(KW_PARRY_DEFENDER);
+
+        // 用 WaitForSecondsRealtime，不受顿帧 TimeScale=0.01 影响
+        yield return new WaitForSecondsRealtime(ParryGlowDuration);
+
+        _materialInstance.DisableKeyword(KW_PARRY_DEFENDER);
+        _activeParryGlow = null;
+    }
 
     private IEnumerator HitFlashRoutine(float duration, Color color)
     {
