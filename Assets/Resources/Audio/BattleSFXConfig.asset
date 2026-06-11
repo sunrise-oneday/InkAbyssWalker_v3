@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - key: 100
-    clip: {fileID: 8300000, guid: faf88252550c70248b2c8a0b732f8edf, type: 3}
+    clip: {fileID: 8300000, guid: f44fce0928bd131498a8c42f3917e45f, type: 3}
     volume: 1
     spatialBlend: 0
     pitchMin: 1
@@ -22,6 +22,27 @@ MonoBehaviour:
     priority: 0
   - key: 101
     clip: {fileID: 8300000, guid: 27821aa6482f7824eb7c9e838059ddcc, type: 3}
+    volume: 1
+    spatialBlend: 0
+    pitchMin: 1
+    pitchMax: 1
+    priority: 0
+  - key: 102
+    clip: {fileID: 8300000, guid: 957a62fb02a95704bace6090f95708c2, type: 3}
+    volume: 1
+    spatialBlend: 0
+    pitchMin: 1
+    pitchMax: 1
+    priority: 0
+  - key: 200
+    clip: {fileID: 8300000, guid: f7df33aed71eaca4eb3d0c28a1b04964, type: 3}
+    volume: 1
+    spatialBlend: 0
+    pitchMin: 1
+    pitchMax: 1
+    priority: 0
+  - key: 201
+    clip: {fileID: 8300000, guid: f7df33aed71eaca4eb3d0c28a1b04964, type: 3}
     volume: 1
     spatialBlend: 0
     pitchMin: 1

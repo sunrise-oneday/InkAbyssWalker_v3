@@ -24,10 +24,16 @@ public class ShaderEffectController : MonoBehaviour
     private const string KW_PARRY_DEFENDER = "_PARRY_DEFENDER_ON";
     private const float ParryGlowDuration = 0.3f;
 
+    // ---- 闪避 (Dodge) ----
+    private static readonly int ID_DodgeProgress = Shader.PropertyToID("_DodgeProgress");
+    private const string KW_DODGE = "_DODGE_ON";
+    private const float DodgeGlowDuration = 0.25f;
+
     // ---- 运行时状态 ----
     private Coroutine _activeEffect; // 防止重叠调用
     // 独立协程句柄，与现有 _activeEffect（受伤闪光/死亡消融）互不干扰
     private Coroutine _activeParryGlow;
+    private Coroutine _activeDodgeGlow;
 
     private void Awake()
     {
@@ -42,12 +48,18 @@ public class ShaderEffectController : MonoBehaviour
     {
         ParryEvents.OnPerfectParry += HandleParryGlow;
         ParryEvents.OnNormalParry  += HandleParryGlow;
+
+        DodgeEvents.OnPerfectDodge += HandlePerfectDodge;
+        DodgeEvents.OnNormalDodge  += HandleNormalDodge;
     }
 
     private void OnDisable()
     {
         ParryEvents.OnPerfectParry -= HandleParryGlow;
         ParryEvents.OnNormalParry  -= HandleParryGlow;
+
+        DodgeEvents.OnPerfectDodge -= HandlePerfectDodge;
+        DodgeEvents.OnNormalDodge  -= HandleNormalDodge;
     }
 
     private void SetMaterialVector(int propertyID, Vector4 value)
@@ -100,6 +112,15 @@ public class ShaderEffectController : MonoBehaviour
             StopCoroutine(_activeParryGlow);
             _activeParryGlow = null;
         }
+
+        // ★ 清理闪避效果
+        _materialInstance.DisableKeyword(KW_DODGE);
+        _materialInstance.SetFloat(ID_DodgeProgress, 0f);
+        if (_activeDodgeGlow != null)
+        {
+            StopCoroutine(_activeDodgeGlow);
+            _activeDodgeGlow = null;
+        }
     }
 
     private void OnDestroy()
@@ -142,6 +163,54 @@ public class ShaderEffectController : MonoBehaviour
 
         _materialInstance.DisableKeyword(KW_PARRY_DEFENDER);
         _activeParryGlow = null;
+    }
+
+    // ========== 闪避效果 (Dodge) ==========
+
+    /// <summary>完美闪避：边缘发光 + 完整闪避Shader（顶点膨胀、噪声故障、残影混色、透明度衰减）</summary>
+    private void HandlePerfectDodge(DodgeEventData data)
+    {
+        var myEntity = GetComponentInParent<PlayerBattleEntity>();
+        if (myEntity == null || myEntity != data.Defender) return;
+
+        PlayParryDefenderGlow();
+        PlayDodgeGlow();
+    }
+
+    /// <summary>普通闪避：仅边缘发光（复用精准防御的发光效果）</summary>
+    private void HandleNormalDodge(DodgeEventData data)
+    {
+        var myEntity = GetComponentInParent<PlayerBattleEntity>();
+        if (myEntity == null || myEntity != data.Defender) return;
+
+        PlayParryDefenderGlow();
+    }
+
+    /// <summary>启用 _DODGE_ON 关键字，在 DodgeGlowDuration 内将 _DodgeProgress 从 0 驱动到 1</summary>
+    public void PlayDodgeGlow()
+    {
+        if (_activeDodgeGlow != null) StopCoroutine(_activeDodgeGlow);
+        _activeDodgeGlow = StartCoroutine(DodgeGlowRoutine());
+    }
+
+    private IEnumerator DodgeGlowRoutine()
+    {
+        _materialInstance.EnableKeyword(KW_DODGE);
+        _materialInstance.SetFloat(ID_DodgeProgress, 0f);
+
+        float elapsed = 0f;
+        while (elapsed < DodgeGlowDuration)
+        {
+            // unscaledDeltaTime: 不受 WitchTime (timeScale=0.2) 影响
+            elapsed += Time.unscaledDeltaTime;
+            _materialInstance.SetFloat(ID_DodgeProgress, Mathf.Clamp01(elapsed / DodgeGlowDuration));
+            yield return null;
+        }
+
+        // shader 内部 sin(progress*PI) 产生 0→峰值→0 钟形曲线
+        _materialInstance.SetFloat(ID_DodgeProgress, 0f);
+        _materialInstance.DisableKeyword(KW_DODGE);
+        _activeDodgeGlow = null;
     }
 
     private IEnumerator HitFlashRoutine(float duration, Color color)

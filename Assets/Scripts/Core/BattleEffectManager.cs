@@ -167,6 +167,7 @@ public class BattleEffectManager : MonoBehaviour
 
     /// <summary>
     /// 实例化 PerfectParry 粒子到玩家的 eff 子物体，播完后自动销毁。
+    /// 粒子方向跟随玩家朝向——由 PlayerParryState.Enter() 确保玩家面向攻击者。
     /// </summary>
     private void SpawnPerfectParry(PlayerBattleEntity defender)
     {

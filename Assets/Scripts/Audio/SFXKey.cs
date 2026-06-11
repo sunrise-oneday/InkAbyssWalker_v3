@@ -23,5 +23,9 @@ public enum SFXKey
 
     // ---- 流程 (500+) ----
     Victory = 500,
-    Defeat  = 501
+    Defeat  = 501,
+
+    // ---- 转场 (502+) ----
+    BattleEncounter     = 502,  // 转场冲击（顿帧阶段，短促定格音）
+    BattleEncounterRise = 503,  // 转场上升（撕裂阶段，持续渐强音）
 }

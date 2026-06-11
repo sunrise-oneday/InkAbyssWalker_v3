@@ -77,7 +77,7 @@ public class BattleCombatResolver : MonoBehaviour
         // ---- 阶段 1：闪避判定 ----
         if (defender.GetBattleStateMachine().currentState is PlayerBattleDodgeState)
         {
-            HandleDodge(defender, turn);
+            HandleDodge(defender, turn, rawDamage);
             CheckBattleOver();
             return;
         }
@@ -131,13 +131,18 @@ public class BattleCombatResolver : MonoBehaviour
     // 闪避处理
     // ============================================
 
-    private void HandleDodge(PlayerBattleEntity defender, BattleTurnManager turn)
+    private void HandleDodge(PlayerBattleEntity defender, BattleTurnManager turn, int rawDamage)
     {
         turn.allPerfectParriesInCurrentAttack = false;
 
         float dodgeTimeDiff = Time.time - defender.GetDodgePressTime();
         float dodgeDiffMs = dodgeTimeDiff * 1000f;
         const float PerfectDodgeWindow = 0.12f;
+
+        // 构建事件数据
+        var attacker = turn.CurrentAttacker;
+        Vector3 hitPoint = attacker != null ? attacker.transform.position : defender.transform.position;
+        var eventData = new DodgeEventData(defender, attacker, hitPoint, isPerfect: false, rawDamage);
 
         if (dodgeTimeDiff >= 0f && dodgeTimeDiff <= PerfectDodgeWindow)
         {
@@ -154,11 +159,15 @@ public class BattleCombatResolver : MonoBehaviour
                 res.sharedAP = Mathf.Min(res.sharedAP + 1, res.maxSharedAP);
                 BattleUIController.Instance?.RefreshUI();
             }
+
+            DodgeEvents.FirePerfectDodge(eventData);
         }
         else
         {
             Debug.Log($"[攻防判定] 第 X 次攻击   ———————————————\n<color=cyan>[普通闪避] 成功免疫伤害。时间差: {dodgeDiffMs:F0} 毫秒。</color>");
             defender.FlashColor(new Color(1f, 1f, 1f, 0.4f), 0.12f);
+
+            DodgeEvents.FireNormalDodge(eventData);
         }
 
         defender.UseDodgeInput();

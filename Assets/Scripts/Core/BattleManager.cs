@@ -156,7 +156,13 @@ public class BattleManager : MonoBehaviour
             playerController.rb.velocity = Vector2.zero;
             playerController.rb.position = protagonistSpawn.position;
             Physics2D.SyncTransforms();
-            playerController.AdjustFacingDirection(1);
+
+            // ★ BUG 修复：面向首个敌人出生点，而非硬编码朝右。
+            // 避免玩家朝向锁死导致粒子特效方向错误。
+            float faceDir = 1f;
+            if (enemySpawns.Length > 0)
+                faceDir = enemySpawns[0].transform.position.x - protagonistSpawn.position.x;
+            playerController.AdjustFacingDirection(faceDir);
         }
 
         // 9. 激活战斗组件

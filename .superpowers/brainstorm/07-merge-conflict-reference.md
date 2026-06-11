@@ -1,6 +1,6 @@
 # 07 — 冲突合并参考：修改函数完整清单
 
-> 本文件记录所有被精准防御特效系统修改/新建的函数完整代码。
+> 本文件记录所有被精准防御特效系统 **和战斗音效系统** 修改/新建的函数完整代码。
 > 拉取最新 git 后遇到冲突时，按此文件逐函数对照合并。
 
 ---
@@ -19,7 +19,9 @@
 
 ### 修改的函数：`EvaluateParryAndApplyDamage`
 
-**改动点**：在判定分支之前新增 eventData 构建，每个分支末尾追加一行 `ParryEvents.Fire*()` 调用。
+**改动点**：在判定分支之前新增 eventData 构建，每个分支末尾追加一行 `ParryEvents.Fire*()` 调用。闪避判定调用 `HandleDodge` 时新增 `rawDamage` 参数。
+
+**第二次修改（2026-06-10）**：闪避事件总线——`HandleDodge` 签名新增 `int rawDamage` 参数，内部新增 `DodgeEvents.FirePerfectDodge / FireNormalDodge` 发射。
 
 ```csharp
 public void EvaluateParryAndApplyDamage(int hitIndex, EnemyAttackSequence seq)
@@ -50,7 +52,7 @@ public void EvaluateParryAndApplyDamage(int hitIndex, EnemyAttackSequence seq)
     // ---- 阶段 1：闪避判定 ----
     if (defender.GetBattleStateMachine().currentState is PlayerBattleDodgeState)
     {
-        HandleDodge(defender, turn);
+        HandleDodge(defender, turn, rawDamage);
         CheckBattleOver();
         return;
     }
@@ -103,7 +105,55 @@ public void EvaluateParryAndApplyDamage(int hitIndex, EnemyAttackSequence seq)
 
 **冲突合并策略**：如果远程修改了此函数的判定逻辑（如窗口值、伤害计算），先合并远程的判定逻辑改动，再在每个分支末尾追加 `ParryEvents.Fire*()` 行。eventData 构建块放在 `debugHeader` 之后、闪避判定之前，位置固定。
 
----
+### 修改的函数：`HandleDodge`
+
+**改动点**：2026-06-10 新增闪避事件总线——签名新增 `int rawDamage`，内部构建 `DodgeEventData`，完美/普通闪避分支各自发射 `DodgeEvents.Fire*()`。
+
+```csharp
+private void HandleDodge(PlayerBattleEntity defender, BattleTurnManager turn, int rawDamage)
+{
+    turn.allPerfectParriesInCurrentAttack = false;
+
+    float dodgeTimeDiff = Time.time - defender.GetDodgePressTime();
+    float dodgeDiffMs = dodgeTimeDiff * 1000f;
+    const float PerfectDodgeWindow = 0.12f;
+
+    // 构建事件数据
+    var attacker = turn.CurrentAttacker;
+    Vector3 hitPoint = attacker != null ? attacker.transform.position : defender.transform.position;
+    var eventData = new DodgeEventData(defender, attacker, hitPoint, isPerfect: false, rawDamage);
+
+    if (dodgeTimeDiff >= 0f && dodgeTimeDiff <= PerfectDodgeWindow)
+    {
+        Debug.Log($"[攻防判定] 第 X 次攻击   ———————————————\n<color=lime>【完美闪避】免疫伤害！时间差: {dodgeDiffMs:F0} 毫秒。</color>");
+
+        BattleEffectManager.Instance.WitchTime(0.25f);
+        defender.FlashColor(new Color(0.2f, 1.0f, 0.4f), 0.15f);
+        BattleEffectManager.Instance.ShakeCamera(0.12f, 0.08f);
+
+        if (!turn.hasRestoredDodgeApThisRound)
+        {
+            turn.hasRestoredDodgeApThisRound = true;
+            var res = BattleResourceManager.Instance;
+            res.sharedAP = Mathf.Min(res.sharedAP + 1, res.maxSharedAP);
+            BattleUIController.Instance?.RefreshUI();
+        }
+
+        DodgeEvents.FirePerfectDodge(eventData);
+    }
+    else
+    {
+        Debug.Log($"[攻防判定] 第 X 次攻击   ———————————————\n<color=cyan>[普通闪避] 成功免疫伤害。时间差: {dodgeDiffMs:F0} 毫秒。</color>");
+        defender.FlashColor(new Color(1f, 1f, 1f, 0.4f), 0.12f);
+
+        DodgeEvents.FireNormalDodge(eventData);
+    }
+
+    defender.UseDodgeInput();
+}
+```
+
+**冲突合并策略**：如果远程也修改了 `HandleDodge`（如调整闪避窗口值、视觉反馈），先合并远程的判定逻辑改动，再保留最末尾的 `defender.UseDodgeInput()` 和两个 `DodgeEvents.Fire*()` 发射行。如果远程新加了第三种闪避结果（如"完美闪避返还 AP"变体），在新增分支中补 `DodgeEvents.FirePerfectDodge` 即可。
 
 ## 3. PerfectParry.cs（新建→改为动态实例化模式→交错播放序列）
 
@@ -212,8 +262,14 @@ public class PerfectParry : MonoBehaviour
 private const string KW_PARRY_DEFENDER = "_PARRY_DEFENDER_ON";
 private const float ParryGlowDuration = 0.3f;
 
+// ---- 闪避 (Dodge) ----
+private static readonly int ID_DodgeProgress = Shader.PropertyToID("_DodgeProgress");
+private const string KW_DODGE = "_DODGE_ON";
+private const float DodgeGlowDuration = 0.25f;
+
 // 独立协程句柄，与现有 _activeEffect（受伤闪光/死亡消融）互不干扰
 private Coroutine _activeParryGlow;
+private Coroutine _activeDodgeGlow;
 ```
 
 **冲突合并策略**：这些新增行插在 `KW_DEATH` 常量和 `_activeEffect` 字段之后。如果远程新增了其他常量/字段，按声明顺序排列即可，互不干扰。
@@ -225,12 +281,18 @@ private void OnEnable()
 {
     ParryEvents.OnPerfectParry += HandleParryGlow;
     ParryEvents.OnNormalParry  += HandleParryGlow;
+
+    DodgeEvents.OnPerfectDodge += HandlePerfectDodge;
+    DodgeEvents.OnNormalDodge  += HandleNormalDodge;
 }
 
 private void OnDisable()
 {
     ParryEvents.OnPerfectParry -= HandleParryGlow;
     ParryEvents.OnNormalParry  -= HandleParryGlow;
+
+    DodgeEvents.OnPerfectDodge -= HandlePerfectDodge;
+    DodgeEvents.OnNormalDodge  -= HandleNormalDodge;
 }
 ```
 
@@ -272,6 +334,60 @@ private IEnumerator ParryGlowRoutine()
 
 **冲突合并策略**：这三个方法是全新增的，插在 `HitFlashRoutine` 之前。如果远程新增了其他方法，按功能分区排列即可。
 
+### 新增方法：`HandlePerfectDodge` / `HandleNormalDodge` / `PlayDodgeGlow` / `DodgeGlowRoutine`
+
+**改动点（2026-06-11）**：闪避 Shader 视觉集成——订阅 `DodgeEvents`，完美闪避触发边缘发光 + 完整闪避特效（顶点膨胀、噪声故障、残影混色），普通闪避仅触发边缘发光。
+
+```csharp
+/// <summary>完美闪避：边缘发光 + 完整闪避Shader（顶点膨胀、噪声故障、残影混色、透明度衰减）</summary>
+private void HandlePerfectDodge(DodgeEventData data)
+{
+    var myEntity = GetComponentInParent<PlayerBattleEntity>();
+    if (myEntity == null || myEntity != data.Defender) return;
+
+    PlayParryDefenderGlow();
+    PlayDodgeGlow();
+}
+
+/// <summary>普通闪避：仅边缘发光（复用精准防御的发光效果）</summary>
+private void HandleNormalDodge(DodgeEventData data)
+{
+    var myEntity = GetComponentInParent<PlayerBattleEntity>();
+    if (myEntity == null || myEntity != data.Defender) return;
+
+    PlayParryDefenderGlow();
+}
+
+/// <summary>启用 _DODGE_ON 关键字，在 DodgeGlowDuration 内将 _DodgeProgress 从 0 驱动到 1</summary>
+public void PlayDodgeGlow()
+{
+    if (_activeDodgeGlow != null) StopCoroutine(_activeDodgeGlow);
+    _activeDodgeGlow = StartCoroutine(DodgeGlowRoutine());
+}
+
+private IEnumerator DodgeGlowRoutine()
+{
+    _materialInstance.EnableKeyword(KW_DODGE);
+    _materialInstance.SetFloat(ID_DodgeProgress, 0f);
+
+    float elapsed = 0f;
+    while (elapsed < DodgeGlowDuration)
+    {
+        // unscaledDeltaTime: 不受 WitchTime (timeScale=0.2) 影响
+        elapsed += Time.unscaledDeltaTime;
+        _materialInstance.SetFloat(ID_DodgeProgress, Mathf.Clamp01(elapsed / DodgeGlowDuration));
+        yield return null;
+    }
+
+    // shader 内部 sin(progress*PI) 产生 0→峰值→0 钟形曲线
+    _materialInstance.SetFloat(ID_DodgeProgress, 0f);
+    _materialInstance.DisableKeyword(KW_DODGE);
+    _activeDodgeGlow = null;
+}
+```
+
+**冲突合并策略**：四个方法全新增，插在 `ParryGlowRoutine` 之后、`HitFlashRoutine` 之前。`_activeDodgeGlow` 句柄与 `_activeParryGlow` 独立，互不干扰。`DodgeGlowRoutine` 必须使用 `Time.unscaledDeltaTime`（不能用 `Time.deltaTime`），否则 WitchTime 期间特效会慢 5 倍。
+
 ### 修改方法：`ResetEffect`
 
 ```csharp
@@ -294,10 +410,19 @@ public void ResetEffect()
         StopCoroutine(_activeParryGlow);
         _activeParryGlow = null;
     }
+
+    // ★ 清理闪避效果
+    _materialInstance.DisableKeyword(KW_DODGE);
+    _materialInstance.SetFloat(ID_DodgeProgress, 0f);
+    if (_activeDodgeGlow != null)
+    {
+        StopCoroutine(_activeDodgeGlow);
+        _activeDodgeGlow = null;
+    }
 }
 ```
 
-**冲突合并策略**：如果远程也修改了 `ResetEffect`（如新增其他 keyword 清理），先合并远程的清理逻辑，再在末尾追加 `_PARRY_DEFENDER_ON` 清理块。
+**冲突合并策略**：如果远程也修改了 `ResetEffect`（如新增其他 keyword 清理），先合并远程的清理逻辑，再在末尾追加 `_PARRY_DEFENDER_ON` 和 `_DODGE_ON` 清理块。
 
 ---
 
@@ -408,10 +533,15 @@ private IEnumerator HitStopRoutine(float duration)
 
 ### 新增方法：`HandlePerfectParryFreeze`
 
+> 完整版本见 §7。
+
 ```csharp
 private void HandlePerfectParryFreeze(ParryEventData data)
 {
-    // ★ P0 修正：先停止现有 CameraShake（避免顿帧后"延迟爆发"）
+    // ---- 实例化 PerfectParry 粒子到玩家 eff 子物体 ----
+    SpawnPerfectParry(data.Defender);
+
+    // ★ P0 修正：先停止现有 CameraShake（避免顿帧后“延迟爆发”）
     if (_activeCameraShake != null)
     {
         StopCoroutine(_activeCameraShake);
@@ -575,6 +705,10 @@ private void HandlePerfectParryFreeze(ParryEventData data)
 ### 新增方法：`SpawnPerfectParry`
 
 ```csharp
+/// <summary>
+/// 实例化 PerfectParry 粒子到玩家的 eff 子物体，播完后自动销毁。
+/// 粒子方向跟随玩家朝向——由 PlayerParryState.Enter() 确保玩家面向攻击者。
+/// </summary>
 private void SpawnPerfectParry(PlayerBattleEntity defender)
 {
     if (defender == null) return;
@@ -605,3 +739,306 @@ private void SpawnPerfectParry(PlayerBattleEntity defender)
 ```
 
 **冲突合并策略**：`SpawnPerfectParry` 是全新增方法，放在 `PerfectParryShakeRoutine` 之后、`StopAllTimeScaleCoroutines` 之前即可。
+
+---
+
+## 7b. PlayerParryState.cs（修改——朝向修复）
+
+路径：`Assets/Scripts/Battle/Player/State/PlayerParryState.cs`
+
+### 修改位置：`Enter()` 方法，清空输入之后、动作分流之前
+
+**BUG 修复（2026-06-10）**：进入招架状态时强制玩家面向当前攻击者，解决粒子特效跟随错误朝向的问题。
+
+```csharp
+public override void Enter()
+{
+    base.Enter();
+
+    owner.UseParryInput();
+    owner.UseDodgeInput();
+    owner.SetHorizontalVelocity(0f);
+
+    // ========================================================
+    // BUG 修复：强制玩家面向当前攻击者。
+    // 战斗开始时朝向可能被锁死为朝右，导致粒子特效跟随错误朝向。
+    // 在此处修正，确保招架时玩家始终面向敌人。
+    // ========================================================
+    var currentAttacker = BattleTurnManager.Instance?.CurrentAttacker;
+    if (currentAttacker != null)
+    {
+        float dirToAttacker = currentAttacker.transform.position.x - owner.transform.position.x;
+        if (Mathf.Abs(dirToAttacker) > 0.01f)
+            owner.AdjustFacingDirection(dirToAttacker);
+    }
+
+    // （后续动作分流逻辑不变...）
+```
+
+**冲突合并策略**：新增块在清空输入之后、动作分流 `if (owner.currentFormIndex == 2)` 之前插入。如果远程在 Enter() 中也有新增逻辑，保持朝向修复在最前面（清空输入之后）。
+
+---
+
+## 7c. BattleManager.cs（修改——初始朝向修复）
+
+路径：`Assets/Scripts/Core/BattleManager.cs`
+
+### 修改位置：`StartBattleRoutine` 步骤 8
+
+**BUG 修复（2026-06-10）**：玩家进入战斗时面向首个敌人出生点，而非硬编码朝右。
+
+```csharp
+        // 8. 瞬移玩家到战斗舞台
+        if (playerController != null && protagonistSpawn != null)
+        {
+            playerController.rb.velocity = Vector2.zero;
+            playerController.rb.position = protagonistSpawn.position;
+            Physics2D.SyncTransforms();
+
+            // ★ BUG 修复：面向首个敌人出生点，而非硬编码朝右。
+            float faceDir = 1f;
+            if (enemySpawns.Length > 0)
+                faceDir = enemySpawns[0].transform.position.x - protagonistSpawn.position.x;
+            playerController.AdjustFacingDirection(faceDir);
+        }
+```
+
+**冲突合并策略**：仅修改步骤 8 最后一行 `AdjustFacingDirection` 的参数。如果远程修改了步骤 8 的其他部分（如瞬移逻辑），保留远程改动并将 `AdjustFacingDirection(faceDir)` 放在 `Physics2D.SyncTransforms()` 之后。
+
+---
+
+# 战斗音效系统（08-audio-system-design）
+
+> 以下 §8–§11 记录战斗音效子系统的新增/修改文件。
+
+---
+
+## 8. SFXKey.cs / SFXConfigSO.cs / BattleSFXHandler.cs（新建，无冲突风险）
+
+| 文件 | 路径 |
+|------|------|
+| SFXKey.cs | `Assets/Scripts/Audio/SFXKey.cs` |
+| SFXConfigSO.cs | `Assets/Scripts/Audio/SFXConfigSO.cs` |
+| BattleSFXHandler.cs | `Assets/Scripts/Audio/BattleSFXHandler.cs` |
+
+三个文件均为新建，不存在冲突。完整代码参见 `08-audio-system-design.md` §2–§4。
+
+**第二次修改（2026-06-10）**：`BattleSFXHandler` 新增 `DodgeEvents` 订阅（`OnPerfectDodge` / `OnNormalDodge`）。
+
+**关键设计约束**：
+- `BattleSFXHandler` 使用被动式单例（Awake 赋值），必须在场景中预先放置 GameObject
+- 订阅 `ParryEvents` 三事件 + `DodgeEvents` 双事件（OnEnable/OnDisable 生命周期规范）
+- `PlaySFX` 音量乘算 `AudioManager.Instance.MasterVolume * SFXVolume`（只读引用，零侵入）
+- 100ms 防抖使用 `Time.unscaledTime`，顿帧期间不会拉长
+
+---
+
+## 9. PlayerCastSkillState.cs（修改，+1 行）
+
+路径：`Assets/Scripts/Battle/Enemy/State/PlayerCastSkillState.cs`
+
+### 修改位置：`Enter()` 方法末尾（第 38 行后）
+
+```csharp
+        Debug.Log($"[状态机] 玩家开始施放技能: {currentSkill.skillName} | 动画总时长: {skillDuration:F2}s");
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.SkillCast); // ★ 音效新增
+    }
+```
+
+**冲突合并策略**：如果远程在 `Enter()` 末尾追加了其他逻辑，将音效行放在所有新增行的最末尾即可。
+
+---
+
+## 10. PlayerBattleUltimateState.cs（修改，+1 行）
+
+路径：`Assets/Scripts/Battle/Player/State/PlayerBattleUltimateState.cs`
+
+### 修改位置：`Enter()` 中 early return 之后的 Debug.Log 之后（第 37 行后）
+
+```csharp
+        Debug.Log($"<color=orange>[大招调试] ===== 正式进入 PlayerBattleUltimateState 奥义释放！ =====\n" +
+                  $"奥义名称: {currentUlt.ultimateName} | 动画状态: {currentUlt.animationState} | 配置时间: {currentUlt.duration}s | 判定进度: {currentUlt.hitProgress}</color>");
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.UltimateCast); // ★ 音效新增
+    }
+```
+
+**冲突合并策略**：必须放在 early return 守护之后（确保未配大招时不播音效）。如果远程在 early return 后也追加了逻辑，将音效行放在最后。
+
+---
+
+## 11. EnemyBattleEntity.cs（修改，+1 行）
+
+路径：`Assets/Scripts/Battle/Base/EnemyBattleEntity.cs`
+
+### 修改位置：`Die()` 方法开头，`ChangeState` 之前（第 238 行前）
+
+```csharp
+    protected override void Die()
+    {
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.EnemyDeath, transform.position); // ★ 音效新增
+        battleStateMachine.ChangeState<EnemyBattleDieState>();
+    }
+```
+
+**冲突合并策略**：如果远程修改了 `Die()` 方法（如新增死亡奖励、动画回调），将音效行放在 `ChangeState` 之前。
+
+---
+
+## 12. BattleManager.cs — 音效系统修改（+2 行）
+
+路径：`Assets/Scripts/Core/BattleManager.cs`
+
+> 此文件同时被格挡视觉系统（§6）和音效系统修改。两处改动位于不同方法，互不干扰。
+
+### 修改位置 A：`EndBattleRoutine` 胜利分支（第 288 行后）
+
+```csharp
+            BattleUIController.Instance?.ShowVictoryPanel(true);
+            BattleSFXHandler.Instance?.PlaySFX(SFXKey.Victory); // ★ 音效新增
+            yield return new WaitForSeconds(3.0f);
+```
+
+### 修改位置 B：`EndBattleRoutine` 战败分支（第 341 行后）
+
+```csharp
+            BattleUIController.Instance?.ShowDefeatPanel(true);
+            BattleSFXHandler.Instance?.PlaySFX(SFXKey.Defeat); // ★ 音效新增
+            yield return new WaitForSeconds(3.0f);
+```
+
+**冲突合并策略**：两处均在 `ShowXxxPanel` 之后、`WaitForSeconds` 之前插入。与 §6 的 `StartBattleRoutine` 改动位于不同方法，不会冲突。如果远程修改了 `EndBattleRoutine` 的结算流程，将音效行保持在 `ShowXxxPanel` 之后即可。
+
+---
+
+## 13. DodgeEvents.cs（新建，无冲突风险）
+
+路径：`Assets/Scripts/Battle/Events/DodgeEvents.cs`
+
+整个文件为新建，仿照 `ParryEvents` 模式。如果远程有同名文件，保留此版本。
+
+```csharp
+public readonly struct DodgeEventData
+{
+    public readonly PlayerBattleEntity Defender;
+    public readonly EnemyBattleEntity  Attacker;
+    public readonly Vector3            HitPoint;
+    public readonly bool               IsPerfect;
+    public readonly int                RawDamage;
+    // 构造函数省略（见完整代码）
+}
+
+public static class DodgeEvents
+{
+    public static event Action<DodgeEventData> OnPerfectDodge;
+    public static event Action<DodgeEventData> OnNormalDodge;
+
+    public static void FirePerfectDodge(DodgeEventData data) => SafeInvoke(OnPerfectDodge, data);
+    public static void FireNormalDodge(DodgeEventData data)  => SafeInvoke(OnNormalDodge, data);
+}
+```
+
+**冲突合并策略**：整个文件为新建，不存在冲突。如果远程有同名文件，比较双方接口保留完整参数集。
+
+---
+
+## BattleSFXHandler.cs — 闪避事件订阅补充
+
+> 此节附属于 §8。在 `BattleSFXHandler` 的 `OnEnable` / `OnDisable` 中新增 `DodgeEvents` 订阅对。
+
+```csharp
+private void OnEnable()
+{
+    // 原格挡订阅...
+    ParryEvents.OnPerfectParry += HandlePerfectParry;
+    ParryEvents.OnNormalParry  += HandleNormalParry;
+    ParryEvents.OnParryFailed  += HandleParryFailed;
+
+    // ★ 新增：闪避订阅
+    DodgeEvents.OnPerfectDodge += HandlePerfectDodge;
+    DodgeEvents.OnNormalDodge  += HandleNormalDodge;
+}
+
+private void OnDisable()
+{
+    // 原格挡解绑...
+    ParryEvents.OnPerfectParry -= HandlePerfectParry;
+    ParryEvents.OnNormalParry  -= HandleNormalParry;
+    ParryEvents.OnParryFailed  -= HandleParryFailed;
+
+    // ★ 新增：闪避解绑
+    DodgeEvents.OnPerfectDodge -= HandlePerfectDodge;
+    DodgeEvents.OnNormalDodge  -= HandleNormalDodge;
+}
+
+private void HandlePerfectDodge(DodgeEventData data) => PlaySFX(SFXKey.PerfectDodge, data.HitPoint);
+private void HandleNormalDodge(DodgeEventData data)  => PlaySFX(SFXKey.NormalDodge,  data.HitPoint);
+```
+
+**冲突合并策略**：如果远程也在 `OnEnable`/`OnDisable` 中新增了其他事件订阅，将 DodgeEvents 订阅对与 ParryEvents 订阅对并列排列即可。
+
+---
+
+# 战斗转场音效系统（transition-audio）
+
+> 以下 §14–§15 记录战斗转场音效子系统的新增/修改文件。
+> 设计文档：`.superpowers/brainstorm/transition-audio/00-transition-audio-overview.md`
+
+---
+
+## 14. SFXKey.cs（修改——新增转场音效枚举值）
+
+路径：`Assets/Scripts/Audio/SFXKey.cs`
+
+> 此文件已在 §8 中新建。本次在现有 500+ 流程类下追加两个转场音效键。
+
+### 修改位置：枚举末尾，`Defeat = 501` 之后
+
+```csharp
+    // ---- 流程 (500+) ----
+    Victory = 500,
+    Defeat  = 501,
+
+    // ---- 转场 (502+) ----
+    BattleEncounter     = 502,  // 转场冲击（顿帧阶段，短促定格音）
+    BattleEncounterRise = 503,  // 转场上升（撕裂阶段，持续渐强音）
+}
+```
+
+**冲突合并策略**：如果远程在 500+ 区间也新增了其他流程音效（如 `BattleStart = 504`），保留远程新增项，将转场枚举值紧接 `Defeat = 501` 之后排列。枚举值显式赋值，顺序不影响序列化。
+
+---
+
+## 15. BattleTransitionController.cs（修改，+2 行）
+
+路径：`Assets/Scripts/CustomPostProcessing/BattleTransitionController.cs`
+
+### 修改位置：`EncounterRoutine` 协程内，两个阶段各 +1 行
+
+**改动点**：在顿帧阶段和空间撕裂阶段各插入一行 `BattleSFXHandler.Instance?.PlaySFX()` 调用，替代原有的占位注释。
+
+```csharp
+    private IEnumerator EncounterRoutine(System.Action onComplete = null)
+    {
+        // 1. 顿帧阶段 (Hit-stop)
+        Time.timeScale = 0.05f;
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.BattleEncounter); // ★ 新增：转场冲击音效（短促定格音）
+
+        // 等待现实时间度过顿帧期
+        yield return new WaitForSecondsRealtime(hitStopTime);
+
+        // 2. 空间撕裂/拉取阶段 (驱动后处理，全程保持低流速)
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.BattleEncounterRise); // ★ 新增：转场上升音效（持续渐强音）
+        float elapsedTime = 0f;
+        while (elapsedTime < transitionDuration)
+        {
+            // ... 现有逻辑不变 ...
+        }
+
+        // ... 后续逻辑不变 ...
+    }
+```
+
+**冲突合并策略**：
+- 第一行替换了原有占位注释 `// 播放破碎/拔剑音效...`，如果远程在此位置也替换了该注释（如改为其他音效调用），保留远程实现并在其后追加 `BattleEncounterRise` 调用。
+- 第二行在 `float elapsedTime = 0f;` 之前插入，如果远程在此处也有新增逻辑，将音效行保持在循环之前。
+- 两行调用均使用 `?.` 安全调用，`BattleSFXHandler` 为 DontDestroyOnLoad 单例，探索场景中始终可用。

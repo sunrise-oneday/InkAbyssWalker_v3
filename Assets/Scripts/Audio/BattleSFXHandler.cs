@@ -82,6 +82,9 @@ public class BattleSFXHandler : MonoBehaviour
         ParryEvents.OnPerfectParry += HandlePerfectParry;
         ParryEvents.OnNormalParry  += HandleNormalParry;
         ParryEvents.OnParryFailed  += HandleParryFailed;
+
+        DodgeEvents.OnPerfectDodge += HandlePerfectDodge;
+        DodgeEvents.OnNormalDodge  += HandleNormalDodge;
     }
 
     private void OnDisable()
@@ -89,11 +92,17 @@ public class BattleSFXHandler : MonoBehaviour
         ParryEvents.OnPerfectParry -= HandlePerfectParry;
         ParryEvents.OnNormalParry  -= HandleNormalParry;
         ParryEvents.OnParryFailed  -= HandleParryFailed;
+
+        DodgeEvents.OnPerfectDodge -= HandlePerfectDodge;
+        DodgeEvents.OnNormalDodge  -= HandleNormalDodge;
     }
 
     private void HandlePerfectParry(ParryEventData data) => PlaySFX(SFXKey.PerfectParry, data.HitPoint);
     private void HandleNormalParry(ParryEventData data)  => PlaySFX(SFXKey.NormalParry,  data.HitPoint);
     private void HandleParryFailed(ParryEventData data)  => PlaySFX(SFXKey.ParryFailed, data.HitPoint);
+
+    private void HandlePerfectDodge(DodgeEventData data) => PlaySFX(SFXKey.PerfectDodge, data.HitPoint);
+    private void HandleNormalDodge(DodgeEventData data)  => PlaySFX(SFXKey.NormalDodge,  data.HitPoint);
 
     // ============================================
     // 核心播放方法

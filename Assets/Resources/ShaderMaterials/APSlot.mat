@@ -39,5 +39,5 @@ Material:
     - _Spacing: 17
     - _TexWidth: 1366
     m_Colors:
-    - _TintColor: {r: 1.119902, g: 0.6159461, b: 0, a: 1}
+    - _TintColor: {r: 1.0920664, g: 0.60063654, b: 0, a: 1}
   m_BuildTextureStacks: []

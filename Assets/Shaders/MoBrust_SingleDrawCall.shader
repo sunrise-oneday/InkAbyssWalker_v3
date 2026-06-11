@@ -86,14 +86,16 @@ Shader "2DGames/URP/MoBrust_Ultimate"
 
                 // 按 UV.x 进行左右渐变融合
                 // 如果你想上下渐变，把 input.baseUVx 改成 input.uv.y 即可
-                float4 uvGradientColor = lerp(input.colorLeft, input.colorRight, saturate(input.baseUVx));
-
-                float masterAlpha = input.colorLeft.a;//剥离 Alpha 渐变，直接使用原生顶点的 Alpha (colorLeft.a) 作为全局透明度
+                float3 uvGradientColor = lerp(input.colorLeft.rgb, input.colorRight.rgb, saturate(input.baseUVx));
+                float progress = input.colorLeft.a;
+                float scanCenter = lerp(1.2, -0.2, progress);
+                float rightToLeftAlpha = saturate((input.baseUVx - scanCenter) * 5.0);
+                //float masterAlpha = input.colorLeft.a;//剥离 Alpha 渐变，直接使用原生顶点的 Alpha (colorLeft.a) 作为全局透明度
 
                 // 最终颜色 = 贴图灰度形状 * 渐变色
                 float4 finalColor;
                 finalColor.rgb = maskValue * uvGradientColor.rgb;
-                finalColor.a   = maskValue * masterAlpha;
+                finalColor.a   = maskValue * rightToLeftAlpha;
 
                 return finalColor;
             }

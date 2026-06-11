@@ -45,7 +45,7 @@ Shader "2DGames/URP/BattleTransition"
                 float crackIntensity = maskValue * sin(_Progress * 3.14159);
                 // 赋予裂缝科幻的高光颜色！崩铁常用水蓝色或紫红色。这里使用极高亮度的白蓝色叠加
                 // 乘以 3.0 强制制造 HDR 过曝发光感
-                half3 crackGlow = half3(0.8, 0.9, 1.2) * crackIntensity * 3.0;
+                half3 crackGlow = half3(0.3, 0.1, 0.5) * crackIntensity * 3.0;
                 // --------------------------------------------------------
                 // 质变核心 2：微观撕裂而非果冻扭曲
                 // --------------------------------------------------------
