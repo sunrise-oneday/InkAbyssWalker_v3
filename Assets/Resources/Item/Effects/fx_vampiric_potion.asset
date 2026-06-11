@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfe306f4314177647b31c7b89032e79c, type: 3}
+  m_Name: fx_vampiric_potion
+  m_EditorClassIdentifier: 
+  effectId: vampiric_potion
+  effectTag: 
+  displayNameKey: "\u5438\u8840\u7075\u836F"
+  descriptionKey: "\u6240\u6709\u653B\u51FB\u5438\u88408%"
+  targetSkillId: 
+  lifestealPercent: 0.08
+  critRateBonus: 0
+  critDamageBonus: 0
+  damageReductionPercent: 0
+  fireDamageBonusPercent: 0
+  iceDamageBonusPercent: 0
+  waterDamageBonusPercent: 0
+  instantHealHp: 0
+  instantHealMp: 0
+  instantShield: 0
+  instantUltCharge: 0
+  tempAttackBonus: 0
+  tempDefenseBonus: 0
+  tempBuffDuration: 0
+  ultimateDamageBonusPercent: 0
+  shieldBonusPercent: 0

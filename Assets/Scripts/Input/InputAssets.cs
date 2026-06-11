@@ -559,7 +559,7 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""NextTab"",
                     ""type"": ""Button"",
-                    ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""id"": ""3715d211-b317-4a9b-95b4-ec76d94380b1"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1075,6 +1075,15 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickForm3"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1108,6 +1117,17 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""QuickForm2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1c2d3e4-f5a6-7890-bcde-f12345678901"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""QuickForm3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1243,6 +1263,7 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         m_Battle_Shoot = m_Battle.FindAction("Shoot", throwIfNotFound: true);
         m_Battle_QuickForm1 = m_Battle.FindAction("QuickForm1", throwIfNotFound: true);
         m_Battle_QuickForm2 = m_Battle.FindAction("QuickForm2", throwIfNotFound: true);
+        m_Battle_QuickForm3 = m_Battle.FindAction("QuickForm3", throwIfNotFound: true);
     }
 
     ~@InputAssets()
@@ -1732,6 +1753,7 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
     private readonly InputAction m_Battle_Shoot;
     private readonly InputAction m_Battle_QuickForm1;
     private readonly InputAction m_Battle_QuickForm2;
+    private readonly InputAction m_Battle_QuickForm3;
     /// <summary>
     /// Provides access to input actions defined in input action map "Battle".
     /// </summary>
@@ -1767,6 +1789,10 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Battle/QuickForm2".
         /// </summary>
         public InputAction @QuickForm2 => m_Wrapper.m_Battle_QuickForm2;
+        /// <summary>
+        /// Provides access to the underlying input action "Battle/QuickForm3".
+        /// </summary>
+        public InputAction @QuickForm3 => m_Wrapper.m_Battle_QuickForm3;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1811,6 +1837,9 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
             @QuickForm2.started += instance.OnQuickForm2;
             @QuickForm2.performed += instance.OnQuickForm2;
             @QuickForm2.canceled += instance.OnQuickForm2;
+            @QuickForm3.started += instance.OnQuickForm3;
+            @QuickForm3.performed += instance.OnQuickForm3;
+            @QuickForm3.canceled += instance.OnQuickForm3;
         }
 
         /// <summary>
@@ -1840,6 +1869,9 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
             @QuickForm2.started -= instance.OnQuickForm2;
             @QuickForm2.performed -= instance.OnQuickForm2;
             @QuickForm2.canceled -= instance.OnQuickForm2;
+            @QuickForm3.started -= instance.OnQuickForm3;
+            @QuickForm3.performed -= instance.OnQuickForm3;
+            @QuickForm3.canceled -= instance.OnQuickForm3;
         }
 
         /// <summary>
@@ -2150,5 +2182,12 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnQuickForm2(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "QuickForm3" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnQuickForm3(InputAction.CallbackContext context);
     }
 }

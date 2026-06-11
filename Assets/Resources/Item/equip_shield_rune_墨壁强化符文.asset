@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b340259f1df4b14c9ad80d708f0a7a9, type: 3}
+  m_Name: "equip_shield_rune_\u58A8\u58C1\u5F3A\u5316\u7B26\u6587"
+  m_EditorClassIdentifier: 
+  idSuffix: shield_rune
+  id: equip_shield_rune
+  Name: "\u58A8\u58C1\u5F3A\u5316\u7B26\u6587"
+  description: "\u63D0\u5347\u62A4\u76FE\u91CF\u4E0E\u9632\u5FA1\u529B"
+  icon: {fileID: 0}
+  rarity: 2
+  basePrice: 300
+  currencyId: 1
+  canSell: 1
+  maxStack: 1
+  shopTag: 0
+  statMods:
+  - stat: 2
+    flat: 5
+    percent: 0
+  skillMods: []
+  extraEffects:
+  - {fileID: 11400000, guid: c8fe2c9fc768ecc43960267109376e17, type: 2}

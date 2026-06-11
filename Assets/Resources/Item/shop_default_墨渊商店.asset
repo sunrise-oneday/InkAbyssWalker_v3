@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d7d43dfde631854b8fe9834c4c1b1d6, type: 3}
+  m_Name: "shop_default_\u58A8\u6E0A\u5546\u5E97"
+  m_EditorClassIdentifier: 
+  idSuffix: default
+  shopId: shop_default
+  displayName: "\u58A8\u6E0A\u5546\u5E97"
+  fixedStock:
+  - item: {fileID: 11400000, guid: 09ed77d21a10fdb48a9eea1c1666767e, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: a24f58bd5ceea1d40a4beeab454f5ab9, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: 35002876dbd1e7245b0426a2f5cda79d, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: c2897e2349a1c1547b197cd7931ec5a7, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: 8959a3ede41951d4d8a91da585375361, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: 129dd0be41e29454fbd6fa22ef03d9bb, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: 1e3d113641e397b40909908d092b24e0, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: 39fa5d4482efda549aa9866365df4417, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: 0d14b2eed010ab548aab8d0924fc4a87, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: 83bb952322499bd46b3c73b28959c915, type: 2}
+    priceOverride: 0
+    stock: 10
+    weight: 1
+  - item: {fileID: 11400000, guid: 455348e109c1f394fbc3fe7ed4fe095b, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: 6112e2ccf5d310c4caf1f8a5cb995672, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: 0fbb832ae7cb42746b0ebb531180e649, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: 86cc5b47d55d46846a82670404433032, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: d2844e0aa37d2914a9dfbc6e51a15d69, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: 3130f797e635b55409bb61bc32f28a72, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: 02d8f7137bde56b4c99421133f2839a4, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: 62de6c25dfd30294aafdcf1fc7ff1c1f, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: 1d784d052ee661142adc5d58f01d5e9e, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: 8457132d61d71984bb46815c0cb6a420, type: 2}
+    priceOverride: 0
+    stock: 5
+    weight: 1
+  - item: {fileID: 11400000, guid: be37f02d1f17fec46a532a9abdf1ccba, type: 2}
+    priceOverride: 0
+    stock: 1
+    weight: 1
+  - item: {fileID: 11400000, guid: 2b12bc01a75cd874fbb909e539b53b1e, type: 2}
+    priceOverride: 0
+    stock: 1
+    weight: 1
+  - item: {fileID: 11400000, guid: 23d0952c718173f409fce63f449cc751, type: 2}
+    priceOverride: 0
+    stock: 1
+    weight: 1
+  randomPool: []
+  randomSlotCount: 3
+  priceMultiplier: 1
+  refreshCostCurrency: 0

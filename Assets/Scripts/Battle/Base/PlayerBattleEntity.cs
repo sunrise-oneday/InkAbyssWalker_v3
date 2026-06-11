@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using StoreAndInventory;
 
 public class PlayerBattleEntity : BattleEntity
 {
@@ -130,6 +131,9 @@ public class PlayerBattleEntity : BattleEntity
 
     private void OnEnable()
     {
+        // 初始化三形态技能（如果未配置则使用 SkillInitializer）
+        InitializeSkillsIfNeeded();
+
         LoadUnlockedUltimates();
 
         // 从存档加载装备的大招
@@ -147,9 +151,9 @@ public class PlayerBattleEntity : BattleEntity
         }
 
         // 防空:如果没有装备大招，且有已解锁的，默认装备第一个
-        bool isDefaultOrEmpty = string.IsNullOrEmpty(equippedUltimate.ultimateName) ||
-                                equippedUltimate.ultimateName == "0" ||
-                                equippedUltimate.ultimateName == "none";
+        bool isDefaultOrEmpty = string.IsNullOrEmpty(equippedUltimate?.ultimateName) ||
+                                equippedUltimate?.ultimateName == "0" ||
+                                equippedUltimate?.ultimateName == "none";
 
         if (isDefaultOrEmpty && unlockedUltimates.Count > 0)
         {
@@ -163,6 +167,67 @@ public class PlayerBattleEntity : BattleEntity
             InputManager.Instance.Battle.OnDodgePressed += OnDodgePressedReceived;
             InputManager.Instance.Battle.OnAimPressed += OnAimPressedReceived;
             InputManager.Instance.Battle.OnShootPressed += OnShootPressedReceived;
+        }
+    }
+
+    /// <summary>
+    /// 初始化三形态技能（强制使用 SkillInitializer 的数据）
+    /// </summary>
+    private void InitializeSkillsIfNeeded()
+    {
+        // 强制使用 SkillInitializer 初始化，确保技能和描述都是最新的
+        var allSkills = SkillInitializer.InitAllForms();
+        var formNames = new string[] { "初临形态", "流墨形态", "守墨形态" };
+        var descriptions = new string[]
+        {
+            SkillInitializer.GetChuLinDescription(),
+            SkillInitializer.GetLiuMoDescription(),
+            SkillInitializer.GetShouMoDescription()
+        };
+
+        // 如果 availableForms 为空，创建三形态
+        if (availableForms == null || availableForms.Count == 0)
+        {
+            availableForms = new List<PlayerForm>();
+
+            for (int i = 0; i < 3; i++)
+            {
+                availableForms.Add(new PlayerForm
+                {
+                    formName = formNames[i],
+                    description = descriptions[i],
+                    apCostToSwitch = 2,
+                    availableSkills = allSkills[i]
+                });
+            }
+
+            Debug.Log("[技能初始化] 三形态已创建并初始化完成");
+        }
+        else
+        {
+            // 强制更新现有形态的技能和描述
+            for (int i = 0; i < availableForms.Count && i < allSkills.Count; i++)
+            {
+                availableForms[i].availableSkills = allSkills[i];
+                availableForms[i].description = descriptions[i];
+                availableForms[i].apCostToSwitch = 2; // 强制设置形态切换消耗 2AP
+
+                // 如果形态名称为空或占位符，设置正确的名称
+                if (string.IsNullOrEmpty(availableForms[i].formName) ||
+                    availableForms[i].formName.Contains("形态") == false)
+                {
+                    availableForms[i].formName = formNames[i];
+                }
+
+                Debug.Log($"[技能初始化] {availableForms[i].formName} 技能和描述已更新，切换消耗: {availableForms[i].apCostToSwitch} AP");
+            }
+        }
+
+        // 添加调试日志，确认技能初始化
+        Debug.Log($"[技能初始化] 完成，形态数量: {availableForms.Count}");
+        foreach (var form in availableForms)
+        {
+            Debug.Log($"  - {form.formName}: {form.availableSkills?.Count ?? 0} 个技能");
         }
     }
 
@@ -320,7 +385,8 @@ public class PlayerBattleEntity : BattleEntity
 
 
     /// <summary>
-    /// UGUI 按钮点击时触发此施法指令（安全切入施法状态） [3]
+    /// UGUI 按钮点击时触发此施法指令（安全切入施法状态）
+    /// 支持元素附着系统（参考明日方舟终末地）
     /// </summary>
     public void CastSkill(Skill skill, BattleEntity target)
     {
@@ -331,24 +397,43 @@ public class PlayerBattleEntity : BattleEntity
             PendingSkill = skill;
             PendingTarget = target;
 
-
-            // ========================================================
-            // 核心修改:施放技能时，为队伍的公共大招槽充能! [3, 5]
-            // ========================================================
+            // 施放技能时，为队伍的公共大招槽充能
             BattleResourceManager.Instance.ChargeUltimate(skill.ultChargeValue);
 
-
-            // 1. 如果技能配置了附着元素，施法时自动挂载给目标的属性 Stats 上! [3]
+            // 如果技能配置了附着元素，施法时自动挂载给目标
             if (skill.applyElement != ElementType.None)
             {
-                if (skill.applyElement == ElementType.Fire)
+                switch (skill.applyElement)
                 {
-                    target.Stats.AddBuff(new FireAuraBuff(skill.buffDuration));
+                    case ElementType.Fire:
+                        target.Stats.AddBuff(new FireAuraBuff(skill.buffDuration, skill.auraStacks));
+                        break;
+                    case ElementType.Ice:
+                        target.Stats.AddBuff(new IceAuraBuff(skill.buffDuration, skill.auraStacks));
+                        break;
+                    case ElementType.Water:
+                        target.Stats.AddBuff(new WaterAuraBuff(skill.buffDuration, skill.auraStacks));
+                        break;
                 }
-                else if (skill.applyElement == ElementType.Ice)
+            }
+
+            // 特殊技能处理：墨壁和墨甲提供护盾
+            if (skill.skillName == "墨壁")
+            {
+                Stats.AddShield(15);
+                Debug.Log($"[技能] {skill.skillName}：获得 15 点护盾");
+            }
+            else if (skill.skillName == "墨甲")
+            {
+                // 全队获得护盾
+                foreach (var member in BattleManager.Instance.playerParty)
                 {
-                    target.Stats.AddBuff(new IceAuraBuff(skill.buffDuration));
+                    if (member != null)
+                    {
+                        member.Stats.AddShield(10);
+                    }
                 }
+                Debug.Log($"[技能] {skill.skillName}：全队获得 10 点护盾");
             }
 
             battleStateMachine.ChangeState<PlayerCastSkillState>();
@@ -396,7 +481,16 @@ public class PlayerBattleEntity : BattleEntity
         if (PendingSkill == null || PendingTarget == null)
             return;
 
-        var finalDamage = PendingTarget.ReceiveAttack(PendingSkill.baseDamage, PendingSkill.breakDamage);
+        // 技能基础伤害 + 该技能槽符文攻击加成（技能专属，不影响其他技能）
+        int effectiveDamage = PendingSkill.baseDamage;
+        effectiveDamage += BattleStatSyncBridge.GetRuneAttackBonus(PendingSkill.skillName);
+
+        // 玩家自身 Buff 出战拦截器链修正（如虚弱降低攻击力）
+        for (int i = Stats.activeBuffs.Count - 1; i >= 0; i--)
+        {
+            effectiveDamage = Stats.activeBuffs[i].OnBeforeDealDamage(effectiveDamage);
+        }
+        var finalDamage = PendingTarget.ReceiveAttack(effectiveDamage, PendingSkill.breakDamage);
 
         equipmentEffectRunner?.OnAfterDealDamage(this, PendingSkill, finalDamage);
 

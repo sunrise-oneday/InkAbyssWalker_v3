@@ -34,6 +34,7 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private EntityHudSpawner hudSpawner;
 
     private PlayerBattleEntity mainPlayer;
+    public PlayerBattleEntity MainPlayer => mainPlayer;
 
     private void Awake()
     {

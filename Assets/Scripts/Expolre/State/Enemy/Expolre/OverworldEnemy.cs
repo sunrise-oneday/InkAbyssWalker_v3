@@ -101,11 +101,25 @@ public class OverworldEnemy : EntityBase
 
     public void OnHitByOverworldAttack(bool isPreemptive)
     {
+        // 调试日志
+        Debug.Log($"[战斗调试] OverworldEnemy.OnHitByOverworldAttack 被调用！" +
+                  $" enemyGroupIndex={enemyGroupIndex}, isPreemptive={isPreemptive}" +
+                  $" | BattleManager.Instance={(BattleManager.Instance != null ? "存在" : "NULL")}" +
+                  $" | 敌人={gameObject.name}");
+
         // 冻结状态机防止转场期间敌人移动，捕获 GameObject 避免引用失效
         var obj = gameObject;
         enabled = false;
-        BattleManager.Instance.StartBattle(enemyGroupIndex, isPreemptive,
-            onTransitionComplete: () => { if (obj) Destroy(obj); });
+
+        if (BattleManager.Instance != null)
+        {
+            BattleManager.Instance.StartBattle(enemyGroupIndex, isPreemptive,
+                onTransitionComplete: () => { if (obj) Destroy(obj); });
+        }
+        else
+        {
+            Debug.LogError("[战斗调试] BattleManager.Instance 为 NULL！无法开始战斗！");
+        }
 
         if (isPreemptive)
         {

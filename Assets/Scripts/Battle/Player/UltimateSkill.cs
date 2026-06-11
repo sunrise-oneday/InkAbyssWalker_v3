@@ -6,6 +6,7 @@ public class UltimateSkill
 {
     public string ultimateName;         // 大招名称
     public string animationState;       // 大招对应的动画 State 名字（例如 Player_Ultimate_Laser）
+    public Sprite icon;                 // 大招图标
     public string description;
     public float duration = 1.6f;       // 该大招的完整动画时长（秒）
     public float hitProgress = 0.5f;     // 伤害落点进度（0~1，例如 0.5 代表动画播放到 50% 进度时发生落地伤害判定）

@@ -7,6 +7,7 @@ Shader "2DGames/URP/HUDBar"
         [NoScaleOffset] _BorderTex ("Border Texture (边框贴图)", 2D) = "white" {}
         _HPNoiseTex ("Noise Texture (表面肌理贴图)", 2D) = "white" {}
         _NoiseIntensity ("Noise Intensity (肌理强度)", Range(0, 1)) = 0.5
+        [Toggle(_Bill_ON)]_Billboarding ("广告牌是否开启", Float) = 0
 
         [Header(Billboarding)]
         [Toggle(_Bill_ON)]_Billboarding ("广告牌是否开启", Float) = 0
@@ -67,6 +68,7 @@ Shader "2DGames/URP/HUDBar"
                 float _DelayHP;
                 float4 _DelayColor;
                 float _VerticalBillboarding;
+                float _Billboarding;
 
                 // HP mode
                 float _FlashSpeed;

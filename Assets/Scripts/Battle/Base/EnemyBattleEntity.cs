@@ -1,13 +1,16 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
+using Battle.Enemy;
 
 public class EnemyBattleEntity : BattleEntity
 {
     [Header("敌人多段连击配置")]
     [SerializeField] private EnemyAttackSequence attackSequence;
-    [Header("Battle Reward")]
-    [Tooltip("Ink rewarded when this enemy is defeated")]
-    public int inkReward = 10;
+
+    [Header("敌人AI系统")]
+    [SerializeField] private EnemyAI enemyAI;                    // AI决策组件
+    [SerializeField] private EnemyIntent currentIntent;          // 当前意图
+    [SerializeField] private EnemyAction currentAction;          // 当前行动
 
     // ========================================================
     // 核心重构：声明并运行属于怪物自己的【战斗状态机】！
@@ -21,7 +24,7 @@ public class EnemyBattleEntity : BattleEntity
 
     [Header("死亡可选项 [5]")]
     [Tooltip("勾选后，怪物死亡播放完动画 2 秒后会自动渐隐消失；不勾选则永远留在场上")]
-    public bool destroyOnDeath = false;
+    public bool destroyOnDeath = false; // <--- 核心补齐：必须加上这一行！
 
     private void OnEnable()
     {
@@ -54,7 +57,7 @@ public class EnemyBattleEntity : BattleEntity
 
         if (Stats.isBroken)
         {
-            // 如果自己被玩家打至"破防"（白色进度条归零），
+            // 如果自己被玩家打至“破防”（白色进度条归零），
             // 在玩家的回合内，身体瞬间切入【战斗眩晕状态（EnemyBattleStunState）】！ [5]
             if (!(battleStateMachine.currentState is EnemyBattleStunState))
             {
@@ -67,7 +70,7 @@ public class EnemyBattleEntity : BattleEntity
             // 如果破防恢复了（通常在它的回合结束、RecoverFromBreak 被调用时触发）
             if (battleStateMachine.currentState is EnemyBattleStunState)
             {
-                // 细节防错：必须确保身上此时也没有其他"眩晕 Buff"挂着，才允许恢复到正常的战斗待机！
+                // 细节防错：必须确保身上此时也没有其他“眩晕 Buff”挂着，才允许恢复到正常的战斗待机！
                 bool hasStun = Stats.activeBuffs.Exists(b => b is StunBuff);
                 if (!hasStun)
                 {
@@ -102,7 +105,7 @@ public class EnemyBattleEntity : BattleEntity
             if (battleStateMachine.currentState is EnemyBattleStunState)
             {
                 // 细节防错：只有在身上【既没有眩晕 Buff】，【也没有处于破防状态】时，才恢复待机！
-                // 这能完美避免"眩晕 Buff 消失了，但怪依然在破防状态下，结果怪自动站起来"的严重逻辑 Bug！ [5]
+                // 这能完美避免“眩晕 Buff 消失了，但怪依然在破防状态下，结果怪自动站起来”的严重逻辑 Bug！ [5]
                 if (!Stats.isBroken)
                 {
                     battleStateMachine.ChangeState<EnemyBattleIdleState>();
@@ -122,6 +125,7 @@ public class EnemyBattleEntity : BattleEntity
         battleStateMachine.RegisterState(new EnemyBattleStunState());
         battleStateMachine.RegisterState(new EnemyBattleDieState());  // 死亡
 
+
         battleStateMachine.ChangeState<EnemyBattleIdleState>(); // 默认待机
 
         // 运行时一次性将名字转换为 Hash 缓存 [2]
@@ -137,7 +141,7 @@ public class EnemyBattleEntity : BattleEntity
 
     // ========================================================
     // 核心补齐：必须在 Update 和 FixedUpdate 里驱动怪物的战斗状态机！
-    // 漏掉这两个方法，怪物的状态切换后就会原地"断电冰冻"，无法倒计时和结束回合！ [2]
+    // 漏掉这两个方法，怪物的状态切换后就会原地“断电冰冻”，无法倒计时和结束回合！ [2]
     // ========================================================
     private void Update()
     {
@@ -159,6 +163,127 @@ public class EnemyBattleEntity : BattleEntity
     public StateMachine<EnemyBattleEntity> GetBattleStateMachine() => battleStateMachine;
     public EnemyAttackSequence GetAttackSequence() => attackSequence;
 
+    // AI和意图相关方法
+    public EnemyAI GetEnemyAI() => enemyAI;
+    public EnemyIntent GetCurrentIntent() => currentIntent;
+    public EnemyAction GetCurrentAction() => currentAction;
+
+    /// <summary>意图改变事件</summary>
+    public event System.Action<EnemyIntent> OnIntentChanged;
+
+    /// <summary>
+    /// 设置当前意图（由AI决策系统调用）
+    /// </summary>
+    public void SetCurrentIntent(EnemyIntent intent)
+    {
+        currentIntent = intent;
+        if (intent != null)
+        {
+            currentAction = intent.action;
+        }
+        // 触发意图改变事件
+        OnIntentChanged?.Invoke(intent);
+    }
+
+    /// <summary>
+    /// 执行格挡行动（获得护盾）
+    /// </summary>
+    public void ExecuteBlockAction()
+    {
+        if (currentAction != null && currentAction.intentType == EnemyIntentType.Block)
+        {
+            Stats.AddShield(currentAction.shieldAmount);
+            Debug.Log($"[敌人行动] {gameObject.name} 执行格挡，获得 {currentAction.shieldAmount} 护盾");
+        }
+    }
+
+    /// <summary>
+    /// 执行Debuff行动（给玩家施加负面效果）
+    /// </summary>
+    public void ExecuteDebuffAction(CharacterStats targetStats)
+    {
+        if (currentAction == null || currentAction.debuffs == null) return;
+
+        foreach (var debuffConfig in currentAction.debuffs)
+        {
+            Buff debuff = CreateDebuffByName(debuffConfig);
+            if (debuff != null)
+            {
+                targetStats.AddBuff(debuff);
+                Debug.Log($"[敌人行动] {gameObject.name} 对目标施加 {debuffConfig.buffTypeName}，持续 {debuffConfig.duration} 回合");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 根据Buff类型名称创建Buff实例（使用BuffFactory）
+    /// 支持简写名称（如"Weaken"自动匹配"WeakenBuff"）
+    /// </summary>
+    private Buff CreateDebuffByName(EnemyDebuffConfig config)
+    {
+        // 先尝试直接使用完整类名
+        Buff buff = BuffFactory.Create(config.buffTypeName, config.duration, config.value);
+
+        // 如果失败，尝试添加 "Buff" 后缀
+        if (buff == null && !config.buffTypeName.EndsWith("Buff"))
+        {
+            buff = BuffFactory.Create(config.buffTypeName + "Buff", config.duration, config.value);
+        }
+
+        return buff;
+    }
+
+    /// <summary>
+    /// 执行回血行动
+    /// </summary>
+    public void ExecuteHealAction()
+    {
+        if (currentAction != null && currentAction.intentType == EnemyIntentType.Heal)
+        {
+            Stats.Heal(currentAction.healAmount);
+            Debug.Log($"[敌人行动] {gameObject.name} 执行回血，恢复 {currentAction.healAmount} HP");
+        }
+    }
+
+    /// <summary>
+    /// 执行召唤行动
+    /// </summary>
+    public void ExecuteSummonAction()
+    {
+        if (currentAction == null || currentAction.summonPrefab == null) return;
+
+        for (int i = 0; i < currentAction.summonCount; i++)
+        {
+            // 在敌人附近随机位置生成召唤物
+            Vector3 spawnPos = transform.position + new Vector3(Random.Range(-2f, 2f), Random.Range(-1f, 1f), 0);
+            GameObject summoned = Instantiate(currentAction.summonPrefab, spawnPos, Quaternion.identity);
+            Debug.Log($"[敌人行动] {gameObject.name} 召唤了 {summoned.name}");
+        }
+    }
+
+    /// <summary>
+    /// 执行强化行动
+    /// </summary>
+    public void ExecuteStrengthenAction()
+    {
+        if (currentAction == null) return;
+
+        switch (currentAction.strengthenType)
+        {
+            case "attack":
+                Stats.attack += currentAction.strengthenAmount;
+                Debug.Log($"[敌人行动] {gameObject.name} 攻击力提升 {currentAction.strengthenAmount}，当前攻击: {Stats.attack}");
+                break;
+            case "defense":
+                Stats.defense += currentAction.strengthenAmount;
+                Debug.Log($"[敌人行动] {gameObject.name} 防御力提升 {currentAction.strengthenAmount}，当前防御: {Stats.defense}");
+                break;
+            default:
+                Debug.LogWarning($"[EnemyBattleEntity] 未知的强化类型: {currentAction.strengthenType}");
+                break;
+        }
+    }
+
     // ========================================================
     // 核心新增：接收动画事件，全自动完成攻击变招与伤害落点！ [1]
     // ========================================================
@@ -177,6 +302,7 @@ public class EnemyBattleEntity : BattleEntity
     /// <summary>
     /// 动画事件：招式变招，在动作即将结束前的一帧上右键添加，自动平滑切入下一斩！ [1, 2]
     /// </summary>
+    /// <param name="nextIndex">下一斩的索引（例如：第一斩末尾事件传 1，第二斩末尾事件传 2）</param>
     public void TriggerNextAttack(int nextIndex)
     {
         if (anim != null && HitAnimHashes != null && nextIndex < HitAnimHashes.Length)
@@ -214,19 +340,36 @@ public class EnemyBattleEntity : BattleEntity
     }
 
     /// <summary>
+    /// 设置当前是否为行动中的敌人（显示/隐藏向下箭头▼指示器）
+    /// </summary>
+    public void SetCurrentAttacker(bool isAttacking)
+    {
+        EntityHUD hud = GetComponentInChildren<EntityHUD>();
+        if (hud != null)
+        {
+            hud.SetCurrentAttacker(isAttacking);
+        }
+    }
+
+    /// <summary>
     /// 动画事件：【时机闪红警告】！在伤害落点前的 0.2 ~ 0.25 秒处的帧上，右键添加该事件。
-    /// 调用后，怪物身上会闪烁刺眼的红色光芒，作为玩家按下空格键的"视觉哨兵"！
+    /// 调用后，怪物身上会闪烁刺眼的红色光芒，作为玩家按下空格键的”视觉哨兵”！
     /// </summary>
     public void TriggerParryIndicator()
     {
-        var controller = sprite?.GetComponent<ShaderEffectController>();
-        if (controller != null)
+        StartCoroutine(FlashColorRoutine(Color.red, 0.15f));
+    }
+
+    // ========================================================
+    // 物理/视觉表现通用协程
+    // ========================================================
+    private IEnumerator FlashColorRoutine(Color color, float duration)
+    {
+        if (sprite != null)
         {
-            controller.PlayHitFlash(0.15f, Color.red);
-        }
-        else
-        {
-            FlashColor(Color.red, 0.15f);
+            sprite.color = color;            
+            yield return new WaitForSeconds(duration);
+            sprite.color = Color.white; // 恢复正常白色
         }
     }
 

@@ -42,6 +42,14 @@ public class BattleInputReader : InputAssets.IBattleActions
         }
     }
 
+    public void OnQuickForm3(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            OnQuickFormPressed.Invoke(2);
+        }
+    }
+
     public void OnDodge(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)

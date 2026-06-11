@@ -55,6 +55,53 @@ public class BuffTooltipPanel : BasePanel
             tooltipPanel.SetActive(false);
     }
 
+    /// <summary>显示单个 Buff 的悬浮提示（用于鼠标悬停在单个图标上）</summary>
+    public void ShowBuffTooltip(Buff buff, Vector3 position)
+    {
+        if (tooltipPanel == null || buff == null) return;
+
+        // 清空旧条目
+        foreach (Transform child in tooltipListContainer)
+            Destroy(child.gameObject);
+
+        // 创建单个 Buff 详情
+        GameObject rowObj = Instantiate(tooltipRowPrefab, tooltipListContainer);
+
+        var iconImg = rowObj.transform.Find("Icon")?.GetComponent<Image>();
+        if (iconImg != null) iconImg.sprite = buff.icon;
+
+        var nameTxt = rowObj.transform.Find("txtName")?.GetComponent<Text>();
+        if (nameTxt != null) nameTxt.text = buff.buffName;
+
+        var descTxt = rowObj.transform.Find("txtDesc")?.GetComponent<Text>();
+        if (descTxt != null)
+        {
+            string desc = buff.description;
+            if (buff.stacks > 1)
+                desc += $" <color=yellow>(x{buff.stacks})</color>";
+            desc += $" <color=yellow>(剩余 {buff.durationTurns} 回合)</color>";
+            descTxt.text = desc;
+        }
+
+        // 阻止射线穿透
+        var cg = tooltipPanel.GetComponent<CanvasGroup>();
+        if (cg == null) cg = tooltipPanel.AddComponent<CanvasGroup>();
+        cg.blocksRaycasts = false;
+        cg.interactable = false;
+
+        tooltipPanel.SetActive(true);
+
+        // 设置位置（在图标上方）
+        tooltipPanel.transform.position = position + new Vector3(0, 50f, 0);
+    }
+
+    /// <summary>隐藏单个 Buff 提示</summary>
+    public void HideBuffTooltip()
+    {
+        if (tooltipPanel != null)
+            tooltipPanel.SetActive(false);
+    }
+
     /// <summary>跟随鼠标位置</summary>
     private void UpdatePosition()
     {

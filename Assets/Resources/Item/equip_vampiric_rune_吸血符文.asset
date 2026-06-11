@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b340259f1df4b14c9ad80d708f0a7a9, type: 3}
+  m_Name: "equip_vampiric_rune_\u5438\u8840\u7B26\u6587"
+  m_EditorClassIdentifier: 
+  idSuffix: vampiric_rune
+  id: equip_vampiric_rune
+  Name: "\u5438\u8840\u7B26\u6587"
+  description: "\u58A8\u523A\u547D\u4E2D\u65F6\u5438\u53D6\u751F\u547D\u529B"
+  icon: {fileID: 0}
+  rarity: 1
+  basePrice: 200
+  currencyId: 1
+  canSell: 1
+  maxStack: 1
+  shopTag: 0
+  statMods: []
+  skillMods:
+  - targetKind: 0
+    targetId: "\u58A8\u523A"
+    modType: 2
+    value: 0.2
+    requiredFormName: 
+  extraEffects:
+  - {fileID: 11400000, guid: 90d18bf8548b7434ea999921f063a68b, type: 2}

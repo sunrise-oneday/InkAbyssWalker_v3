@@ -1,0 +1,289 @@
+fileFormatVersion: 2
+guid: c4c2f773d262fd044a7ac4471664e3d4
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: CountAttack_2
+      rect:
+        serializedVersion: 2
+        x: 1104
+        y: 250
+        width: 144
+        height: 230
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bc38e3e04f0dd240aaa39bbe047e5a3
+      internalID: 268616043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CountAttack_4
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 250
+        width: 148
+        height: 230
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 622f015c420a2544198a756264040eee
+      internalID: -1415944079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CountAttack_6
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 250
+        width: 144
+        height: 230
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d9cdecec09d88b449f945f4b2e7b97d
+      internalID: 1095274950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CountAttack_7
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 250
+        width: 179
+        height: 230
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78a2634f0359e034e99539509f53e626
+      internalID: 1804633284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CountAttack_8
+      rect:
+        serializedVersion: 2
+        x: 854
+        y: 250
+        width: 225
+        height: 230
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eaa29313667af704e9aac70afdf7e187
+      internalID: 609528649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CountAttack_10
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 250
+        width: 226
+        height: 230
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a9d8c3e4102d1b46ba75660552d112a
+      internalID: 323835106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      CountAttack_0: 1929299340
+      CountAttack_1: 871773006
+      CountAttack_10: 323835106
+      CountAttack_11: -2001950996
+      CountAttack_12: -690474489
+      CountAttack_13: -2084077004
+      CountAttack_14: 1506195717
+      CountAttack_15: 1800026242
+      CountAttack_16: 1193573208
+      CountAttack_17: 451633348
+      CountAttack_18: -1115819341
+      CountAttack_19: -834385253
+      CountAttack_2: 268616043
+      CountAttack_20: -973959535
+      CountAttack_21: -978476808
+      CountAttack_22: 1965405789
+      CountAttack_23: -1595142494
+      CountAttack_24: -373399134
+      CountAttack_25: 1520400944
+      CountAttack_26: 430714439
+      CountAttack_27: 1051929991
+      CountAttack_28: 1390304398
+      CountAttack_29: 57973419
+      CountAttack_3: -1500867493
+      CountAttack_30: -1129319892
+      CountAttack_31: -2122856956
+      CountAttack_32: 1652330361
+      CountAttack_33: 2077000247
+      CountAttack_34: 2091271971
+      CountAttack_35: 1081393631
+      CountAttack_36: 626721132
+      CountAttack_37: -1001103312
+      CountAttack_38: 1097863772
+      CountAttack_39: -434627377
+      CountAttack_4: -1415944079
+      CountAttack_40: -349581740
+      CountAttack_41: 1996479323
+      CountAttack_42: 1610659408
+      CountAttack_43: -841501451
+      CountAttack_44: -1226286560
+      CountAttack_45: 1563415780
+      CountAttack_46: -934696464
+      CountAttack_47: -1044139002
+      CountAttack_48: -1272535047
+      CountAttack_5: -1679055806
+      CountAttack_6: 1095274950
+      CountAttack_7: 1804633284
+      CountAttack_8: 609528649
+      CountAttack_9: -1976947490
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

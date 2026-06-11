@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="30.0.4">
+  <diagram name="符文技能关联">
+    <mxGraphModel dx="1422" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 标题 -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size:20px&quot;&gt;符文与技能关联关系图&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="550" y="10" width="400" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 三个形态分组 -->
+        <!-- 初临形态 -->
+        <mxCell id="form1" value="初临形态 (ChuLin)" style="swimlane;startSize=30;fillColor=#1a2744;strokeColor=#6c8ebf;fontColor=#dae8fc;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="460" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sk1_1" value="墨刺" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a3a5a;strokeColor=#6c8ebf;fontColor=#ffffff;" vertex="1" parent="form1">
+          <mxGeometry x="20" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sk1_2" value="炎墨&#xa;(火)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5a2a1a;strokeColor=#ff6644;fontColor=#ffffff;" vertex="1" parent="form1">
+          <mxGeometry x="120" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sk1_3" value="寒墨&#xa;(冰)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a5a;strokeColor=#44aaff;fontColor=#ffffff;" vertex="1" parent="form1">
+          <mxGeometry x="220" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sk1_4" value="墨涌" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a3a5a;strokeColor=#6c8ebf;fontColor=#ffffff;" vertex="1" parent="form1">
+          <mxGeometry x="320" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="form1_desc" value="元素附加形态: 火/冰元素应用，为其他形态创造反应条件" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#888888;fontSize=11;" vertex="1" parent="form1">
+          <mxGeometry x="20" y="110" width="420" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 流墨形态 -->
+        <mxCell id="form2" value="流墨形态 (LiuMo)" style="swimlane;startSize=30;fillColor=#1a2744;strokeColor=#82b366;fontColor=#d5e8d4;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="460" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sk2_1" value="墨影斩" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a3a5a;strokeColor=#82b366;fontColor=#ffffff;" vertex="1" parent="form2">
+          <mxGeometry x="20" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sk2_2" value="焰追&#xa;(水)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a4a4a;strokeColor=#44ccaa;fontColor=#ffffff;" vertex="1" parent="form2">
+          <mxGeometry x="120" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sk2_3" value="冰追&#xa;(水)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a4a4a;strokeColor=#44ccaa;fontColor=#ffffff;" vertex="1" parent="form2">
+          <mxGeometry x="220" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sk2_4" value="残墨" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a3a5a;strokeColor=#82b366;fontColor=#ffffff;" vertex="1" parent="form2">
+          <mxGeometry x="320" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="form2_desc" value="元素反应形态: 水元素 + 触发燃烧/冻结/蒸发反应" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#888888;fontSize=11;" vertex="1" parent="form2">
+          <mxGeometry x="20" y="110" width="420" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 守墨形态 -->
+        <mxCell id="form3" value="守墨形态 (ShouMo)" style="swimlane;startSize=30;fillColor=#1a2744;strokeColor=#d6b656;fontColor=#fff2cc;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="460" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sk3_1" value="墨壁&#xa;(护盾)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a3a5a;strokeColor=#d6b656;fontColor=#ffffff;" vertex="1" parent="form3">
+          <mxGeometry x="20" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sk3_2" value="墨缚&#xa;(冰)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a5a;strokeColor=#44aaff;fontColor=#ffffff;" vertex="1" parent="form3">
+          <mxGeometry x="120" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sk3_3" value="反墨" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a3a5a;strokeColor=#d6b656;fontColor=#ffffff;" vertex="1" parent="form3">
+          <mxGeometry x="220" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sk3_4" value="墨甲&#xa;(护盾)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a3a5a;strokeColor=#d6b656;fontColor=#ffffff;" vertex="1" parent="form3">
+          <mxGeometry x="320" y="45" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="form3_desc" value="防御控制形态: 护盾/冰元素/反击，适合持久战" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#888888;fontSize=11;" vertex="1" parent="form3">
+          <mxGeometry x="20" y="110" width="420" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 大招 -->
+        <mxCell id="ultForm" value="大招" style="swimlane;startSize=30;fillColor=#3a2a10;strokeColor=#FFD700;fontColor=#FFD700;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="720" width="460" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ult1" value="万剑归宗&#xa;(单体)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3a2a10;strokeColor=#FFD700;fontColor=#ffffff;" vertex="1" parent="ultForm">
+          <mxGeometry x="60" y="45" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ult2" value="冰霜封印&#xa;(控制)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a5a;strokeColor=#44aaff;fontColor=#ffffff;" vertex="1" parent="ultForm">
+          <mxGeometry x="240" y="45" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- 右侧：符文列表 -->
+        <mxCell id="runeTitle" value="&lt;b style=&quot;font-size:16px&quot;&gt;符文&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="750" y="60" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Common 符文 -->
+        <mxCell id="r_iron" value="铁壁符文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a2a2a;strokeColor=#999999;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="580" y="110" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r_mana" value="泉涌符文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a2a2a;strokeColor=#999999;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="700" y="110" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Rare 符文 -->
+        <mxCell id="r_flame" value="炎灵符文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#4488FF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="580" y="170" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r_frost" value="霜灵符文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#4488FF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="700" y="170" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r_vamp" value="吸血符文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2744;strokeColor=#4488FF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="820" y="170" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Epic 符文 -->
+        <mxCell id="r_crit" value="暴击符文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a1a3a;strokeColor=#AA44FF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="580" y="230" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r_mog" value="墨涌强化" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a1a3a;strokeColor=#AA44FF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="700" y="230" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r_hanmo" value="寒墨节能" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a1a3a;strokeColor=#AA44FF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="820" y="230" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r_shield" value="墨壁强化" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2a1a3a;strokeColor=#AA44FF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="940" y="230" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Legendary 符文 -->
+        <mxCell id="r_ultimate" value="万剑符文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3a2a10;strokeColor=#FFD700;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="580" y="290" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 连线：符文 → 技能 -->
+        <!-- 炎灵 → 炎墨 (火) -->
+        <mxCell id="conn1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ff6644;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r_flame" target="sk1_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="190" />
+              <mxPoint x="540" y="115" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn1label" value="火技能伤+15%&#xa;火伤+10%" style="text;html=1;align=right;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#ff6644;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="140" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 霜灵 → 寒墨/墨缚 (冰) -->
+        <mxCell id="conn2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#44aaff;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r_frost" target="sk1_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="190" />
+              <mxPoint x="550" y="115" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn2label" value="冰技能伤+15%&#xa;冰伤+10%" style="text;html=1;align=right;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#44aaff;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="100" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 吸血 → 墨刺 -->
+        <mxCell id="conn3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4488FF;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r_vamp" target="sk1_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="190" />
+              <mxPoint x="530" y="95" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn3label" value="墨刺伤+20%&#xa;吸血10%" style="text;html=1;align=right;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#4488FF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="410" y="60" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 墨涌强化 → 墨涌 -->
+        <mxCell id="conn4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#AA44FF;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r_mog" target="sk1_4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="560" y="250" />
+              <mxPoint x="560" y="120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn4label" value="墨涌伤+30%" style="text;html=1;align=right;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#AA44FF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="135" width="90" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 寒墨节能 → 寒墨 -->
+        <mxCell id="conn5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#AA44FF;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r_hanmo" target="sk1_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="250" />
+              <mxPoint x="570" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn5label" value="寒墨MP-1" style="text;html=1;align=right;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#AA44FF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="80" width="90" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 墨壁强化 → 墨壁 -->
+        <mxCell id="conn6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#AA44FF;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r_shield" target="sk3_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="560" y="570" />
+              <mxPoint x="560" y="545" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn6label" value="护盾量+20%" style="text;html=1;align=right;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#AA44FF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="530" width="90" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 万剑 → 大招 -->
+        <mxCell id="conn7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FFD700;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r_ultimate" target="ult1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="795" />
+              <mxPoint x="550" y="770" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn7label" value="大招伤+25%&#xa;充能+15%" style="text;html=1;align=right;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#FFD700;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="745" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 图例 -->
+        <mxCell id="legend" value="&lt;div style=&quot;text-align:left;font-size:12px;line-height:1.8&quot;&gt;&lt;span style=&quot;color:#999999&quot;&gt;&#x25A0;&lt;/span&gt; Common 符文 (无特殊关联)&lt;br&gt;&lt;span style=&quot;color:#4488FF&quot;&gt;&#x25A0;&lt;/span&gt; Rare 符文 (元素/技能专精)&lt;br&gt;&lt;span style=&quot;color:#AA44FF&quot;&gt;&#x25A0;&lt;/span&gt; Epic 符文 (技能强化/节能)&lt;br&gt;&lt;span style=&quot;color:#FFD700&quot;&gt;&#x25A0;&lt;/span&gt; Legendary 符文 (大招增伤)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#333366;fontColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="580" y="360" width="300" height="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

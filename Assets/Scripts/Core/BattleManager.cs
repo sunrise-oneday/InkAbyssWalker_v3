@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,6 +32,9 @@ public class BattleManager : MonoBehaviour
     [Header("敌人关卡数据库")]
     public List<EnemyGroup> enemyDatabase;
 
+    [Header("转场效果")]
+    [SerializeField] private BattleTransitionController transitionController;
+
     [Header("参战角色列表（支持全自动抓取，无需手动拖拽）")]
     public List<PlayerBattleEntity> playerParty = new List<PlayerBattleEntity>();
     public List<EnemyBattleEntity> activeEnemies = new List<EnemyBattleEntity>();
@@ -42,8 +44,8 @@ public class BattleManager : MonoBehaviour
     private Vector3 savedExplorePosition;
     private Camera exploreCamera;
 
-    // 转场控制器引用（由 Start 自动查找）
-    private BattleTransitionController battleTransition;
+    // 战斗结束标志位，防止结束期间重复进入战斗
+    private bool isEndingBattle = false;
 
     private void Awake()
     {
@@ -51,9 +53,19 @@ public class BattleManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            Debug.Log($"[BattleManager] Awake - 首次初始化，DontDestroyOnLoad");
+
+            // 强制重置 BattleTurnManager 状态，防止编辑器中残留上次运行的状态
+            var turn = BattleTurnManager.Instance;
+            if (turn != null)
+            {
+                turn.Reset();
+                Debug.Log($"[BattleManager] 强制重置 BattleTurnManager，currentPhase={turn.currentPhase}");
+            }
         }
         else
         {
+            Debug.Log($"[BattleManager] Awake - 已存在实例，销毁自身");
             Destroy(gameObject);
         }
     }
@@ -68,44 +80,61 @@ public class BattleManager : MonoBehaviour
     // ============================================
 
     /// <summary>开始战斗（仅在大地图探索状态下允许，防止重复开战）</summary>
-    /// <param name="onTransitionComplete">转场效果完成后、开始加载战斗场景前的回调（用于延迟销毁大地图敌人等）</param>
     public void StartBattle(int groupIndex, bool isPreemptive, System.Action onTransitionComplete = null)
     {
-        if (BattleTurnManager.Instance.currentPhase != BattlePhase.None) return;
+        // 调试日志：帮助定位战斗重入问题
+        var turn = BattleTurnManager.Instance;
+        Debug.Log($"[战斗调试] ========== StartBattle 被调用 ==========" +
+                  $"\n  groupIndex={groupIndex}, isPreemptive={isPreemptive}" +
+                  $"\n  currentPhase={turn?.currentPhase}" +
+                  $"\n  isEndingBattle={isEndingBattle}");
 
-        // 延迟查找：首次 StartBattle 时或场景重建后自动获取最新引用
-        if (battleTransition == null)
-            battleTransition = FindObjectOfType<BattleTransitionController>();
-
-        if (battleTransition != null)
+        // 检查是否正在结束战斗
+        if (isEndingBattle)
         {
-            // 先播转场效果，完成后再初始化战斗场景
-            battleTransition.TriggerEncounter(() =>
-            {
-                onTransitionComplete?.Invoke();
-                StartCoroutine(StartBattleRoutine(groupIndex, isPreemptive));
-            });
+            Debug.LogWarning("[战斗调试] ✗ 拒绝进入战斗！正在执行战败流程");
+            return;
+        }
+
+        if (turn != null && turn.currentPhase == BattlePhase.None)
+        {
+            Debug.Log("[战斗调试] ✓ currentPhase == None，允许进入战斗，启动协程...");
+            StartCoroutine(StartBattleRoutine(groupIndex, isPreemptive, onTransitionComplete));
         }
         else
         {
-            // 没有转场控制器时直接进入战斗（编辑器测试等场景）
-            onTransitionComplete?.Invoke();
-            StartCoroutine(StartBattleRoutine(groupIndex, isPreemptive));
+            Debug.LogWarning($"[战斗调试] ✗ 拒绝进入战斗！currentPhase={turn?.currentPhase}，不是 None");
         }
     }
 
-    private IEnumerator StartBattleRoutine(int groupIndex, bool isPreemptive)
+    private IEnumerator StartBattleRoutine(int groupIndex, bool isPreemptive, System.Action onTransitionComplete = null)
     {
+        // 0. 自动查找转场控制器（如果 Inspector 没拖的话）
+        if (transitionController == null)
+        {
+            transitionController = FindAnyObjectByType<BattleTransitionController>();
+        }
+
+        if (transitionController != null)
+        {
+            Debug.Log("[转场] 开始播放遇敌转场动画...");
+            bool transitionDone = false;
+            transitionController.TriggerEncounter(() => transitionDone = true);
+            yield return new WaitUntil(() => transitionDone);
+            // 转场结束后恢复正常时间流速
+            Time.timeScale = 1.0f;
+            Debug.Log("[转场] 转场动画完成，开始加载战斗场景。");
+        }
+        else
+        {
+            Debug.LogWarning("[转场] 未找到 BattleTransitionController，跳过转场效果");
+        }
+
         var turn = BattleTurnManager.Instance;
         turn.Reset();
         turn.currentPhase = BattlePhase.Setup;
 
         Debug.Log("[战斗系统] 检测到敌人，开始初始化战斗场景...");
-
-        // 转场进度重置为0（转场效果在探索场景中由 BattleTransitionController 驱动完毕，
-        // 进入战斗场景后确保恢复正常画面，防止后处理残留）
-        if (battleTransition != null)
-            battleTransition.ResetTransition();
 
         // 1. 显示鼠标光标
         Cursor.visible = true;
@@ -258,8 +287,8 @@ public class BattleManager : MonoBehaviour
 
         Debug.Log("[战斗系统] 敌我双方实体生成完毕，战斗准备完成！");
 
-        // 恢复时间流速（转场效果和战斗加载全程完成后才恢复正常速度）
-        Time.timeScale = 1f;
+        // 通知调用方战斗已准备好（转场完成，可以销毁大地图敌人等）
+        onTransitionComplete?.Invoke();
 
         // 16. 根据先制攻击决定先手
         if (isPreemptive)
@@ -280,6 +309,9 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator EndBattleRoutine(bool isWin)
     {
+        // 设置标志位，阻止结束期间进入新战斗
+        isEndingBattle = true;
+
         var turn = BattleTurnManager.Instance;
         turn.currentPhase = isWin ? BattlePhase.Win : BattlePhase.Lose;
 
@@ -339,11 +371,20 @@ public class BattleManager : MonoBehaviour
                 FindObjectOfType<CameraController2D>()?.RefreshTarget();
                 SaveManager.Instance.SaveCheckpoint(savedExplorePosition);
             }
+
+            // 重置战斗阶段，允许再次进入战斗（使用 Instance 而非局部变量）
+            BattleTurnManager.Instance.currentPhase = BattlePhase.None;
+            isEndingBattle = false;
         }
         else
         {
             // ---------- 战败流程 ----------
             Debug.Log("[战斗结算] 战败！正在执行战败结算...");
+            Debug.Log($"[战斗调试] 战败前状态 | currentPhase={BattleTurnManager.Instance.currentPhase} | 当前场景={SceneManager.GetActiveScene().name}");
+
+            // 立即重置战斗阶段，防止等待期间玩家再次触发战斗
+            BattleTurnManager.Instance.currentPhase = BattlePhase.None;
+            Debug.Log($"[战斗调试] 立即重置 currentPhase={BattleTurnManager.Instance.currentPhase}");
 
             BattleUIController.Instance?.ShowDefeatPanel(true);
             BattleSFXHandler.Instance?.PlaySFX(SFXKey.Defeat);
@@ -360,9 +401,12 @@ public class BattleManager : MonoBehaviour
             controls?.FindActionMap("GamePlayer")?.Enable();
             controls?.FindActionMap("Battle")?.Disable();
 
+            Debug.Log("[战斗调试] 开始加载 ExploreScene...");
             yield return SceneManager.LoadSceneAsync("ExploreScene", LoadSceneMode.Single);
+            Debug.Log($"[战斗调试] ExploreScene 加载完成 | 当前场景={SceneManager.GetActiveScene().name}");
 
             playerController = FindObjectOfType<PlayerController>();
+            Debug.Log($"[战斗调试] 场景重载后 playerController={(playerController != null ? playerController.gameObject.name : "NULL")}");
 
             if (playerController != null)
             {
@@ -373,6 +417,7 @@ public class BattleManager : MonoBehaviour
                 {
                     stats.currentHP = stats.maxHP;
                     stats.currentMP = stats.maxMP;
+                    Debug.Log($"[战斗调试] 玩家 HP/MP 已恢复 | HP={stats.currentHP}/{stats.maxHP} | MP={stats.currentMP}/{stats.maxMP}");
                 }
 
                 playerController.rb.velocity = Vector2.zero;
@@ -380,12 +425,24 @@ public class BattleManager : MonoBehaviour
                 Physics2D.SyncTransforms();
                 playerController.enabled = true;
                 playerController.GetStateMachine().ChangeState<PlayerIdleState>();
+                Debug.Log($"[战斗调试] 玩家已传送到检查点: {SaveManager.Instance.LastCheckpointPosition}");
+            }
+            else
+            {
+                Debug.LogError("[战斗调试] 场景重载后找不到 PlayerController！");
             }
 
             // 刷新摄像机目标引用（场景重载后确保摄像机跟随玩家）
             FindObjectOfType<CameraController2D>()?.RefreshTarget();
 
-            turn.currentPhase = BattlePhase.None;
+            // 重置战斗阶段，允许再次进入战斗（使用 Instance 而非局部变量，防止场景重载后引用失效）
+            BattleTurnManager.Instance.currentPhase = BattlePhase.None;
+            isEndingBattle = false;
+
+            // 详细调试日志
+            Debug.Log($"[战斗调试] ========== 战败流程完成 ==========" +
+                      $"\n  currentPhase 已重置为: {BattleTurnManager.Instance.currentPhase}" +
+                      $"\n  isEndingBattle={isEndingBattle}");
             Debug.Log("[战斗结算] 已回到最近一个存档点安全复活！");
         }
     }

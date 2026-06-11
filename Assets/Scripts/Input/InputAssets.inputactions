@@ -989,6 +989,15 @@
                                          "processors":  "",
                                          "interactions":  "",
                                          "initialStateCheck":  false
+                                     },
+                                     {
+                                         "name":  "QuickForm3",
+                                         "type":  "Button",
+                                         "id":  "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                                         "expectedControlType":  "Button",
+                                         "processors":  "",
+                                         "interactions":  "",
+                                         "initialStateCheck":  false
                                      }
                                  ],
                      "bindings":  [
@@ -1022,6 +1031,17 @@
                                           "processors":  "",
                                           "groups":  "Keyboard\u0026Mouse",
                                           "action":  "QuickForm2",
+                                          "isComposite":  false,
+                                          "isPartOfComposite":  false
+                                      },
+                                      {
+                                          "name":  "",
+                                          "id":  "b1c2d3e4-f5a6-7890-bcde-f12345678901",
+                                          "path":  "\u003cKeyboard\u003e/3",
+                                          "interactions":  "",
+                                          "processors":  "",
+                                          "groups":  "Keyboard\u0026Mouse",
+                                          "action":  "QuickForm3",
                                           "isComposite":  false,
                                           "isPartOfComposite":  false
                                       },

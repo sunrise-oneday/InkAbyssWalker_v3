@@ -267,6 +267,10 @@ public class CharacterPanel : BasePanel
         selectedUltSlot = clickedSlot;
         clickedSlot.SetSelected(true);
 
+        // 如果 playerBattleEntity 为空，尝试重新获取
+        if (playerBattleEntity == null)
+            ResolvePlayerReferences();
+
         if (detailPanel != null && playerBattleEntity != null)
         {
             bool isEquipped = playerBattleEntity.equippedUltimate != null

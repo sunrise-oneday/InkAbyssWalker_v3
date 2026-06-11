@@ -60,18 +60,17 @@ public class EnemyAttackState : OverworldEnemyState
                 // 核心安全保护：确保 BattleManager 存在，防止空引用报错导致物体无法销毁
                 if (BattleManager.Instance != null)
                 {
-                    // 冻结状态机防止转场期间敌人移动，捕获 GameObject 避免 owner 失效
-                    var enemyObj = owner.gameObject;
-                    owner.enabled = false;
-                    BattleManager.Instance.StartBattle(owner.EnemyGroupIndex, false,
-                        onTransitionComplete: () => { if (enemyObj) Object.Destroy(enemyObj); });
+                    // ========================================================
+                    // 核心修改：将这只小怪配置的关卡组索引传递过去！
+                    // ========================================================
+                    BattleManager.Instance.StartBattle(owner.EnemyGroupIndex, false);
                 }
                 else
                 {
                     Debug.LogWarning("[大世界攻击] 场景中缺少 BattleManager 实例！请确保已挂载该组件。");
-                    Object.Destroy(owner.gameObject);
                 }
 
+                Object.Destroy(owner.gameObject);
                 return;
             }
             else

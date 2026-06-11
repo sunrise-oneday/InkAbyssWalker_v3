@@ -64,7 +64,7 @@ public class BattleCombatResolver : MonoBehaviour
 
         string debugHeader = $"[攻防判定] 第 {hitIndex + 1} 次攻击   ———————————————\n";
 
-        // ★ 新增：构建事件数据（在判定分支之前，一次性构建）
+        // ★ 构建事件数据（在判定分支之前，一次性构建）
         var attacker = BattleTurnManager.Instance.CurrentAttacker;
         var eventData = new ParryEventData(
             defender:  defender,
@@ -74,19 +74,41 @@ public class BattleCombatResolver : MonoBehaviour
             rawDamage: rawDamage
         );
 
-        // ---- 阶段 1：闪避判定 ----
+        // ---- 阶段 1：闪避判定（仅闪避形态 1） ----
         if (defender.GetBattleStateMachine().currentState is PlayerBattleDodgeState)
         {
-            HandleDodge(defender, turn, rawDamage);
+            if (defender.currentFormIndex == 1)
+            {
+                HandleDodge(defender, turn, rawDamage);
+            }
+            else
+            {
+                // 非闪避形态进入闪避状态（异常），回退到正常受击
+                turn.allPerfectParriesInCurrentAttack = false;
+                Debug.Log($"{debugHeader}<color=red>警告：非闪避形态下无法闪避，直接受击！</color>");
+                ApplyDamageFeedback(defender, rawDamage, breakDamage, isPerfect: false, isNormal: false);
+                ParryEvents.FireParryFailed(eventData);
+                defender.GetBattleStateMachine().ChangeState<PlayerBattleIdleState>();
+            }
             CheckBattleOver();
             return;
         }
 
-        // ---- 阶段 2：格挡判定 ----
+        // ---- 阶段 2：格挡判定（仅格挡形态 2） ----
         float hitTime = Time.time;
         float parryPressTime = defender.GetParryPressTime();
         float timeDiff = hitTime - parryPressTime;
         float rawDiffMs = timeDiff * 1000f;
+
+        if (defender.currentFormIndex != 2)
+        {
+            // 非格挡形态：不接受格挡输入，直接受击
+            turn.allPerfectParriesInCurrentAttack = false;
+            Debug.Log($"{debugHeader}<color=red>非格挡形态({defender.currentFormIndex})，无法格挡，直接受击！</color>");
+            ApplyDamageFeedback(defender, rawDamage, breakDamage, isPerfect: false, isNormal: false);
+            CheckBattleOver();
+            return;
+        }
 
         if (parryPressTime <= -99f)
         {
@@ -104,7 +126,7 @@ public class BattleCombatResolver : MonoBehaviour
         }
         else if (timeDiff <= PerfectWindow)
         {
-            Debug.Log($"{debugHeader}<color=green>【完美格挡成功】你提前 {rawDiffMs:F0} 毫秒按下了空格</color>");
+            Debug.Log($"{debugHeader}<color=green>【完美格挡成功】你提前 {rawDiffMs:F0} 毫秒按下了 E 键</color>");
             ApplyDamageFeedback(defender, 0, 0, isPerfect: true, isNormal: false);
             ParryEvents.FirePerfectParry(eventData);
         }
@@ -112,7 +134,7 @@ public class BattleCombatResolver : MonoBehaviour
         {
             turn.allPerfectParriesInCurrentAttack = false;
             int reducedDamage = Mathf.RoundToInt(rawDamage * 0.3f);
-            Debug.Log($"{debugHeader}<color=yellow>[普通格挡] 你提前 {rawDiffMs:F0} 毫秒按下了空格</color>");
+            Debug.Log($"{debugHeader}<color=yellow>[普通格挡] 你提前 {rawDiffMs:F0} 毫秒按下了 E 键</color>");
             ApplyDamageFeedback(defender, reducedDamage, 0, isPerfect: false, isNormal: true);
             ParryEvents.FireNormalParry(eventData);
         }
@@ -124,6 +146,8 @@ public class BattleCombatResolver : MonoBehaviour
             ParryEvents.FireParryFailed(eventData);
         }
 
+        // 每次判定后消费格挡按键，防止残留时间戳影响后续多段攻击判定
+        defender.UseParryInput();
         CheckBattleOver();
     }
 
