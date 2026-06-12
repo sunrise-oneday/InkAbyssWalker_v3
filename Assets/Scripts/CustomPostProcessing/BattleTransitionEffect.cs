@@ -19,10 +19,6 @@ public class BattleTransitionEffect : CustomPostProcessing
     public FloatParameter pulseSpeed = new FloatParameter(8f);     // 脉冲流动速度
 
 
-    private RTHandle m_LowResRT;
-    private int m_LowResWidth, m_LowResHeight;
-    private const float LowResScale = 0.25f; // 1/4 分辨率
-
     private Material m_Material;
     private const string ShaderName = "2DGames/URP/BattleTransition";
 
@@ -51,23 +47,6 @@ public class BattleTransitionEffect : CustomPostProcessing
             // 如果材质为空（Shader丢失或编译报错），直接把原画面原样拷贝过去，绝不能 return 空黑图！
             Blitter.BlitCameraTexture(cmd, source, destination);
             return;
-        }
-
-        // 计算低分辨率尺寸（对齐到偶数，避免纹素错位）
-        int w = Mathf.Max(1, (int)(renderingData.cameraData.cameraTargetDescriptor.width * LowResScale) & ~1);
-        int h = Mathf.Max(1, (int)(renderingData.cameraData.cameraTargetDescriptor.height * LowResScale) & ~1);
-
-        // 如果尺寸变化或还未创建，就重新分配低分辨率 RT
-        if (m_LowResRT == null || m_LowResWidth != w || m_LowResHeight != h)
-        {
-            m_LowResRT?.Release();
-            RenderTextureDescriptor desc = new RenderTextureDescriptor(w, h, RenderTextureFormat.Default, 0);
-            desc.sRGB = false;
-            desc.autoGenerateMips = false;
-            desc.useMipMap = false;
-            m_LowResRT = RTHandles.Alloc(desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "BattleTransition_LowRes");
-            m_LowResWidth = w;
-            m_LowResHeight = h;
         }
 
         //向Shader传递参数

@@ -89,8 +89,6 @@ public class CustomPostProcessingPass : ScriptableRenderPass
     {
         // 获取一个命令缓冲区，并清空（先执行一次空的以确保上下文同步，实际可以优化）
         var cmd = CommandBufferPool.Get(mProfilerTag);
-        context.ExecuteCommandBuffer(cmd);
-        cmd.Clear();
         bool RT1Used = false;   // 标记是否使用了第二个临时纹理（用于多效果链）
 
         // 获取当前相机的颜色目标作为源和目标（起始时源和目标相同，之后会更新）

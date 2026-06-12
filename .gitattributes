@@ -1,10 +1,7 @@
 # ============================================================
 # Unity 工程 Git 属性配置
-# ============================================================
-
 # 文本文件自动规范化行尾
 * text=auto
-
 # ---- Unity YAML 文件（必须用 Unity 的 YAML 合并驱动，否则合并冲突会损坏文件） ----
 *.unity merge=unityyamlmerge eol=lf
 *.prefab merge=unityyamlmerge eol=lf
@@ -21,7 +18,6 @@
 *.terrainlayer merge=unityyamlmerge eol=lf
 *.shadergraph merge=unityyamlmerge eol=lf
 *.shadersubgraph merge=unityyamlmerge eol=lf
-
 # ---- 二进制文件（不参与 diff/merge，避免 Git 尝试文本合并导致损坏） ----
 *.png binary
 *.jpg binary
@@ -36,7 +32,6 @@
 *.hdr binary
 *.dds binary
 *.ktx binary
-
 # ---- 音频文件 ----
 *.mp3 binary
 *.ogg binary
@@ -47,19 +42,16 @@
 *.it binary
 *.s3m binary
 *.xm binary
-
 # ---- 视频文件 ----
 *.mp4 binary
 *.mov binary
 *.avi binary
 *.webm binary
-
 # ---- 字体文件 ----
 *.ttf binary
 *.otf binary
 *.woff binary
 *.woff2 binary
-
 # ---- 压缩包 / 大文件 ----
 *.zip binary
 *.7z binary
@@ -68,7 +60,6 @@
 *.tgz binary
 *.tar binary
 *.unitypackage binary
-
 # ---- 编译产物 ----
 *.dll binary
 *.pdb binary

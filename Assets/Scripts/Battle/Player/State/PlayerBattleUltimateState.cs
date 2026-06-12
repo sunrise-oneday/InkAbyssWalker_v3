@@ -29,6 +29,9 @@ public class PlayerBattleUltimateState : PlayerBattleState
             return;
         }
 
+        // 大招音效
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.UltimateCast);
+
         // 大招开始：镜头开始震动
         BattleEffectManager.Instance.ShakeCamera(0.4f, 0.35f);
 

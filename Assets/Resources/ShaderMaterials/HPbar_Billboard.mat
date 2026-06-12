@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: HPbar_Billboard
-  m_Shader: {fileID: 4800000, guid: bdf8c5d7e736f1b4e9f9d9a3e6f64548, type: 3}
+  m_Shader: {fileID: 4800000, guid: c2d721ac35710b14ab7b148b3af64984, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -35,20 +35,28 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _TailTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _Billboarding: 0
-    - _CurrentHP: 0.4
+    - _CurrentHP: 1
     - _DelayHP: 1
     - _FlashSpeed: 5
+    - _BarMode: 0
     - _HighlightPower: 10
     - _HighlightWidth: 0.1
-    - _NoiseIntensity: 0.77
+    - _NoiseIntensity: 0.76
+    - _TailLength: 0.15
     - _VerticalBillboarding: 1
     - _WobbleDensity: 3.14
-    - _WobbleSpeed: 15
-    - _WobbleStrength: 0.03
+    - _WobbleSpeed: 0.8
+    - _WobbleStrength: 0.001
     m_Colors:
+    - _ColorLeft: {r: 0, g: 0.8, b: 1, a: 1}
+    - _ColorRight: {r: 0, g: 0.2, b: 0.8, a: 1}
     - _CurrentHPColor: {r: 1, g: 0, b: 0, a: 1}
     - _DelayColor: {r: 1, g: 1, b: 0, a: 1}
     - _FillRangeX: {r: 0.1, g: 0.89, b: 0, a: 0}

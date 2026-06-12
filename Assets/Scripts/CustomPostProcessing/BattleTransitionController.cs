@@ -41,12 +41,13 @@ public class BattleTransitionController : MonoBehaviour
         // 1. 顿帧阶段 (Hit-stop)
         // 将时间流速降至接近0（不要完全0，防止某些依赖真实时间的逻辑卡死，或者直接用0但用WaitForSecondsRealtime）
         Time.timeScale = 0.05f;
-        // 播放破碎/拔剑音效...
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.BattleEncounter); // 转场冲击音效（短促定格音）
 
         // 等待现实时间度过顿帧期
         yield return new WaitForSecondsRealtime(hitStopTime);
 
         // 2. 空间撕裂/拉取阶段 (驱动后处理，全程保持低流速)
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.BattleEncounterRise); // 转场上升音效（持续渐强音）
         float elapsedTime = 0f;
         while (elapsedTime < transitionDuration)
         {

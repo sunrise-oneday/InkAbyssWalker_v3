@@ -6,6 +6,7 @@ using Battle.Enemy;
 
 /// <summary>
 /// 战斗属性与状态图标显示器（全事件驱动、自响应式 UI） [1]
+/// 支持拖尾延迟：_DelayHP 落后实际血量 1.5 秒。
 /// </summary>
 public class EntityHUD : MonoBehaviour
 {
@@ -54,6 +55,18 @@ public class EntityHUD : MonoBehaviour
     [Header("世界空间缩放（直接填数值）")]
     [SerializeField] private float hudScale = 0.02f;
     [SerializeField] private float hudScaleFactor = 0.022f;
+
+    // ---- HP 拖尾延迟（1.5s 历史队列）----
+    private struct HPSnapshot
+    {
+        public float realTime;
+        public float hp01;
+    }
+    private readonly Queue<HPSnapshot> _hpHistory = new Queue<HPSnapshot>();
+    private float _targetHP01 = 1f;
+    private float _delayHP01 = 1f;
+    [Header("HP 拖尾延迟")]
+    [SerializeField] private float trailDelaySeconds = 1.5f;
 
     private void Start()
     {
@@ -136,6 +149,17 @@ public class EntityHUD : MonoBehaviour
         if (targetEnemy != null)
         {
             targetEnemy.OnIntentChanged += OnIntentChanged;
+        }
+
+        // 初始化拖尾历史
+        if (targetStats != null)
+        {
+            float initial = targetStats.maxHP > 0
+                ? (float)targetStats.currentHP / targetStats.maxHP
+                : 1f;
+            _targetHP01 = initial;
+            _delayHP01 = initial;
+            _hpHistory.Enqueue(new HPSnapshot { realTime = Time.realtimeSinceStartup, hp01 = initial });
         }
     }
 
@@ -235,6 +259,38 @@ public class EntityHUD : MonoBehaviour
             targetStats.OnBreakChanged -= RefreshBreak;
             targetStats.OnBuffsChanged -= RefreshBuffIcons;
             targetStats.OnShieldChanged -= RefreshShield;
+        }
+    }
+
+    /// <summary>
+    /// 帧处理：每帧推进拖尾历史队列，计算 1.5s 前的血量
+    /// </summary>
+    private void Update()
+    {
+        float cutTime = Time.realtimeSinceStartup - trailDelaySeconds;
+
+        // 出队所有早于截断时间的记录
+        while (_hpHistory.Count > 0 && _hpHistory.Peek().realTime < cutTime)
+        {
+            _hpHistory.Dequeue();
+        }
+
+        // 目标拖尾值：队列中最早那条记录的血量（恰好是 trailDelaySeconds 前的值）
+        // 队列空了说明已经追上了，目标就是当前实际血量
+        float targetDelay = _hpHistory.Count > 0 ? _hpHistory.Peek().hp01 : _targetHP01;
+
+        // 平滑插值：指数平滑避免黄条跳变
+        float diff = Mathf.Abs(_delayHP01 - targetDelay);
+        if (diff > 0.0001f)
+        {
+            const float lerpSpeed = 4f;
+            float lerpFactor = 1f - Mathf.Exp(-lerpSpeed * Time.unscaledDeltaTime);
+            _delayHP01 = Mathf.Lerp(_delayHP01, targetDelay, lerpFactor);
+            // 将拖尾进度写入材质
+            if (hpFillMaterial != null)
+            {
+                hpFillMaterial.SetFloat("_DelayHP", _delayHP01);
+            }
         }
     }
 
@@ -479,12 +535,25 @@ public class EntityHUD : MonoBehaviour
             hpSlider.value = targetStats.currentHP;
         }
 
-        // 更新自定义 Image HP 条（HPbar_Billboard Shader 用 _CurrentHP 控制进度）
+        // 计算当前血量比例
+        float ratio = targetStats.maxHP > 0
+            ? (float)targetStats.currentHP / targetStats.maxHP
+            : 0f;
+
+        // 记录 HP 变化到拖尾历史队列
+        if (Mathf.Abs(ratio - _targetHP01) > 0.0001f)
+        {
+            _targetHP01 = ratio;
+            _hpHistory.Enqueue(new HPSnapshot
+            {
+                realTime = Time.realtimeSinceStartup,
+                hp01 = _targetHP01
+            });
+        }
+
+        // 更新自定义 Image HP 条（HUDBar Shader 用 _CurrentHP 控制实时血量、_DelayHP 由 Update 驱动）
         if (hpFillMaterial != null)
         {
-            float ratio = targetStats.maxHP > 0
-                ? (float)targetStats.currentHP / targetStats.maxHP
-                : 0f;
             hpFillMaterial.SetFloat("_CurrentHP", ratio);
         }
 

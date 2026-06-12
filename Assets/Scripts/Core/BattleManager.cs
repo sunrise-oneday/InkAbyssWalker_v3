@@ -185,7 +185,13 @@ public class BattleManager : MonoBehaviour
             playerController.rb.velocity = Vector2.zero;
             playerController.rb.position = protagonistSpawn.position;
             Physics2D.SyncTransforms();
-            playerController.AdjustFacingDirection(1);
+
+            // ★ BUG 修复：面向首个敌人出生点，而非硬编码朝右。
+            // 避免玩家朝向锁死导致粒子特效方向错误。
+            float faceDir = 1f;
+            if (enemySpawns.Length > 0)
+                faceDir = enemySpawns[0].transform.position.x - protagonistSpawn.position.x;
+            playerController.AdjustFacingDirection(faceDir);
         }
 
         // 9. 激活战斗组件
@@ -199,6 +205,22 @@ public class BattleManager : MonoBehaviour
 
             member.GetBattleStateMachine()?.ChangeState<PlayerBattleIdleState>();
             member.currentAP = 3;
+        }
+
+        // ★ 新增：确保玩家身上有 ShaderEffectController（挂到 sprite 子物体上）
+        if (playerParty.Count > 0 && playerParty[0] != null)
+        {
+            // 战斗中的 ShaderEffectController 订阅 ParryEvents 事件，
+            // 如果玩家出场时身上没有此组件，防御者发光效果无法触发。
+            if (playerParty[0].sprite != null)
+            {
+                var spriteGO = playerParty[0].sprite.gameObject;
+                if (spriteGO.GetComponent<ShaderEffectController>() == null)
+                {
+                    spriteGO.AddComponent<ShaderEffectController>();
+                    Debug.Log("[ShaderEffectController] 已动态添加到玩家 sprite 子物体");
+                }
+            }
         }
 
         // 10. 克隆队友
@@ -282,6 +304,12 @@ public class BattleManager : MonoBehaviour
     /// <summary>结束战斗，执行胜利/战败结算</summary>
     public void EndBattle(bool isWin)
     {
+        if (isEndingBattle) return; // 防重入，避免多个协程冲突
+
+        // 同步设置标志和阶段，确保同一帧内的 ProceedEnemyTurn / EnterEnemyTurn 立即看到战斗已结束
+        isEndingBattle = true;
+        BattleTurnManager.Instance.currentPhase = isWin ? BattlePhase.Win : BattlePhase.Lose;
+
         StartCoroutine(EndBattleRoutine(isWin));
     }
 
@@ -302,6 +330,7 @@ public class BattleManager : MonoBehaviour
             Debug.Log("[战斗结算] 胜利！正在执行胜利结算流程...");
 
             BattleUIController.Instance?.ShowVictoryPanel(true);
+            BattleSFXHandler.Instance?.PlaySFX(SFXKey.Victory);
             yield return new WaitForSeconds(3.0f);
             BattleUIController.Instance?.CloseUI();
 
@@ -364,6 +393,7 @@ public class BattleManager : MonoBehaviour
             Debug.Log($"[战斗调试] 立即重置 currentPhase={BattleTurnManager.Instance.currentPhase}");
 
             BattleUIController.Instance?.ShowDefeatPanel(true);
+            BattleSFXHandler.Instance?.PlaySFX(SFXKey.Defeat);
             yield return new WaitForSeconds(3.0f);
             BattleUIController.Instance?.CloseUI();
 
