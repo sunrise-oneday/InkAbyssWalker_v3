@@ -44,6 +44,9 @@ Desktop.ini
 # ---- 私有本地配置 ----
 .claude/
 
+# ---- IntelliJ IDEA/Rider ----
+.idea/
+
 # ---- Locus 插件 ----
 Locus/
 Packages/com.farlocus.locus/
