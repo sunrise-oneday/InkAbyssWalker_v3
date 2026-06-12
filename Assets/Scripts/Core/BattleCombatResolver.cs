@@ -105,6 +105,7 @@ public class BattleCombatResolver : MonoBehaviour
             // 非格挡形态：不接受格挡输入，直接受击
             turn.allPerfectParriesInCurrentAttack = false;
             Debug.Log($"{debugHeader}<color=red>非格挡形态({defender.currentFormIndex})，无法格挡，直接受击！</color>");
+            BattleSFXHandler.Instance?.PlaySFX(SFXKey.Hit, defender.transform.position);
             ApplyDamageFeedback(defender, rawDamage, breakDamage, isPerfect: false, isNormal: false);
             CheckBattleOver();
             return;

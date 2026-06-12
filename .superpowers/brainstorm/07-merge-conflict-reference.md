@@ -264,15 +264,19 @@ private const float ParryGlowDuration = 0.3f;
 
 // ---- 闪避 (Dodge) ----
 private static readonly int ID_DodgeProgress = Shader.PropertyToID("_DodgeProgress");
+private static readonly int ID_ParryGlowColor = Shader.PropertyToID("_ParryGlowColor");
 private const string KW_DODGE = "_DODGE_ON";
 private const float DodgeGlowDuration = 0.25f;
+// 普通闪避发光颜色（区别于精准防御的蓝色）
+private static readonly Color NormalDodgeGlowColor = new Color(0.2f, 1f, 0.4f, 1f);
 
 // 独立协程句柄，与现有 _activeEffect（受伤闪光/死亡消融）互不干扰
 private Coroutine _activeParryGlow;
 private Coroutine _activeDodgeGlow;
+private Coroutine _normalDodgeColorRoutine;
 ```
 
-**冲突合并策略**：这些新增行插在 `KW_DEATH` 常量和 `_activeEffect` 字段之后。如果远程新增了其他常量/字段，按声明顺序排列即可，互不干扰。
+**冲突合并策略**：这些新增行插在 `KW_DEATH` 常量和 `_activeEffect` 字段之后。`ID_ParryGlowColor` 和 `NormalDodgeGlowColor` 是普通闪避动态改色所需的，`_normalDodgeColorRoutine` 是改色协程句柄。如果远程新增了其他常量/字段，按声明顺序排列即可，互不干扰。
 
 ### 新增方法：`OnEnable` / `OnDisable`
 
@@ -338,6 +342,8 @@ private IEnumerator ParryGlowRoutine()
 
 **改动点（2026-06-11）**：闪避 Shader 视觉集成——订阅 `DodgeEvents`，完美闪避触发边缘发光 + 完整闪避特效（顶点膨胀、噪声故障、残影混色），普通闪避仅触发边缘发光。
 
+**改动点（2026-06-11 v2）**：普通闪避发光改为绿色——`HandleNormalDodge` 通过 `NormalDodgeColorRoutine` 临时替换 `_ParryGlowColor` 为 `NormalDodgeGlowColor`（绿色），持续 `ParryGlowDuration` 后恢复原色。
+
 ```csharp
 /// <summary>完美闪避：边缘发光 + 完整闪避Shader（顶点膨胀、噪声故障、残影混色、透明度衰减）</summary>
 private void HandlePerfectDodge(DodgeEventData data)
@@ -349,13 +355,29 @@ private void HandlePerfectDodge(DodgeEventData data)
     PlayDodgeGlow();
 }
 
-/// <summary>普通闪避：仅边缘发光（复用精准防御的发光效果）</summary>
+/// <summary>普通闪避：仅边缘发光，使用独立的绿色以区别于精准防御蓝色</summary>
 private void HandleNormalDodge(DodgeEventData data)
 {
     var myEntity = GetComponentInParent<PlayerBattleEntity>();
     if (myEntity == null || myEntity != data.Defender) return;
 
+    if (_normalDodgeColorRoutine != null) StopCoroutine(_normalDodgeColorRoutine);
+    _normalDodgeColorRoutine = StartCoroutine(NormalDodgeColorRoutine());
+}
+
+private Coroutine _normalDodgeColorRoutine;
+
+private IEnumerator NormalDodgeColorRoutine()
+{
+    Color originalColor = _materialInstance.GetColor(ID_ParryGlowColor);
+    _materialInstance.SetColor(ID_ParryGlowColor, NormalDodgeGlowColor);
+
     PlayParryDefenderGlow();
+
+    yield return new WaitForSecondsRealtime(ParryGlowDuration);
+
+    _materialInstance.SetColor(ID_ParryGlowColor, originalColor);
+    _normalDodgeColorRoutine = null;
 }
 
 /// <summary>启用 _DODGE_ON 关键字，在 DodgeGlowDuration 内将 _DodgeProgress 从 0 驱动到 1</summary>
@@ -386,7 +408,7 @@ private IEnumerator DodgeGlowRoutine()
 }
 ```
 
-**冲突合并策略**：四个方法全新增，插在 `ParryGlowRoutine` 之后、`HitFlashRoutine` 之前。`_activeDodgeGlow` 句柄与 `_activeParryGlow` 独立，互不干扰。`DodgeGlowRoutine` 必须使用 `Time.unscaledDeltaTime`（不能用 `Time.deltaTime`），否则 WitchTime 期间特效会慢 5 倍。
+**冲突合并策略**：方法全新增，插在 `ParryGlowRoutine` 之后、`HitFlashRoutine` 之前。`_activeDodgeGlow` 句柄与 `_activeParryGlow` 独立，互不干扰。`DodgeGlowRoutine` 必须使用 `Time.unscaledDeltaTime`（不能用 `Time.deltaTime`），否则 WitchTime 期间特效会慢 5 倍。`NormalDodgeColorRoutine` 临时替换材质 `_ParryGlowColor`，必须在 `WaitForSecondsRealtime(ParryGlowDuration)` 后恢复原色，否则后续精准防御发光颜色会被污染。
 
 ### 修改方法：`ResetEffect`
 
@@ -419,10 +441,15 @@ public void ResetEffect()
         StopCoroutine(_activeDodgeGlow);
         _activeDodgeGlow = null;
     }
+    if (_normalDodgeColorRoutine != null)
+    {
+        StopCoroutine(_normalDodgeColorRoutine);
+        _normalDodgeColorRoutine = null;
+    }
 }
 ```
 
-**冲突合并策略**：如果远程也修改了 `ResetEffect`（如新增其他 keyword 清理），先合并远程的清理逻辑，再在末尾追加 `_PARRY_DEFENDER_ON` 和 `_DODGE_ON` 清理块。
+**冲突合并策略**：如果远程也修改了 `ResetEffect`（如新增其他 keyword 清理），先合并远程的清理逻辑，再在末尾追加 `_PARRY_DEFENDER_ON`、`_DODGE_ON` 和 `_normalDodgeColorRoutine` 清理块。
 
 ---
 

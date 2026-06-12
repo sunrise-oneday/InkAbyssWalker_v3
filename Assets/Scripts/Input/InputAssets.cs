@@ -559,7 +559,7 @@ public partial class @InputAssets: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""NextTab"",
                     ""type"": ""Button"",
-                    ""id"": ""3715d211-b317-4a9b-95b4-ec76d94380b1"",
+                    ""id"": ""ffae0a1b-4664-48fe-bc17-aa295aeae462"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",

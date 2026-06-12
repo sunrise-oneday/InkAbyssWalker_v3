@@ -270,6 +270,10 @@ public class BattleTurnManager : MonoBehaviour
     /// <summary>进入敌人回合</summary>
     public void EnterEnemyTurn()
     {
+        // 战斗已结束时不再启动敌方回合（EndBattle 已同步设置 currentPhase）
+        if (currentPhase == BattlePhase.Win || currentPhase == BattlePhase.Lose)
+            return;
+
         // 玩家回合结束时，统一结算 Buff（先触发效果再扣减回合数）
         foreach (var member in playerParty)
         {
@@ -317,21 +321,45 @@ public class BattleTurnManager : MonoBehaviour
         float showDelay = Mathf.Max(0f, 2f - attackerIndicatorAdvance);
         yield return new WaitForSeconds(showDelay);
 
+        // showDelay 期间战斗可能已结束
+        if (currentPhase != BattlePhase.EnemyTurn)
+            yield break;
+
         if (currentEnemyTurnIndex < 0 || currentEnemyTurnIndex >= activeEnemies.Count)
             yield break;
 
         EnemyBattleEntity attacker = activeEnemies[currentEnemyTurnIndex];
 
+        // 已死亡/销毁则直接跳过（不访问 gameObject 避免 MissingReferenceException）
+        if (attacker == null)
+        {
+            Debug.Log("[状态判定] 敌方已被击杀销毁，放弃其行动权");
+            allPerfectParriesInCurrentAttack = false;
+            OnEnemyTurnFinished();
+            yield break;
+        }
+
         // 显示当前行动敌人的向下箭头▼指示器
-        attacker?.SetCurrentAttacker(true);
+        attacker.SetCurrentAttacker(true);
 
         // 阶段二：箭头显示后等待剩余时间，给玩家反应窗口
         yield return new WaitForSeconds(attackerIndicatorAdvance);
 
-        // 已死亡则跳过
-        if (attacker == null || attacker.Stats.currentHP <= 0)
+        // yield 后重新判空 + 战斗阶段检查（等待期间 attacker 可能被销毁或战斗已结束）
+        if (attacker == null || currentPhase != BattlePhase.EnemyTurn)
         {
-            Debug.Log($"[状态判定] 敌方 {attacker?.gameObject.name} 已经阵亡，放弃其行动权");
+            if (attacker != null)
+                attacker.SetCurrentAttacker(false);
+            allPerfectParriesInCurrentAttack = false;
+            if (currentPhase == BattlePhase.EnemyTurn)
+                OnEnemyTurnFinished();
+            yield break;
+        }
+
+        // 已死亡则跳过
+        if (attacker.Stats.currentHP <= 0)
+        {
+            Debug.Log($"[状态判定] 敌方 {attacker.gameObject.name} 已经阵亡，放弃其行动权");
             allPerfectParriesInCurrentAttack = false; // 没有实际攻击发生，禁止触发反击
             OnEnemyTurnFinished();
             yield break;
@@ -344,7 +372,8 @@ public class BattleTurnManager : MonoBehaviour
             Debug.Log($"<color=yellow>[行动跳过] {attacker.gameObject.name} 正处于眩晕/破防状态中，本回合无法行动</color>");
             allPerfectParriesInCurrentAttack = false; // 没有实际攻击发生，禁止触发反击
             yield return new WaitForSeconds(1.5f);
-            OnEnemyTurnFinished();
+            if (currentPhase == BattlePhase.EnemyTurn)
+                OnEnemyTurnFinished();
             yield break;
         }
 
@@ -406,6 +435,14 @@ public class BattleTurnManager : MonoBehaviour
         }
 
         var currentEnemy = activeEnemies[currentEnemyTurnIndex];
+
+        if (currentEnemy == null)
+        {
+            Debug.Log("[回合循环] 当前敌人已被击杀销毁，跳过回合结束处理");
+            ProceedEnemyTurn();
+            return;
+        }
+
         Debug.Log($"[回合循环] 敌方 {currentEnemy.gameObject.name} 行动结束。");
 
         // 隐藏当前行动敌人的向下箭头▼指示器
@@ -417,6 +454,11 @@ public class BattleTurnManager : MonoBehaviour
             currentEnemy.Stats.RecoverFromBreak();
             currentEnemy.Stats.TickBuffs();
         }
+
+        // TickBuffs 的 DoT 可能击杀敌人 → Die() → CheckBattleOver() → EndBattle()
+        // 此时 currentPhase 已被同步设为 Win/Lose，必须立即退出
+        if (currentPhase == BattlePhase.Win || currentPhase == BattlePhase.Lose)
+            return;
 
         // 只有攻击类意图的完美格挡才触发反击，非攻击行动直接推进回合
         bool isAttackIntent = false;
@@ -522,7 +564,7 @@ public class BattleTurnManager : MonoBehaviour
                 attacker.ExecuteBlockAction();
                 if (vfx != null) vfx.PlayBlockEffect();
                 yield return new WaitForSeconds(1f);
-                OnEnemyTurnFinished();
+                if (currentPhase == BattlePhase.EnemyTurn) OnEnemyTurnFinished();
                 break;
 
             case EnemyIntentType.DebuffPlayer:
@@ -533,7 +575,7 @@ public class BattleTurnManager : MonoBehaviour
                     attacker.ExecuteDebuffAction(playerParty[0].Stats);
                 }
                 yield return new WaitForSeconds(1f);
-                OnEnemyTurnFinished();
+                if (currentPhase == BattlePhase.EnemyTurn) OnEnemyTurnFinished();
                 break;
 
             case EnemyIntentType.BuffSelf:
@@ -543,7 +585,7 @@ public class BattleTurnManager : MonoBehaviour
                 attacker.ExecuteStrengthenAction();
                 if (vfx != null) vfx.PlayBuffEffect();
                 yield return new WaitForSeconds(1f);
-                OnEnemyTurnFinished();
+                if (currentPhase == BattlePhase.EnemyTurn) OnEnemyTurnFinished();
                 break;
 
             case EnemyIntentType.Heal:
@@ -553,7 +595,7 @@ public class BattleTurnManager : MonoBehaviour
                 attacker.ExecuteHealAction();
                 if (vfx != null) vfx.PlayHealEffect();
                 yield return new WaitForSeconds(1f);
-                OnEnemyTurnFinished();
+                if (currentPhase == BattlePhase.EnemyTurn) OnEnemyTurnFinished();
                 break;
 
             case EnemyIntentType.Summon:
@@ -561,7 +603,7 @@ public class BattleTurnManager : MonoBehaviour
                 Debug.Log($"[行动执行] {attacker.gameObject.name} 执行召唤行动");
                 attacker.ExecuteSummonAction();
                 yield return new WaitForSeconds(1f);
-                OnEnemyTurnFinished();
+                if (currentPhase == BattlePhase.EnemyTurn) OnEnemyTurnFinished();
                 break;
 
             default:

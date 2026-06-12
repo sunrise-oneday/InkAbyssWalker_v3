@@ -27,7 +27,7 @@ MonoBehaviour:
     pitchMin: 1
     pitchMax: 1
     priority: 0
-  - key: 102
+  - key: 600
     clip: {fileID: 8300000, guid: 957a62fb02a95704bace6090f95708c2, type: 3}
     volume: 1
     spatialBlend: 0

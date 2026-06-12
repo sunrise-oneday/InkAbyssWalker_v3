@@ -41,15 +41,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BarMode: 1
     - _Billboarding: 0
-    - _CurrentHP: 1
-    - _DelayHP: 1
+    - _CurrentHP: 0.45
+    - _DelayHP: 0.45000044
     - _FlashSpeed: 5
-    - _HPMode: 0
     - _HighlightPower: 3
     - _HighlightWidth: 0.02
     - _NoiseIntensity: 0.328
     - _TailLength: 0.15
+    - _UltGlowIntensity: 0.6
+    - _UltPulseSpeed: 3
     - _VerticalBillboarding: 1
     - _WobbleDensity: 3.14
     - _WobbleSpeed: 15
@@ -62,4 +64,6 @@ Material:
     - _FillRangeX: {r: 0.07, g: 0.84, b: 0, a: 0}
     - _FillRangeY: {r: 0.45, g: 0.58, b: 0, a: 0}
     - _HighlightColor: {r: 1.5, g: 1.5, b: 1.5, a: 1}
+    - _UltColorHigh: {r: 1, g: 0.85, b: 0, a: 1}
+    - _UltColorLow: {r: 0.8, g: 0.3, b: 0, a: 1}
   m_BuildTextureStacks: []

@@ -35,9 +35,9 @@ Material:
     m_Floats:
     - _DiamondCount: 9
     - _Margin: 76
-    - _Residue: 9
+    - _Residue: 0
     - _Spacing: 17
     - _TexWidth: 1366
     m_Colors:
-    - _TintColor: {r: 1.0920664, g: 0.60063654, b: 0, a: 1}
+    - _TintColor: {r: 1, g: 0.55, b: 0, a: 1}
   m_BuildTextureStacks: []

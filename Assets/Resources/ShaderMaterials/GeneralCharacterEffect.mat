@@ -40,14 +40,14 @@ Material:
     - _DeathKeyword: 0
     - _DissolveProgress: 0
     - _DissolveSpeed: 0.5
-    - _DodgeAlpha: 0.4
-    - _DodgeBlend: 0.8
-    - _DodgeGlitchAmount: 0.05
-    - _DodgeGlitchFrequency: 15
-    - _DodgeGlitchSpeed: 2
-    - _DodgeGlowIntensity: 1.5
+    - _DodgeAlpha: 0.042
+    - _DodgeBlend: 1
+    - _DodgeGlitchAmount: 0.2
+    - _DodgeGlitchFrequency: 81.8
+    - _DodgeGlitchSpeed: 5
+    - _DodgeGlowIntensity: 1
     - _DodgeKeyword: 0
-    - _DodgeMaxScale: 1.25
+    - _DodgeMaxScale: 1.61
     - _DodgeProgress: 0
     - _FlashIntensity: 0.4
     - _InjuredKeyword: 0
@@ -57,8 +57,8 @@ Material:
     m_Colors:
     - _DissolveExternalColor: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveInternalColor: {r: 0, g: 0, b: 0, a: 1}
-    - _DodgeColorExternal: {r: 0, g: 1, b: 0.8, a: 1}
-    - _DodgeColorInternal: {r: 0.08599305, g: 1, b: 0, a: 1}
+    - _DodgeColorExternal: {r: 0.3735848, g: 0.3735848, b: 0.3735848, a: 1}
+    - _DodgeColorInternal: {r: 1, g: 1, b: 1, a: 1}
     - _FlashColor: {r: 1, g: 0, b: 0, a: 1}
     - _ParryGlowColor: {r: 0, g: 0.20456123, b: 1, a: 1}
   m_BuildTextureStacks: []

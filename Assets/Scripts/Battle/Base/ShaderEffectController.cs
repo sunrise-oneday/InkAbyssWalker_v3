@@ -26,8 +26,11 @@ public class ShaderEffectController : MonoBehaviour
 
     // ---- 闪避 (Dodge) ----
     private static readonly int ID_DodgeProgress = Shader.PropertyToID("_DodgeProgress");
+    private static readonly int ID_ParryGlowColor = Shader.PropertyToID("_ParryGlowColor");
     private const string KW_DODGE = "_DODGE_ON";
     private const float DodgeGlowDuration = 0.25f;
+    // 普通闪避发光颜色（区别于精准防御的蓝色）
+    private static readonly Color NormalDodgeGlowColor = new Color(0.2f, 1f, 0.4f, 1f);
 
     // ---- 运行时状态 ----
     private Coroutine _activeEffect; // 防止重叠调用
@@ -121,6 +124,11 @@ public class ShaderEffectController : MonoBehaviour
             StopCoroutine(_activeDodgeGlow);
             _activeDodgeGlow = null;
         }
+        if (_normalDodgeColorRoutine != null)
+        {
+            StopCoroutine(_normalDodgeColorRoutine);
+            _normalDodgeColorRoutine = null;
+        }
     }
 
     private void OnDestroy()
@@ -177,13 +185,29 @@ public class ShaderEffectController : MonoBehaviour
         PlayDodgeGlow();
     }
 
-    /// <summary>普通闪避：仅边缘发光（复用精准防御的发光效果）</summary>
+    /// <summary>普通闪避：仅边缘发光，使用独立的绿色以区别于精准防御蓝色</summary>
     private void HandleNormalDodge(DodgeEventData data)
     {
         var myEntity = GetComponentInParent<PlayerBattleEntity>();
         if (myEntity == null || myEntity != data.Defender) return;
 
+        if (_normalDodgeColorRoutine != null) StopCoroutine(_normalDodgeColorRoutine);
+        _normalDodgeColorRoutine = StartCoroutine(NormalDodgeColorRoutine());
+    }
+
+    private Coroutine _normalDodgeColorRoutine;
+
+    private IEnumerator NormalDodgeColorRoutine()
+    {
+        Color originalColor = _materialInstance.GetColor(ID_ParryGlowColor);
+        _materialInstance.SetColor(ID_ParryGlowColor, NormalDodgeGlowColor);
+
         PlayParryDefenderGlow();
+
+        yield return new WaitForSecondsRealtime(ParryGlowDuration);
+
+        _materialInstance.SetColor(ID_ParryGlowColor, originalColor);
+        _normalDodgeColorRoutine = null;
     }
 
     /// <summary>启用 _DODGE_ON 关键字，在 DodgeGlowDuration 内将 _DodgeProgress 从 0 驱动到 1</summary>
@@ -235,44 +259,40 @@ public class ShaderEffectController : MonoBehaviour
 
     private IEnumerator DeathSequenceRoutine(float flashDuration, float dissolveDuration, Color flashColor, Action onComplete)
     {
-        // ---- Phase 1：受伤闪光 ----
-        _materialInstance.DisableKeyword(KW_DEATH);
+        // ---- Phase 1：受伤闪光 + 消融预启动 ----
+        // 从第一帧就启用 _DEATH_ON，确保消融全程可见（不被死亡动画的 alpha 曲线盖住）
+        _materialInstance.EnableKeyword(KW_DEATH);
         _materialInstance.SetFloat(ID_DissolveProgress, 0f);
 
         _materialInstance.SetColor(ID_FlashColor, flashColor);
         _materialInstance.SetFloat(ID_FlashIntensity, 0.4f);
         _materialInstance.EnableKeyword(KW_INJURED);
 
-        yield return new WaitForSeconds(flashDuration);
+        yield return new WaitForSecondsRealtime(flashDuration);
 
         // ---- Phase 2：关闭闪光，开始消融 ----
         _materialInstance.DisableKeyword(KW_INJURED);
-        _materialInstance.EnableKeyword(KW_DEATH);
 
-        // 核心改进：在消融的第一帧，给敌人随机一个消融贴图的 Offset 偏移量
-        // 这能完全避开同屏多个怪堆叠死亡时，消融边缘重合导致的“糊成一团”问题
         Vector4 randomST = new Vector4(
-            UnityEngine.Random.Range(0.9f, 1.1f), // 缩放轻微变化
             UnityEngine.Random.Range(0.9f, 1.1f),
-            UnityEngine.Random.Range(0f, 100f),   // 随机 X 轴偏移
-            UnityEngine.Random.Range(0f, 100f)    // 随机 Y 轴偏移
+            UnityEngine.Random.Range(0.9f, 1.1f),
+            UnityEngine.Random.Range(0f, 100f),
+            UnityEngine.Random.Range(0f, 100f)
         );
         SetMaterialVector(ID_DissolveTex_ST, randomST);
 
         float elapsed = 0f;
         while (elapsed < dissolveDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             float progress = Mathf.Clamp01(elapsed / dissolveDuration);
             _materialInstance.SetFloat(ID_DissolveProgress, progress);
             yield return null;
         }
 
-        // 确保到达终值
         _materialInstance.SetFloat(ID_DissolveProgress, 1f);
         _activeEffect = null;
 
-        // ---- 消融完成 → 通知调用方 ----
         onComplete?.Invoke();
     }
 }

@@ -421,6 +421,7 @@ MonoBehaviour:
   attackerIndicatorOffset: {x: 0, y: 235, z: 0}
   hudScale: 0.01
   hudScaleFactor: 0.012
+  trailDelaySeconds: 1.5
 --- !u!1 &1883226345
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,7 +698,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetStats: {fileID: 0}
-  delayCatchUpSpeed: 1.5
+  trailDelaySeconds: 1.5
   currentHPProp: _CurrentHP
   delayHPProp: _DelayHP
   flashSpeedProp: _FlashSpeed
@@ -839,6 +840,8 @@ GameObject:
   - component: {fileID: 4540504191561540439}
   - component: {fileID: 4540504191561540438}
   - component: {fileID: 4540504191561540540}
+  - component: {fileID: 2118817491870785328}
+  - component: {fileID: 5527014122656592999}
   m_Layer: 0
   m_Name: BattleEnemy
   m_TagString: Untagged
@@ -1111,6 +1114,53 @@ MonoBehaviour:
   lowHealthActions: []
   lowHealthThreshold: 0.3
   enableLowHealthActions: 1
+--- !u!114 &2118817491870785328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4540504191561540535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 105e6e553be4ed6458579feefa2bae63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aiType: 0
+  enemyAI: {fileID: 0}
+  attackSequence1:
+    attackName: "\u4E09\u8FDE\u66B4\u98CE\u65A9"
+    hitDamages: 0f0000000f0000001e000000
+    hitBreakDamages: 05000000050000000c000000
+    hitAnimations:
+    - Enemy_Attack_1
+    - Enemy_Attack_2
+    - Enemy_Attack_3
+  attackSequence2:
+    attackName: "\u4E09\u8FDE\u66B4\u98CE\u65A9"
+    hitDamages: 0f0000000f0000001e000000
+    hitBreakDamages: 05000000050000000c000000
+    hitAnimations:
+    - Enemy_Attack_1
+    - Enemy_Attack_2
+    - Enemy_Attack_3
+  attackIcon: {fileID: 0}
+  blockIcon: {fileID: 0}
+  debuffIcon: {fileID: 0}
+  healIcon: {fileID: 0}
+  strengthenIcon: {fileID: 0}
+--- !u!114 &5527014122656592999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4540504191561540535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa5d66dc880efb94880b895d71473fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4731616643537916904
 GameObject:
   m_ObjectHideFlags: 0

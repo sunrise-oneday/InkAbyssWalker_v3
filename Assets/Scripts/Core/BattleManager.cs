@@ -304,6 +304,12 @@ public class BattleManager : MonoBehaviour
     /// <summary>结束战斗，执行胜利/战败结算</summary>
     public void EndBattle(bool isWin)
     {
+        if (isEndingBattle) return; // 防重入，避免多个协程冲突
+
+        // 同步设置标志和阶段，确保同一帧内的 ProceedEnemyTurn / EnterEnemyTurn 立即看到战斗已结束
+        isEndingBattle = true;
+        BattleTurnManager.Instance.currentPhase = isWin ? BattlePhase.Win : BattlePhase.Lose;
+
         StartCoroutine(EndBattleRoutine(isWin));
     }
 

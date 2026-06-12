@@ -99,10 +99,10 @@ public class BattleSFXHandler : MonoBehaviour
 
     private void HandlePerfectParry(ParryEventData data) => PlaySFX(SFXKey.PerfectParry, data.HitPoint);
     private void HandleNormalParry(ParryEventData data)  => PlaySFX(SFXKey.NormalParry,  data.HitPoint);
-    private void HandleParryFailed(ParryEventData data)  => PlaySFX(SFXKey.ParryFailed, data.HitPoint);
+    private void HandleParryFailed(ParryEventData data)  => PlaySFX(SFXKey.Hit, data.HitPoint);  // 防御失败→受击音效
 
     private void HandlePerfectDodge(DodgeEventData data) => PlaySFX(SFXKey.PerfectDodge, data.HitPoint);
-    private void HandleNormalDodge(DodgeEventData data)  => PlaySFX(SFXKey.NormalDodge,  data.HitPoint);
+    private void HandleNormalDodge(DodgeEventData data)  => PlaySFX(SFXKey.Hit, data.HitPoint);  // 闪避失败→受击音效
 
     // ============================================
     // 核心播放方法

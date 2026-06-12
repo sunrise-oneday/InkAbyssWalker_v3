@@ -1,6 +1,5 @@
 # ============================================================
 # Unity 工程 Git 属性配置
-
 # 文本文件自动规范化行尾
 * text=auto
 # ---- Unity YAML 文件（必须用 Unity 的 YAML 合并驱动，否则合并冲突会损坏文件） ----
@@ -20,23 +19,23 @@
 *.shadergraph merge=unityyamlmerge eol=lf
 *.shadersubgraph merge=unityyamlmerge eol=lf
 # ---- 二进制文件（不参与 diff/merge，避免 Git 尝试文本合并导致损坏） ----
-*.png binary
-*.jpg binary
-*.jpeg binary
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
 *.gif binary
 *.bmp binary
-*.tga binary
-*.tiff binary
+*.tga filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
 *.tif binary
-*.psd binary
-*.exr binary
-*.hdr binary
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
+*.hdr filter=lfs diff=lfs merge=lfs -text
 *.dds binary
 *.ktx binary
 # ---- 音频文件 ----
-*.mp3 binary
-*.ogg binary
-*.wav binary
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
 *.aiff binary
 *.aif binary
 *.mod binary
@@ -44,13 +43,13 @@
 *.s3m binary
 *.xm binary
 # ---- 视频文件 ----
-*.mp4 binary
-*.mov binary
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text
 *.avi binary
 *.webm binary
 # ---- 字体文件 ----
-*.ttf binary
-*.otf binary
+*.ttf filter=lfs diff=lfs merge=lfs -text
+*.otf filter=lfs diff=lfs merge=lfs -text
 *.woff binary
 *.woff2 binary
 # ---- 压缩包 / 大文件 ----
@@ -60,9 +59,9 @@
 *.gz binary
 *.tgz binary
 *.tar binary
-*.unitypackage binary
+*.unitypackage filter=lfs diff=lfs merge=lfs -text
 # ---- 编译产物 ----
-*.dll binary
+*.dll filter=lfs diff=lfs merge=lfs -text
 *.pdb binary
 *.mdb binary
 *.apk binary

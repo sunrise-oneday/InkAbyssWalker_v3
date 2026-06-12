@@ -9,10 +9,9 @@ public class BattleInfoPanel : BasePanel
     [Header("回合指示")]
     [SerializeField] private Text turnText;
 
-    [Header("共享资源")]
-    [SerializeField] private Text sharedApText;
-    [SerializeField] private Slider sharedMpSlider;
-    [SerializeField] private Text sharedMpText;
+    [Header("共享资源（Shader 驱动）")]
+    [SerializeField] private APSlotController apSlotController;
+    [SerializeField] private MPSlotController mpSlotController;
 
     [Header("大招能量")]
     [SerializeField] private Slider sharedUltSlider;
@@ -36,18 +35,7 @@ public class BattleInfoPanel : BasePanel
         if (turnText != null)
             turnText.text = $"回合 {BattleTurnManager.Instance.currentTurn}";
 
-        // AP
-        if (sharedApText != null)
-            sharedApText.text = $"AP: {BattleResourceManager.Instance.sharedAP}/{BattleResourceManager.Instance.maxSharedAP}";
-
-        // MP 滑动条 + 文字
-        if (sharedMpSlider != null)
-        {
-            sharedMpSlider.maxValue = BattleResourceManager.Instance.maxSharedMP;
-            sharedMpSlider.value = BattleResourceManager.Instance.sharedMP;
-        }
-        if (sharedMpText != null)
-            sharedMpText.text = $"MP:{BattleResourceManager.Instance.sharedMP}/{BattleResourceManager.Instance.maxSharedMP}";
+        // AP / MP 由 APSlotController / MPSlotController 自行在 LateUpdate 中轮询 BattleResourceManager 更新
 
         // 大招进度条
         if (sharedUltSlider != null)
