@@ -47,3 +47,6 @@ Desktop.ini
 # ---- Locus 插件 ----
 Locus/
 Packages/com.farlocus.locus/
+
+# ---- AI 设计文档（本地私有，不上传） ----
+.superpowers/
