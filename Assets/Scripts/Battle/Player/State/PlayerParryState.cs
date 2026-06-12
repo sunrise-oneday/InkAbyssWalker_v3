@@ -21,6 +21,19 @@ public class PlayerParryState : PlayerBattleState
         hasPlayedParryAnim = false;
 
         // ========================================================
+        // BUG 修复：强制玩家面向当前攻击者。
+        // 战斗开始时朝向可能被锁死为朝右，导致粒子特效跟随错误朝向。
+        // 在此处修正，确保招架时玩家始终面向敌人。
+        // ========================================================
+        var currentAttacker = BattleTurnManager.Instance?.CurrentAttacker;
+        if (currentAttacker != null)
+        {
+            float dirToAttacker = currentAttacker.transform.position.x - owner.transform.position.x;
+            if (Mathf.Abs(dirToAttacker) > 0.01f)
+                owner.AdjustFacingDirection(dirToAttacker);
+        }
+
+        // ========================================================
         // 核心新增（动作分流）：根据玩家当前的形态，自动切换不同的防守准备姿势！
         // ========================================================
         if (owner.currentFormIndex == 2)

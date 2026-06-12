@@ -143,16 +143,21 @@ public class EnemyBattleEntity : BattleEntity
     // 核心补齐：必须在 Update 和 FixedUpdate 里驱动怪物的战斗状态机！
     // 漏掉这两个方法，怪物的状态切换后就会原地“断电冰冻”，无法倒计时和结束回合！ [2]
     // ========================================================
+    private bool _isDying; // 防止 Die() 重复进入
+
     private void Update()
     {
+        // 防止在 Destroy 后仍然访问已销毁的组件
+        if (this == null || gameObject == null) return;
         if (battleStateMachine != null)
         {
-            battleStateMachine.Update(); // 驱动怪物状态机工作！ [2]
+            battleStateMachine.Update();
         }
     }
 
     private void FixedUpdate()
     {
+        if (this == null || gameObject == null) return;
         if (battleStateMachine != null)
         {
             battleStateMachine.FixedUpdate();
@@ -293,6 +298,7 @@ public class EnemyBattleEntity : BattleEntity
     /// </summary>
     public void TriggerDamage(int hitIndex)
     {
+        if (_isDying) return;
         if (BattleManager.Instance != null)
         {
             BattleCombatResolver.Instance.EvaluateParryAndApplyDamage(hitIndex, attackSequence);
@@ -305,6 +311,7 @@ public class EnemyBattleEntity : BattleEntity
     /// <param name="nextIndex">下一斩的索引（例如：第一斩末尾事件传 1，第二斩末尾事件传 2）</param>
     public void TriggerNextAttack(int nextIndex)
     {
+        if (_isDying) return;
         if (anim != null && HitAnimHashes != null && nextIndex < HitAnimHashes.Length)
         {
             // 直接以 0.1s 极速融接下一斩，动作表现丝滑流畅！ [2]
@@ -318,6 +325,7 @@ public class EnemyBattleEntity : BattleEntity
     /// </summary>
     public void TriggerAttackFinished()
     {
+        if (_isDying) return;
         // 自动回到待机，并将控制权安全还给玩家 [3]
         battleStateMachine.ChangeState<EnemyBattleIdleState>();
 
@@ -374,10 +382,65 @@ public class EnemyBattleEntity : BattleEntity
     }
 
     /// <summary>
-    /// 重写死亡方法，使怪物切入死亡状态并禁用物理碰撞 [5]
+    /// 重写死亡方法，触发死亡消融视觉效果后切入死亡状态 [5]
     /// </summary>
     protected override void Die()
     {
-        battleStateMachine.ChangeState<EnemyBattleDieState>();
+        if (_isDying) return; // 防重入，避免多次触发消融或 CheckBattleOver
+        _isDying = true;
+
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.EnemyDeath, transform.position);
+
+        // 死亡消融完成后自己销毁，不需要 EnemyBattleDieState 再做淡出销毁
+        destroyOnDeath = false;
+
+        // ---- 死亡消融视觉效果 ----
+        if (sprite != null)
+        {
+            var shaderCtrl = sprite.gameObject.GetComponent<ShaderEffectController>();
+            if (shaderCtrl == null)
+            {
+                shaderCtrl = sprite.gameObject.AddComponent<ShaderEffectController>();
+            }
+
+            // 消融序列：0.1s 闪红 → 0.8s 消融 → 完成后销毁敌人
+            shaderCtrl.PlayDeathSequence(
+                flashDuration: 0.1f,
+                dissolveDuration: 0.8f,
+                flashColor: Color.red,
+                onComplete: OnDeathDissolveComplete
+            );
+        }
+        else
+        {
+            // sprite 丢失时无法播放消融，延迟销毁防止敌人永远留在场上
+            Debug.LogWarning($"[EnemyBattleEntity] {gameObject.name} sprite 为 null，跳过消融效果，延迟销毁");
+            StartCoroutine(DelayedDestroy(0.9f));
+        }
+
+        // 不切换到 EnemyBattleDieState —— 该状态的 Enemy_Die 动画会驱动 SpriteRenderer.color.a → 0，
+        // 导致消融 shader 输出被顶点 alpha 盖住（spriteColor * input.color，alpha=0 → 全透明）。
+        // 改用消融 shader 作为唯一死亡视觉效果。
+        if (rb != null) rb.simulated = false;
+        BattleCombatResolver.Instance.CheckBattleOver();
+    }
+
+    private System.Collections.IEnumerator DelayedDestroy(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (gameObject != null)
+            Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// 消融完成后销毁敌人对象
+    /// </summary>
+    private void OnDeathDissolveComplete()
+    {
+        // Unity 重载了 Object==null，Destroy 后的 gameObject 会正确返回 null
+        if (gameObject != null)
+        {
+            Destroy(gameObject);
+        }
     }
 }

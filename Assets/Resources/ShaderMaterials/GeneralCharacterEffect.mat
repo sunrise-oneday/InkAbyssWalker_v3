@@ -27,6 +27,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: d83fd3f204af7cd45909c0bc77cca0ef, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DodgeNoiseTex:
+        m_Texture: {fileID: 2800000, guid: 09119281d264d7444ab7ba0de6f45a3b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -36,11 +40,25 @@ Material:
     - _DeathKeyword: 0
     - _DissolveProgress: 0
     - _DissolveSpeed: 0.5
+    - _DodgeAlpha: 0.042
+    - _DodgeBlend: 1
+    - _DodgeGlitchAmount: 0.2
+    - _DodgeGlitchFrequency: 81.8
+    - _DodgeGlitchSpeed: 5
+    - _DodgeGlowIntensity: 1
+    - _DodgeKeyword: 0
+    - _DodgeMaxScale: 1.61
+    - _DodgeProgress: 0
     - _FlashIntensity: 0.4
     - _InjuredKeyword: 0
     - _LineWidth: 0.1
+    - _ParryDefenderKeyword: 0
+    - _ParryGlowWidth: 5
     m_Colors:
     - _DissolveExternalColor: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveInternalColor: {r: 0, g: 0, b: 0, a: 1}
+    - _DodgeColorExternal: {r: 0.3735848, g: 0.3735848, b: 0.3735848, a: 1}
+    - _DodgeColorInternal: {r: 1, g: 1, b: 1, a: 1}
     - _FlashColor: {r: 1, g: 0, b: 0, a: 1}
+    - _ParryGlowColor: {r: 0, g: 0.20456123, b: 1, a: 1}
   m_BuildTextureStacks: []

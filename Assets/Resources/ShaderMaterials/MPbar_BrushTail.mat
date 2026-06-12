@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MPbar_BrushTail
+  m_Shader: {fileID: 4800000, guid: c2d721ac35710b14ab7b148b3af64984, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BorderTex:
+        m_Texture: {fileID: 2800000, guid: 1ed67dc610c007d40b55529848ccda2b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HPNoiseTex:
+        m_Texture: {fileID: 2800000, guid: d83fd3f204af7cd45909c0bc77cca0ef, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TailTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BarMode: 1
+    - _Billboarding: 0
+    - _CurrentHP: 0.45
+    - _DelayHP: 0.45000044
+    - _FlashSpeed: 5
+    - _HighlightPower: 3
+    - _HighlightWidth: 0.02
+    - _NoiseIntensity: 0.328
+    - _TailLength: 0.15
+    - _UltGlowIntensity: 0.6
+    - _UltPulseSpeed: 3
+    - _VerticalBillboarding: 1
+    - _WobbleDensity: 3.14
+    - _WobbleSpeed: 15
+    - _WobbleStrength: 0.03
+    m_Colors:
+    - _ColorLeft: {r: 0, g: 0.32181984, b: 0.97735846, a: 1}
+    - _ColorRight: {r: 0.028301716, g: 0.81942874, b: 1, a: 1}
+    - _CurrentHPColor: {r: 0.29837662, g: 0.58311284, b: 0.86415094, a: 1}
+    - _DelayColor: {r: 0.29333568, g: 0.31907302, b: 0.3509434, a: 1}
+    - _FillRangeX: {r: 0.07, g: 0.84, b: 0, a: 0}
+    - _FillRangeY: {r: 0.45, g: 0.58, b: 0, a: 0}
+    - _HighlightColor: {r: 1.5, g: 1.5, b: 1.5, a: 1}
+    - _UltColorHigh: {r: 1, g: 0.85, b: 0, a: 1}
+    - _UltColorLow: {r: 0.8, g: 0.3, b: 0, a: 1}
+  m_BuildTextureStacks: []

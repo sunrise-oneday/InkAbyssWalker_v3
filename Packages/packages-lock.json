@@ -10,6 +10,12 @@
       },
       "hash": "ec0f32df120cd941fb6f769c7309a7d92a8ef7ab"
     },
+    "com.farlocus.locus": {
+      "version": "file:com.farlocus.locus",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.2d.animation": {
       "version": "9.2.0",
       "depth": 1,
@@ -165,7 +171,7 @@
       }
     },
     "com.unity.ide.rider": {
-      "version": "3.0.36",
+      "version": "3.0.40",
       "depth": 0,
       "source": "registry",
       "dependencies": {

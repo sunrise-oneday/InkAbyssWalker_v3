@@ -36,6 +36,7 @@ public class PlayerCastSkillState : PlayerBattleState
         }
 
         Debug.Log($"[状态机] 玩家开始施放技能: {currentSkill.skillName} | 动画总时长: {skillDuration:F2}s");
+        BattleSFXHandler.Instance?.PlaySFX(SFXKey.SkillCast);
     }
 
     public override void Update()
